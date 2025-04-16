@@ -1,0 +1,22 @@
+PODS:
+  - flutter_zoom_meeting_sdk (0.0.1):
+    - FlutterMacOS
+  - FlutterMacOS (1.0.0)
+
+DEPENDENCIES:
+  - flutter_zoom_meeting_sdk (from `Flutter/ephemeral/.symlinks/plugins/flutter_zoom_meeting_sdk/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+
+EXTERNAL SOURCES:
+  flutter_zoom_meeting_sdk:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_zoom_meeting_sdk/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+
+SPEC CHECKSUMS:
+  flutter_zoom_meeting_sdk: 5d801145e481c1f01534b72f0af97f18c771b962
+  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+
+PODFILE CHECKSUM: 7eb978b976557c8c1cd717d8185ec483fd090a82
+
+COCOAPODS: 1.16.2
