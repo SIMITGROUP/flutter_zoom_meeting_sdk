@@ -1,6 +1,6 @@
 import Cocoa
 import FlutterMacOS
-
+import ZoomSDK
 public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "flutter_zoom_meeting_sdk", binaryMessenger: registrar.messenger)
