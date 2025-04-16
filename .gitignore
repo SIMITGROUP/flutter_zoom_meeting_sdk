@@ -33,3 +33,4 @@ migrate_working_dir/
 build/
 /ZoomSDK
 resign_zoom_sdk.sh
+/example/ZoomSDK

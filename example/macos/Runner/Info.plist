@@ -28,5 +28,11 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSCameraUsageDescription</key>
+	<string>In order for participants to see you, requires access to your camera.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>In order to speak to participants, requires access to your microphone.</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string></string>
 </dict>
 </plist>
