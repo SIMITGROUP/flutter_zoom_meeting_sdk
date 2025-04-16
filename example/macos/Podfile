@@ -38,5 +38,13 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_macos_build_settings(target)
+    
+    # TODO: is this proper way to do this?
+    if target.name == 'flutter_zoom_meeting_sdk'
+      target.build_configurations.each do |config|
+        config.build_settings['FRAMEWORK_SEARCH_PATHS'] ||= ['$(inherited)']
+        config.build_settings['FRAMEWORK_SEARCH_PATHS'] << '${PODS_ROOT}/../../ZoomSDK/macOS/ZoomSDK'
+      end
+    end
   end
 end

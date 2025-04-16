@@ -8,7 +8,8 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static FlutterZoomMeetingSdkPlatform _instance = MethodChannelFlutterZoomMeetingSdk();
+  static FlutterZoomMeetingSdkPlatform _instance =
+      MethodChannelFlutterZoomMeetingSdk();
 
   /// The default instance of [FlutterZoomMeetingSdkPlatform] to use.
   ///
@@ -25,5 +26,13 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
 
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
+  }
+
+  Future<String?> initZoom() {
+    throw UnimplementedError('initZoom() has not been implemented.');
+  }
+
+  Future<String?> authZoom({required String jwtToken}) {
+    throw UnimplementedError('authZoom() has not been implemented.');
   }
 }

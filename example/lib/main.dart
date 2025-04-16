@@ -18,6 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _flutterZoomMeetingSdkPlugin = FlutterZoomMeetingSdk();
+  String _log = '';
 
   @override
   void initState() {
@@ -32,7 +33,8 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _flutterZoomMeetingSdkPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await _flutterZoomMeetingSdkPlugin.getPlatformVersion() ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -47,15 +49,45 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> _initZoom() async {
+    String? log = await _flutterZoomMeetingSdkPlugin.initZoom();
+    setState(() {
+      _log = log ?? '';
+    });
+  }
+
+  Future<void> _authZoom() async {
+    String? log = await _flutterZoomMeetingSdkPlugin.authZoom(
+      jwtToken:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NDgwMTMwNywiaWF0IjoxNzQ0Nzk3NzA3LCJleHAiOjE3NDQ4MDEzMDd9.xx81gBFvvNVnrZSGCyX2ChflSzbYPCAUx8CL6qifmG8',
+    );
+
+    setState(() {
+      _log = log ?? '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
+        appBar: AppBar(title: const Text('Plugin example app')),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            children: [
+              Text('Running on: $_platformVersion\n'),
+              Text(_log),
+              ElevatedButton(
+                onPressed: () => _initZoom(),
+                child: const Text('Init Zoom'),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () => _authZoom(),
+                child: const Text('Auth Zoom'),
+              ),
+            ],
+          ),
         ),
       ),
     );

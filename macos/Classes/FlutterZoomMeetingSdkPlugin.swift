@@ -1,9 +1,11 @@
 import Cocoa
 import FlutterMacOS
 import ZoomSDK
+
 public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "flutter_zoom_meeting_sdk", binaryMessenger: registrar.messenger)
+    let channel = FlutterMethodChannel(
+      name: "flutter_zoom_meeting_sdk", binaryMessenger: registrar.messenger)
     let instance = FlutterZoomMeetingSdkPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
@@ -12,6 +14,28 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "getPlatformVersion":
       result("macOS " + ProcessInfo.processInfo.operatingSystemVersionString)
+
+    case "initZoom":
+      let zoomSdk = ZoomSDK.shared()
+      let initParams = ZoomSDKInitParams()
+      initParams.zoomDomain = "zoom.us"
+
+      let initResult = zoomSdk.initSDK(with: initParams)
+      print("Initialized Zoom SDK: \(initResult)")
+      result("Initialized Zoom SDK: \(initResult)")
+
+    case "authZoom":
+      let zoomSdk = ZoomSDK.shared()
+      let authService = zoomSdk.getAuthService()
+      // authService.delegate = self
+
+      let authContext = ZoomSDKAuthContext()
+      authContext.jwtToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NDgwNzMxNSwiaWF0IjoxNzQ0ODAzNzE1LCJleHAiOjE3NDQ4MDczMTV9.P_MxfnOXvj1RPjSfw4M9Cu65xcIjLItMMiWu0YpMhuI"
+      let authResult = authService.sdkAuth(authContext)
+      print("Auth result: \(authResult)")
+      result("Auth result: \(authResult)")
+
     default:
       result(FlutterMethodNotImplemented)
     }

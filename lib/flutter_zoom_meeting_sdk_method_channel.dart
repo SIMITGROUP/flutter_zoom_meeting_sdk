@@ -11,7 +11,23 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version = await methodChannel.invokeMethod<String>(
+      'getPlatformVersion',
+    );
     return version;
+  }
+
+  @override
+  Future<String?> initZoom() async {
+    final log = await methodChannel.invokeMethod<String>('initZoom');
+    return log;
+  }
+
+  @override
+  Future<String?> authZoom({required String jwtToken}) async {
+    final log = await methodChannel.invokeMethod<String>('authZoom', {
+      'jwtToken': jwtToken,
+    });
+    return log;
   }
 }
