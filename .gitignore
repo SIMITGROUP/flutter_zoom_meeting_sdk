@@ -34,3 +34,4 @@ build/
 /ZoomSDK
 resign_zoom_sdk.sh
 /example/ZoomSDK
+/example/macos/Runner/Zoom

@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> _authZoom() async {
     String? log = await _flutterZoomMeetingSdkPlugin.authZoom(
       jwtToken:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NDgwMTMwNywiaWF0IjoxNzQ0Nzk3NzA3LCJleHAiOjE3NDQ4MDEzMDd9.xx81gBFvvNVnrZSGCyX2ChflSzbYPCAUx8CL6qifmG8',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NDgxMzM2NywiaWF0IjoxNzQ0ODA5NzY3LCJleHAiOjE3NDQ4MTMzNjd9.AlbAETpb69ql83cRa9hEksAn7Ktn8Ec61N3NdY_swkI',
     );
 
     setState(() {

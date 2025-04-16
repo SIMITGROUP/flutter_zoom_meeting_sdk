@@ -33,6 +33,14 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>In order to speak to participants, requires access to your microphone.</string>
 	<key>NSAppleEventsUsageDescription</key>
-	<string></string>
+	<string>Required for screen sharing functionality.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Required for calendar integration.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Required for contacts integration.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Required for location services.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Required for Bluetooth audio devices.</string>
 </dict>
 </plist>

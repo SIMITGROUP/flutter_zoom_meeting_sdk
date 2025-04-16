@@ -31,7 +31,7 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
 
       let authContext = ZoomSDKAuthContext()
       authContext.jwtToken =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NDgwNzMxNSwiaWF0IjoxNzQ0ODAzNzE1LCJleHAiOjE3NDQ4MDczMTV9.P_MxfnOXvj1RPjSfw4M9Cu65xcIjLItMMiWu0YpMhuI"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NDgxMzM2NywiaWF0IjoxNzQ0ODA5NzY3LCJleHAiOjE3NDQ4MTMzNjd9.AlbAETpb69ql83cRa9hEksAn7Ktn8Ec61N3NdY_swkI"
       let authResult = authService.sdkAuth(authContext)
       print("Auth result: \(authResult)")
       result("Auth result: \(authResult)")
