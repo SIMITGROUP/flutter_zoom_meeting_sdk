@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
+import 'package:http/http.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,11 +20,47 @@ class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _flutterZoomMeetingSdkPlugin = FlutterZoomMeetingSdk();
   String _log = '';
+  String _authEvents = '';
+  String _meetingEvents = '';
+  StreamSubscription? _authSubscription;
+  StreamSubscription? _meetingSubscription;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+    _initEventListeners();
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    _meetingSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _initEventListeners() {
+    // Listen to auth events
+    _authSubscription = _flutterZoomMeetingSdkPlugin.onAuthEvent.listen((
+      event,
+    ) {
+      setState(() {
+        _authEvents += '\n${DateTime.now()}: $event';
+      });
+      print('Auth event: $event');
+
+      _joinMeeting();
+    });
+
+    // Listen to meeting events
+    _meetingSubscription = _flutterZoomMeetingSdkPlugin.onMeetingEvent.listen((
+      event,
+    ) {
+      setState(() {
+        _meetingEvents += '\n${DateTime.now()}: $event';
+      });
+      print('Meeting event: $event');
+    });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -67,26 +104,71 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> _joinMeeting() async {
+    String? log = await _flutterZoomMeetingSdkPlugin.joinMeeting();
+    setState(() {
+      _log = log ?? '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Plugin example app')),
-        body: Center(
-          child: Column(
-            children: [
-              Text('Running on: $_platformVersion\n'),
-              Text(_log),
-              ElevatedButton(
-                onPressed: () => _initZoom(),
-                child: const Text('Init Zoom'),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () => _authZoom(),
-                child: const Text('Auth Zoom'),
-              ),
-            ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text('Running on: $_platformVersion\n'),
+                Text(_log),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => _initZoom(),
+                  child: const Text('Init Zoom'),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => _authZoom(),
+                  child: const Text('Auth Zoom'),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => _joinMeeting(),
+                  child: const Text('Join Meeting'),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Auth Events:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: SingleChildScrollView(child: Text(_authEvents)),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Meeting Events:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: SingleChildScrollView(child: Text(_meetingEvents)),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -24,6 +24,16 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  /// Stream for authentication events from the Zoom SDK
+  Stream<Map<String, dynamic>> get onAuthEvent {
+    throw UnimplementedError('onAuthEvent has not been implemented.');
+  }
+
+  /// Stream for meeting events from the Zoom SDK
+  Stream<Map<String, dynamic>> get onMeetingEvent {
+    throw UnimplementedError('onMeetingEvent has not been implemented.');
+  }
+
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
@@ -34,5 +44,9 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
 
   Future<String?> authZoom({required String jwtToken}) {
     throw UnimplementedError('authZoom() has not been implemented.');
+  }
+
+  Future<String?> joinMeeting() {
+    throw UnimplementedError('joinMeeting() has not been implemented.');
   }
 }
