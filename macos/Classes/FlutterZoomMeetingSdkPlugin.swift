@@ -46,7 +46,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
         success: initResult == ZoomSDKError_Success,
         message: initResult == ZoomSDKError_Success
           ? "Initialized successfully" : "Failed to initialize",
-        code: initResult.rawValue
+        statusCode: initResult.rawValue,
+        statusText: initResult.name,
       )
 
       result(response.toDictionary())
@@ -56,7 +57,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
         let response = StandardZoomMeetingResponse(
           success: false,
           message: "No arguments provided",
-          code: 200
+          statusCode: 200,
+          statusText: ""
         )
         result(response.toDictionary())
         return
@@ -65,7 +67,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
         let response = StandardZoomMeetingResponse(
           success: false,
           message: "No JWT token provided",
-          code: 200
+          statusCode: 200,
+          statusText: ""
         )
         result(response.toDictionary())
         return
@@ -84,7 +87,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
         success: authResult == ZoomSDKError_Success,
         message: authResult == ZoomSDKError_Success
           ? "Successfully sent auth request" : "Failed to send auth request",
-        code: authResult.rawValue
+        statusCode: authResult.rawValue,
+        statusText: authResult.name,
       )
 
       result(response.toDictionary())
@@ -95,7 +99,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
         let response = StandardZoomMeetingResponse(
           success: false,
           message: "No arguments provided",
-          code: 200
+          statusCode: 200,
+          statusText: ""
         )
         result(response.toDictionary())
         return
@@ -105,7 +110,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
         let response = StandardZoomMeetingResponse(
           success: false,
           message: "No meeting service available",
-          code: 200
+          statusCode: 200,
+          statusText: ""
         )
         result(response.toDictionary())
         return
@@ -133,7 +139,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
         success: joinResult == ZoomSDKError_Success,
         message: joinResult == ZoomSDKError_Success
           ? "Successfully joined meeting" : "Failed to join meeting",
-        code: joinResult.rawValue
+        statusCode: joinResult.rawValue,
+        statusText: joinResult.name,
       )
 
       result(response.toDictionary())
@@ -189,44 +196,29 @@ class MeetingStreamHandler: NSObject, FlutterStreamHandler {
 
 extension FlutterZoomMeetingSdkPlugin: ZoomSDKAuthDelegate {
   public func onZoomSDKAuthReturn(_ returnValue: ZoomSDKAuthError) {
-    DispatchQueue.main.async {
-      print("================================================")
-      print("Enter onZoomSDKAuthReturn")
-      print("Zoom SDK Auth returned: \(returnValue.rawValue)")
+    let response = StandardZoomMeetingEventResponse(
+      event: "onZoomSDKAuthReturn",
+      success: returnValue == ZoomSDKAuthError_Success,
+      message: returnValue == ZoomSDKAuthError_Success
+        ? "Successfully authenticated" : "Failed to authenticate",
+      statusCode: returnValue.rawValue,
+      statusText: returnValue.name,
+    )
 
-      // Send event to Flutter
-      let eventData: [String: Any] = [
-        "event": "onZoomSDKAuthReturn",
-        "returnCode": returnValue.rawValue,
-        "success": returnValue == ZoomSDKAuthError_Success,
-      ]
-      self.authEventSink?(eventData)
-
-      switch returnValue {
-      case ZoomSDKAuthError_Success:
-        print("✅ Authentication successful")
-
-      default:
-        print("❌ Authentication failed with code: \(returnValue.rawValue)")
-      }
-
-      print("================================================")
-      fflush(stdout)
-    }
+    // Send event to Flutter
+    self.authEventSink?(response.toDictionary())
   }
 
   public func onZoomAuthIdentityExpired() {
-    DispatchQueue.main.async {
-      print("⚠️ Zoom Auth Identity Expired")
+    let response = StandardZoomMeetingEventResponse(
+      event: "onZoomAuthIdentityExpired",
+      success: true,
+      message: "Zoom Auth Identity Expired",
+      statusCode: 0,
+      statusText: "",
+    )
 
-      // Send event to Flutter
-      let eventData: [String: Any] = [
-        "event": "onZoomAuthIdentityExpired"
-      ]
-      self.authEventSink?(eventData)
-
-      fflush(stdout)
-    }
+    self.authEventSink?(response.toDictionary())
   }
 }
 
@@ -235,19 +227,18 @@ extension FlutterZoomMeetingSdkPlugin: ZoomSDKMeetingServiceDelegate {
     _ state: ZoomSDKMeetingStatus, meetingError error: ZoomSDKMeetingError,
     end reason: EndMeetingReason
   ) {
-    DispatchQueue.main.async {
-      print("Meeting status changed: \(state.rawValue)")
 
-      // Send event to Flutter
-      let eventData: [String: Any] = [
-        "event": "onMeetingStatusChange",
-        "status": state.rawValue,
-        "errorCode": error.rawValue,
-        "reason": reason.rawValue,
-      ]
-      self.meetingEventSink?(eventData)
+    let response = ZoomMeetingStatusChangeEventResponse(
+      event: "onMeetingStatusChange",
+      meetingStatus: state.rawValue,
+      meetingStatusText: state.name,
+      meetingError: error.rawValue,
+      meetingErrorText: error.name,
+      endMeetingReason: reason.rawValue,
+      endMeetingReasonText: reason.name,
+    )
 
-      fflush(stdout)
-    }
+    self.meetingEventSink?(response.toDictionary())
+
   }
 }

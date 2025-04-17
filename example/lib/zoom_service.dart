@@ -23,7 +23,6 @@ class ZoomService {
 
   Future<StandardZoomMeetingResponse> initZoom() async {
     final result = await _zoomSdk.initZoom();
-    print('Init response: $result');
     print('Init response: ${jsonEncode(result.toMap())}');
     return result;
   }
@@ -32,7 +31,6 @@ class ZoomService {
     final jwtToken = await getJWTToken();
 
     final result = await _zoomSdk.authZoom(jwtToken: jwtToken);
-    print('Init response: $result');
     print('Init response: ${jsonEncode(result.toMap())}');
     return result;
   }
@@ -44,7 +42,6 @@ class ZoomService {
       displayName: _userName,
     );
     final result = await _zoomSdk.joinMeeting(request);
-    print('Init response: $result');
     print('Init response: ${jsonEncode(result.toMap())}');
     return result;
   }
