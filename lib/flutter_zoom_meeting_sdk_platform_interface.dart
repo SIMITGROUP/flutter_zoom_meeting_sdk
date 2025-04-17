@@ -1,5 +1,6 @@
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
 import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
+import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_zoom_meeting_sdk_method_channel.dart';
@@ -48,7 +49,9 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
     throw UnimplementedError('authZoom() has not been implemented.');
   }
 
-  Future<StandardZoomMeetingResponse> joinMeeting() {
+  Future<StandardZoomMeetingResponse> joinMeeting(
+    ZoomMeetingSdkRequest request,
+  ) {
     throw UnimplementedError('joinMeeting() has not been implemented.');
   }
 

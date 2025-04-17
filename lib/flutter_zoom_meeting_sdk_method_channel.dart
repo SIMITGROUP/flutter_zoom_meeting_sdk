@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
 import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
+import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -62,9 +63,14 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   }
 
   @override
-  Future<StandardZoomMeetingResponse> joinMeeting() async {
-    final result = await methodChannel.invokeMethod('joinMeeting');
-
+  Future<StandardZoomMeetingResponse> joinMeeting(
+    ZoomMeetingSdkRequest request,
+  ) async {
+    final result = await methodChannel.invokeMethod('joinMeeting', {
+      'meetingNumber': request.meetingNumber,
+      'password': request.password,
+      'displayName': request.displayName,
+    });
     final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
     return StandardZoomMeetingResponse.fromMap(resultMap);
   }

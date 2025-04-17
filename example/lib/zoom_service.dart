@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
+import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
 part 'zoom_service_config.dart';
 
 class ZoomService {
@@ -10,7 +11,7 @@ class ZoomService {
 
   String _meetingNumber = "3273588613";
   String _userName = "John Doe";
-  String _passCode = "123456";
+  String _passCode = "6SuCMB";
   int _role = 0;
 
   StreamSubscription? _authSubscription;
@@ -37,7 +38,12 @@ class ZoomService {
   }
 
   Future<StandardZoomMeetingResponse> joinMeeting() async {
-    final result = await _zoomSdk.joinMeeting();
+    final request = ZoomMeetingSdkRequest(
+      meetingNumber: _meetingNumber,
+      password: _passCode,
+      displayName: _userName,
+    );
+    final result = await _zoomSdk.joinMeeting(request);
     print('Init response: $result');
     print('Init response: ${jsonEncode(result.toMap())}');
     return result;
