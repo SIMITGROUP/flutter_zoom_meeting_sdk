@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initPlatformState();
     _initEventListeners();
+    getSignature();
   }
 
   @override
@@ -111,6 +112,51 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<String?> fetchZoomSignature({
+    required String authEndpoint,
+    required String meetingNumber,
+    required int role,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(authEndpoint),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'meetingNumber': meetingNumber, 'role': role}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['signature'] as String?;
+      } else {
+        print('Error: ${response.statusCode}');
+        print('Response: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Exception: $e');
+      return null;
+    }
+  }
+
+  void getSignature() async {
+    const endpoint = "http://localhost:4000";
+    const meetingNumber = "3273588613";
+    const role = 0;
+
+    final signature = await fetchZoomSignature(
+      authEndpoint: endpoint,
+      meetingNumber: meetingNumber,
+      role: role,
+    );
+
+    if (signature != null) {
+      print("Received signature: $signature");
+      // send it to native macOS via MethodChannel if needed
+    } else {
+      print("Failed to get signature.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -124,6 +170,11 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Text('Running on: $_platformVersion\n'),
                 Text(_log),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => getSignature(),
+                  child: const Text('Get Signature'),
+                ),
                 const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () => _initZoom(),
