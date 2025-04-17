@@ -43,7 +43,7 @@ post_install do |installer|
     if target.name == 'flutter_zoom_meeting_sdk'
       target.build_configurations.each do |config|
         config.build_settings['FRAMEWORK_SEARCH_PATHS'] ||= ['$(inherited)']
-        config.build_settings['FRAMEWORK_SEARCH_PATHS'] << '${PODS_ROOT}/../../macos/Runner/Zoom/ZoomSDK'
+        config.build_settings['FRAMEWORK_SEARCH_PATHS'] << '${PODS_ROOT}/../../ZoomSDK/macOS/ZoomSDK'
       end
     end
   end
