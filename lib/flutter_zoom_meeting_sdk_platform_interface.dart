@@ -1,3 +1,4 @@
+import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_zoom_meeting_sdk_method_channel.dart';
@@ -48,5 +49,13 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
 
   Future<String?> joinMeeting() {
     throw UnimplementedError('joinMeeting() has not been implemented.');
+  }
+
+  Future<JwtResponse?> getJWTToken({
+    required String authEndpoint,
+    required String meetingNumber,
+    required int role,
+  }) {
+    throw UnimplementedError('getJWTToken() has not been implemented.');
   }
 }

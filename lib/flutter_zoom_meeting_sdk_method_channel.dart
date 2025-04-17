@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'flutter_zoom_meeting_sdk_platform_interface.dart';
 
@@ -57,5 +60,34 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   Future<String?> joinMeeting() async {
     final log = await methodChannel.invokeMethod<String>('joinMeeting');
     return log;
+  }
+
+  @override
+  Future<JwtResponse?> getJWTToken({
+    required String authEndpoint,
+    required String meetingNumber,
+    required int role,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(authEndpoint),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'meetingNumber': meetingNumber, 'role': role}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final signature = data['signature'] as String?;
+
+        return JwtResponse(token: signature);
+      } else {
+        print('Error: ${response.statusCode}');
+        print('Response: ${response.body}');
+        return JwtResponse(error: "Failed to retrieve JWT signature.");
+      }
+    } catch (e) {
+      print('Exception: $e');
+      return JwtResponse(error: "Failed to retrieve JWT signature.");
+    }
   }
 }

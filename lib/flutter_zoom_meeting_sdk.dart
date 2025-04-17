@@ -1,3 +1,5 @@
+import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
+
 import 'flutter_zoom_meeting_sdk_platform_interface.dart';
 
 class FlutterZoomMeetingSdk {
@@ -30,5 +32,17 @@ class FlutterZoomMeetingSdk {
 
   Future<String?> joinMeeting() {
     return FlutterZoomMeetingSdkPlatform.instance.joinMeeting();
+  }
+
+  Future<JwtResponse?> getJWTToken({
+    required String authEndpoint,
+    required String meetingNumber,
+    required int role,
+  }) {
+    return FlutterZoomMeetingSdkPlatform.instance.getJWTToken(
+      authEndpoint: authEndpoint,
+      meetingNumber: meetingNumber,
+      role: role,
+    );
   }
 }

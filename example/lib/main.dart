@@ -30,7 +30,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initPlatformState();
     _initEventListeners();
-    getSignature();
   }
 
   @override
@@ -112,48 +111,30 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<String?> fetchZoomSignature({
-    required String authEndpoint,
-    required String meetingNumber,
-    required int role,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse(authEndpoint),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'meetingNumber': meetingNumber, 'role': role}),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['signature'] as String?;
-      } else {
-        print('Error: ${response.statusCode}');
-        print('Response: ${response.body}');
-        return null;
-      }
-    } catch (e) {
-      print('Exception: $e');
-      return null;
-    }
-  }
-
-  void getSignature() async {
+  // Use the plugin's fetchZoomSignature function
+  Future<void> _fetchSignature() async {
     const endpoint = "http://localhost:4000";
     const meetingNumber = "3273588613";
     const role = 0;
 
-    final signature = await fetchZoomSignature(
+    final result = await _flutterZoomMeetingSdkPlugin.getJWTToken(
       authEndpoint: endpoint,
       meetingNumber: meetingNumber,
       role: role,
     );
 
+    final signature = result?.token;
+
     if (signature != null) {
       print("Received signature: $signature");
-      // send it to native macOS via MethodChannel if needed
+      setState(() {
+        _log = "Signature: $signature";
+      });
     } else {
       print("Failed to get signature.");
+      setState(() {
+        _log = "Failed to get signature.";
+      });
     }
   }
 
@@ -172,8 +153,8 @@ class _MyAppState extends State<MyApp> {
                 Text(_log),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () => getSignature(),
-                  child: const Text('Get Signature'),
+                  onPressed: () => _fetchSignature(),
+                  child: const Text('Fetch Custom Signature'),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
