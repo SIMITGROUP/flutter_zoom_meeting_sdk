@@ -9,9 +9,9 @@ class ZoomService {
 
   String _authEndpoint = "http://localhost:4000";
 
-  String _meetingNumber = "3273588613";
-  String _userName = "John Doe";
-  String _passCode = "6SuCMB";
+  String _meetingNumber = "";
+  String _userName = "";
+  String _passCode = "";
   int _role = 0;
 
   StreamSubscription? _authSubscription;
@@ -71,7 +71,7 @@ class ZoomService {
     _authSubscription = _zoomSdk.onAuthEvent.listen((event) {
       print('Auth event: $event');
 
-      // _joinMeeting();
+      joinMeeting();
     });
 
     // Listen to meeting events
