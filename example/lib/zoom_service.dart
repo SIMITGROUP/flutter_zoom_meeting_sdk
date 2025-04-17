@@ -18,8 +18,9 @@ class ZoomService {
   StreamSubscription? _meetingSubscription;
 
   // Expose streams for listeners
-  Stream<Map<String, dynamic>> get onAuthEvent => _zoomSdk.onAuthEvent;
-  Stream<Map<String, dynamic>> get onMeetingEvent => _zoomSdk.onMeetingEvent;
+  Stream<ZoomMeetingAuthEventResponse> get onAuthEvent => _zoomSdk.onAuthEvent;
+  Stream<ZoomMeetingMeetingEventResponse> get onMeetingEvent =>
+      _zoomSdk.onMeetingEvent;
 
   Future<StandardZoomMeetingResponse> initZoom() async {
     final result = await _zoomSdk.initZoom();
@@ -67,8 +68,9 @@ class ZoomService {
     // Listen to auth events
     _authSubscription = _zoomSdk.onAuthEvent.listen((event) {
       print('Auth event: $event');
-
-      joinMeeting();
+      if (event.statusText == 'Success') {
+        joinMeeting();
+      }
     });
 
     // Listen to meeting events

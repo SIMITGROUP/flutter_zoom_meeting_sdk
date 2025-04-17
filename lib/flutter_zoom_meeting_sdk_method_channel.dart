@@ -27,14 +27,18 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
 
   /// Streams for auth and meeting events
   @override
-  Stream<Map<String, dynamic>> get onAuthEvent => authEventChannel
-      .receiveBroadcastStream()
-      .map((event) => Map<String, dynamic>.from(event));
+  Stream<ZoomMeetingAuthEventResponse> get onAuthEvent =>
+      authEventChannel.receiveBroadcastStream().map((event) {
+        final Map<String, dynamic> resultMap = Map<String, dynamic>.from(event);
+        return ZoomMeetingAuthEventResponse.fromMap(resultMap);
+      });
 
   @override
-  Stream<Map<String, dynamic>> get onMeetingEvent => meetingEventChannel
-      .receiveBroadcastStream()
-      .map((event) => Map<String, dynamic>.from(event));
+  Stream<ZoomMeetingMeetingEventResponse> get onMeetingEvent =>
+      meetingEventChannel.receiveBroadcastStream().map((event) {
+        final Map<String, dynamic> resultMap = Map<String, dynamic>.from(event);
+        return ZoomMeetingMeetingEventResponse.fromMap(resultMap);
+      });
 
   @override
   Future<String?> getPlatformVersion() async {

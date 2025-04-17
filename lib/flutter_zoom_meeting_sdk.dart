@@ -11,14 +11,14 @@ class FlutterZoomMeetingSdk {
   /// Events include:
   /// - onZoomSDKAuthReturn: Authentication result
   /// - onZoomAuthIdentityExpired: Auth token expired
-  Stream<Map<String, dynamic>> get onAuthEvent =>
+  Stream<ZoomMeetingAuthEventResponse> get onAuthEvent =>
       FlutterZoomMeetingSdkPlatform.instance.onAuthEvent;
 
   /// Stream of Zoom SDK meeting events
   ///
   /// Events include:
   /// - onMeetingStatusChange: Meeting status changes
-  Stream<Map<String, dynamic>> get onMeetingEvent =>
+  Stream<ZoomMeetingMeetingEventResponse> get onMeetingEvent =>
       FlutterZoomMeetingSdkPlatform.instance.onMeetingEvent;
 
   Future<String?> getPlatformVersion() {
