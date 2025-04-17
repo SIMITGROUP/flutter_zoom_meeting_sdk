@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
 part 'zoom_service_config.dart';
 
@@ -19,18 +20,27 @@ class ZoomService {
   Stream<Map<String, dynamic>> get onAuthEvent => _zoomSdk.onAuthEvent;
   Stream<Map<String, dynamic>> get onMeetingEvent => _zoomSdk.onMeetingEvent;
 
-  Future<void> initZoom() async {
-    await _zoomSdk.initZoom();
+  Future<StandardZoomMeetingResponse> initZoom() async {
+    final result = await _zoomSdk.initZoom();
+    print('Init response: $result');
+    print('Init response: ${jsonEncode(result.toMap())}');
+    return result;
   }
 
-  Future<void> authZoom() async {
+  Future<StandardZoomMeetingResponse> authZoom() async {
     final jwtToken = await getJWTToken();
 
-    await _zoomSdk.authZoom(jwtToken: jwtToken);
+    final result = await _zoomSdk.authZoom(jwtToken: jwtToken);
+    print('Init response: $result');
+    print('Init response: ${jsonEncode(result.toMap())}');
+    return result;
   }
 
-  Future<void> joinMeeting() async {
-    await _zoomSdk.joinMeeting();
+  Future<StandardZoomMeetingResponse> joinMeeting() async {
+    final result = await _zoomSdk.joinMeeting();
+    print('Init response: $result');
+    print('Init response: ${jsonEncode(result.toMap())}');
+    return result;
   }
 
   Future<String> getJWTToken() async {

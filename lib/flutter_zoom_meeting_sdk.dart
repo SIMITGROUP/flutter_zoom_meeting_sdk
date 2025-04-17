@@ -1,6 +1,9 @@
+import 'package:flutter_zoom_meeting_sdk/models/init_zoom_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
 
 import 'flutter_zoom_meeting_sdk_platform_interface.dart';
+
+export 'models/init_zoom_response.dart';
 
 class FlutterZoomMeetingSdk {
   /// Stream of Zoom SDK authentication events
@@ -22,15 +25,15 @@ class FlutterZoomMeetingSdk {
     return FlutterZoomMeetingSdkPlatform.instance.getPlatformVersion();
   }
 
-  Future<String?> initZoom() {
+  Future<StandardZoomMeetingResponse> initZoom() {
     return FlutterZoomMeetingSdkPlatform.instance.initZoom();
   }
 
-  Future<String?> authZoom({required String jwtToken}) {
+  Future<StandardZoomMeetingResponse> authZoom({required String jwtToken}) {
     return FlutterZoomMeetingSdkPlatform.instance.authZoom(jwtToken: jwtToken);
   }
 
-  Future<String?> joinMeeting() {
+  Future<StandardZoomMeetingResponse> joinMeeting() {
     return FlutterZoomMeetingSdkPlatform.instance.joinMeeting();
   }
 

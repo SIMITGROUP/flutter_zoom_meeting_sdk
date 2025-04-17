@@ -26,7 +26,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initPlatformState();
     _zoomService.initEventListeners();
-    _zoomService.getJWTToken();
   }
 
   @override

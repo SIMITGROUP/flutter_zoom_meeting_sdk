@@ -2,6 +2,7 @@ import Cocoa
 import FlutterMacOS
 import ZoomSDK
 
+
 public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
   private var authEventSink: FlutterEventSink?
   private var meetingEventSink: FlutterEventSink?
@@ -40,14 +41,24 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
       initParams.zoomDomain = "zoom.us"
 
       let initResult = zoomSdk.initSDK(with: initParams)
-      print("Initialized Zoom SDK: \(initResult)")
-      result("Initialized Zoom SDK: \(initResult)")
+      let response = StandardZoomMeetingResponse(
+          success: initResult == ZoomSDKError_Success,
+          message: initResult == ZoomSDKError_Success ? "Initialized successfully" : "Failed to initialize",
+          code: initResult.rawValue
+      )
+
+      result(response.toDictionary())
 
     case "authZoom":
       guard let args = call.arguments as? Dictionary<String, String> else { return }
 
       guard let jwtToken = args["jwtToken"] else {
-        print("❌ No JWT token provided")
+        let response = StandardZoomMeetingResponse(
+            success: false,
+            message: "No JWT token provided",
+            code: 200
+        )
+        result(response.toDictionary())
         return
       }
 
@@ -57,16 +68,28 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
 
       let authContext = ZoomSDKAuthContext()
       authContext.jwtToken = jwtToken
+
       let authResult = authService.sdkAuth(authContext)
-      print("Auth result: \(authResult)")
-      result("Auth result: \(authResult)")
+
+      let response = StandardZoomMeetingResponse(
+          success: authResult == ZoomSDKError_Success,
+          message: authResult == ZoomSDKError_Success ? "Successfully sent auth request" : "Failed to send auth request",
+          code: authResult.rawValue
+      )
+
+      result(response.toDictionary())
 
     case "joinMeeting":
       guard let meetingService = ZoomSDK.shared().getMeetingService() else {
-        print("❌ No meeting service available")
+         let response = StandardZoomMeetingResponse(
+              success: false,
+              message: "No meeting service available",
+              code: 200
+          )
+          result(response.toDictionary())
         return
       }
-      print("Meeting service available")
+
       meetingService.delegate = self
 
       let joinParam = ZoomSDKJoinMeetingElements()
@@ -85,18 +108,18 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
 
       let joinResult = meetingService.joinMeeting(joinParam)
 
-      if joinResult == ZoomSDKError_Success {
-        print("✅ Joined meeting successfully")
-      } else {
-        print("❌ Failed to join meeting: \(joinResult.rawValue)")
-      }
-      result("Joined meeting: \(joinResult)")
+      let response = StandardZoomMeetingResponse(
+          success: joinResult == ZoomSDKError_Success,
+          message: joinResult == ZoomSDKError_Success ? "Successfully joined meeting" : "Failed to join meeting",
+          code: joinResult.rawValue
+      )
+
+      result(response.toDictionary())
 
     default:
       result(FlutterMethodNotImplemented)
     }
   }
-
 }
 
 // Stream handlers for event channels

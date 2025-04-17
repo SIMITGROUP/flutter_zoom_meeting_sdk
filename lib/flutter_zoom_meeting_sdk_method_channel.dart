@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
 import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -43,23 +44,29 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   }
 
   @override
-  Future<String?> initZoom() async {
-    final log = await methodChannel.invokeMethod<String>('initZoom');
-    return log;
+  Future<StandardZoomMeetingResponse> initZoom() async {
+    final result = await methodChannel.invokeMethod('initZoom');
+    final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
+    return StandardZoomMeetingResponse.fromMap(resultMap);
   }
 
   @override
-  Future<String?> authZoom({required String jwtToken}) async {
-    final log = await methodChannel.invokeMethod<String>('authZoom', {
+  Future<StandardZoomMeetingResponse> authZoom({
+    required String jwtToken,
+  }) async {
+    final result = await methodChannel.invokeMethod('authZoom', {
       'jwtToken': jwtToken,
     });
-    return log;
+    final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
+    return StandardZoomMeetingResponse.fromMap(resultMap);
   }
 
   @override
-  Future<String?> joinMeeting() async {
-    final log = await methodChannel.invokeMethod<String>('joinMeeting');
-    return log;
+  Future<StandardZoomMeetingResponse> joinMeeting() async {
+    final result = await methodChannel.invokeMethod('joinMeeting');
+
+    final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
+    return StandardZoomMeetingResponse.fromMap(resultMap);
   }
 
   @override
@@ -81,12 +88,9 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
 
         return JwtResponse(token: signature);
       } else {
-        print('Error: ${response.statusCode}');
-        print('Response: ${response.body}');
         return JwtResponse(error: "Failed to retrieve JWT signature.");
       }
     } catch (e) {
-      print('Exception: $e');
       return JwtResponse(error: "Failed to retrieve JWT signature.");
     }
   }
