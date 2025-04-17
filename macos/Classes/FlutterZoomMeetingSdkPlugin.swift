@@ -44,13 +44,19 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
       result("Initialized Zoom SDK: \(initResult)")
 
     case "authZoom":
+      guard let args = call.arguments as? Dictionary<String, String> else { return }
+
+      guard let jwtToken = args["jwtToken"] else {
+        print("❌ No JWT token provided")
+        return
+      }
+
       let zoomSdk = ZoomSDK.shared()
       let authService = zoomSdk.getAuthService()
       authService.delegate = self
 
       let authContext = ZoomSDKAuthContext()
-      authContext.jwtToken =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NDg1ODkxMywiaWF0IjoxNzQ0ODU1MzEzLCJleHAiOjE3NDQ4NTg5MTN9.oybjcOia4O4zgnYijS7iWd-1bGBy55z4iuZks0HOAc4"
+      authContext.jwtToken = jwtToken
       let authResult = authService.sdkAuth(authContext)
       print("Auth result: \(authResult)")
       result("Auth result: \(authResult)")
