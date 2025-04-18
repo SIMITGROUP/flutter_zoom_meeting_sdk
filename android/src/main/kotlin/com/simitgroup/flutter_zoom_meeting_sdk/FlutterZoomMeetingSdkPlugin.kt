@@ -20,8 +20,16 @@ class FlutterZoomMeetingSdkPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
+    if (call.method == "initZoom") {
+      val response = StandardZoomMeetingResponse(
+        success = true,
+        message = "Initialized successfully",
+        statusCode = 0,
+        statusText = "Success"
+      )
+
+      result.success(response.toMap())
+
     } else {
       result.notImplemented()
     }
@@ -31,3 +39,20 @@ class FlutterZoomMeetingSdkPlugin: FlutterPlugin, MethodCallHandler {
     channel.setMethodCallHandler(null)
   }
 }
+
+data class StandardZoomMeetingResponse(
+  val success: Boolean,
+  val message: String,
+  val statusCode: Int,
+  val statusText: String
+) {
+  fun toMap(): Map<String, Any> {
+    return mapOf(
+      "success" to success,
+      "message" to message,
+      "statusCode" to statusCode,
+      "statusText" to statusText
+    )
+  }
+}
+
