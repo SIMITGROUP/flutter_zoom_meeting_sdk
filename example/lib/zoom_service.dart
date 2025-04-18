@@ -68,14 +68,16 @@ class ZoomService {
     // Listen to auth events
     _authSubscription = _zoomSdk.onAuthEvent.listen((event) {
       print('Auth event: $event');
-      if (event.statusText == 'Success') {
-        joinMeeting();
-      }
+      print('Auth event: ${jsonEncode(event.toMap())}');
+      // if (event.statusText == 'Success') {
+      joinMeeting();
+      // }
     });
 
     // Listen to meeting events
     _meetingSubscription = _zoomSdk.onMeetingEvent.listen((event) {
       print('Meeting event: $event');
+      print('Meeting event: ${jsonEncode(event.toMap())}');
     });
   }
 
