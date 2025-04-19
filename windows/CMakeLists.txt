@@ -46,7 +46,47 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 # dependencies here.
 target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
+
+# === Zoom SDK Configuration based on Visual Studio settings ===
+
+# Set the path to your Zoom SDK installation
+set(ZOOM_SDK_DIR "C:/Users/ASUS/Dev/flutter_zoom_meeting_sdk/example/ZoomSDK/windows")
+
+# Include directories
+include_directories(
+  "${ZOOM_SDK_DIR}/h"
+)
+
+# VC++ Directories > Include Directories
+# C/C++ > General > Additional Include Directories
+target_include_directories(${PLUGIN_NAME} PRIVATE
+  "${ZOOM_SDK_DIR}/h")
+
+# VC++ Directories > Library Directories
+# Linker > General > Additional Library Directories
+link_directories("${ZOOM_SDK_DIR}/lib")
+
+# Linker > Input > Additional Dependencies
+target_link_libraries(${PLUGIN_NAME} PRIVATE
+  "${ZOOM_SDK_DIR}/lib/sdk.lib")
+
+# Copy Zoom SDK DLLs to output directory
+add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${ZOOM_SDK_DIR}/bin"
+    "$<TARGET_FILE_DIR:${PLUGIN_NAME}>"
+)
+
+# Build Events > Post-Build Event > Command Line
+# add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
+#   # COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${PLUGIN_NAME}>"
+#   COMMAND ${CMAKE_COMMAND} -E copy_directory
+#   "C:/Users/ASUS/Dev/flutter_zoom_meeting_sdk/example/ZoomSDK/windows/bin"
+#   "$(OutDir)"
+# )
+
 
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
@@ -86,22 +126,26 @@ add_executable(${TEST_RUNNER}
 )
 apply_standard_settings(${TEST_RUNNER})
 target_include_directories(${TEST_RUNNER} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+
+# Add Zoom SDK configuration for test target
+target_include_directories(${TEST_RUNNER} PRIVATE "${ZOOM_SDK_DIR}/h")
+target_link_libraries(${TEST_RUNNER} PRIVATE "${ZOOM_SDK_DIR}/lib/sdk.lib")
+
 target_link_libraries(${TEST_RUNNER} PRIVATE flutter_wrapper_plugin)
 target_link_libraries(${TEST_RUNNER} PRIVATE gtest_main gmock)
+
+# Copy Zoom SDK DLLs to test output directory
+add_custom_command(TARGET ${TEST_RUNNER} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${ZOOM_SDK_DIR}/bin"
+    "$<TARGET_FILE_DIR:${TEST_RUNNER}>"
+)
+
 # flutter_wrapper_plugin has link dependencies on the Flutter DLL.
 add_custom_command(TARGET ${TEST_RUNNER} POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
   "${FLUTTER_LIBRARY}" $<TARGET_FILE_DIR:${TEST_RUNNER}>
 )
-
-
-
-add_custom_command(TARGET flutter_zoom_meeting_sdk_plugin POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_CURRENT_SOURCE_DIR}/../example/ZoomSDK/windows/bin"
-    "$<TARGET_FILE_DIR:flutter_zoom_meeting_sdk_plugin>"
-)
-
 
 # Enable automatic test discovery.
 include(GoogleTest)
