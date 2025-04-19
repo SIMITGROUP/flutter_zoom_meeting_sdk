@@ -13,7 +13,21 @@
 #include <memory>
 #include <sstream>
 
+#include "zoom_sdk.h"
+#include "auth_service_interface.h"
+#include "meeting_service_interface.h"
+using namespace ZOOM_SDK_NAMESPACE;
+
 namespace flutter_zoom_meeting_sdk {
+
+    flutter::EncodableMap CreateStandardZoomMeetingResponse(bool success, std::string message, uint32_t statusCode, std::string statusText) {
+        flutter::EncodableMap response;
+        response[flutter::EncodableValue("success")] = flutter::EncodableValue(success);
+        response[flutter::EncodableValue("message")] = flutter::EncodableValue(message);
+        response[flutter::EncodableValue("statusCode")] = flutter::EncodableValue(statusCode);
+        response[flutter::EncodableValue("statusText")] = flutter::EncodableValue(statusText);
+        return response;
+    }
 
 // static
 void FlutterZoomMeetingSdkPlugin::RegisterWithRegistrar(
@@ -51,7 +65,33 @@ void FlutterZoomMeetingSdkPlugin::HandleMethodCall(
       version_stream << "7";
     }
     result->Success(flutter::EncodableValue(version_stream.str()));
-  } else {
+  }
+  else if (method_call.method_name().compare("initZoom") == 0) {
+      ZOOM_SDK_NAMESPACE::InitParam initParam;
+      initParam.strWebDomain = L"https://zoom.us";
+
+      //std::wcout << L"Initializing SDK..." << std::endl;
+      auto initResult = ZOOM_SDK_NAMESPACE::InitSDK(initParam);
+      if (initResult == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS) {
+
+      }
+
+      //if (initResult == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS) {
+      //    result->Success(CreateStandardZoomMeetingResponse(
+      //        true,
+      //        "Initialized successfully",
+      //        static_cast<uint32_t>(initResult),
+      //        "SDKERR_SUCCESS"));
+      //}
+      //else {
+      //    result->Success(CreateStandardZoomMeetingResponse(
+      //        false,
+      //        "Failed to initialize",
+      //        static_cast<uint32_t>(initResult),
+      //        "SDKERR_" + std::to_string(static_cast<int>(initResult)))); // or map this to a string yourself
+      //}
+  }
+  else {
     result->NotImplemented();
   }
 }

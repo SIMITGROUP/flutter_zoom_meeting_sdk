@@ -20,12 +20,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _zoomService.initZoom();
-    _zoomService.initEventListeners();
+    // _zoomService.initEventListeners();
   }
 
   @override
   void dispose() {
-    _zoomService.dispose();
+    // _zoomService.dispose();
     super.dispose();
   }
 
@@ -43,11 +43,11 @@ class _MyAppState extends State<MyApp> {
   ];
 
   void joinMeeting(Map<String, String> meeting) {
-    _zoomService.setMeetingNumber(meeting['meetingNumber'] ?? '');
-    _zoomService.setPassCode(meeting['password'] ?? '');
-    _zoomService.setUserName(meeting['displayName'] ?? '');
+    // _zoomService.setMeetingNumber(meeting['meetingNumber'] ?? '');
+    // _zoomService.setPassCode(meeting['password'] ?? '');
+    // _zoomService.setUserName(meeting['displayName'] ?? '');
 
-    _zoomService.authZoom();
+    // _zoomService.authZoom();
     // Trigger join meeting in event listener
   }
 

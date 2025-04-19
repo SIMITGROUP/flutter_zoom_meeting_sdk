@@ -45,15 +45,33 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 # Source include directories and library dependencies. Add any plugin-specific
 # dependencies here.
 target_include_directories(${PLUGIN_NAME} INTERFACE
-  "${CMAKE_CURRENT_SOURCE_DIR}/include")
-target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
+  "${CMAKE_CURRENT_SOURCE_DIR}/include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../example/ZoomSDK/windows/h"
+)
+
+target_include_directories(${PLUGIN_NAME} PRIVATE
+  "${CMAKE_CURRENT_SOURCE_DIR}/../example/ZoomSDK/windows/h"
+)
+
+target_link_libraries(${PLUGIN_NAME} PRIVATE 
+  flutter 
+  flutter_wrapper_plugin
+  "${CMAKE_CURRENT_SOURCE_DIR}/../example/ZoomSDK/windows/lib/sdk.lib"
+)
 
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
 # external build triggered from this build file.
 set(flutter_zoom_meeting_sdk_bundled_libraries
-  ""
+  "${CMAKE_CURRENT_SOURCE_DIR}/../example/ZoomSDK/windows/bin/zSDK.dll"
   PARENT_SCOPE
+)
+
+# Copy all required DLLs to the output directory
+add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_CURRENT_SOURCE_DIR}/../example/ZoomSDK/windows/bin"
+    "$<TARGET_FILE_DIR:${PLUGIN_NAME}>"
 )
 
 # === Tests ===
