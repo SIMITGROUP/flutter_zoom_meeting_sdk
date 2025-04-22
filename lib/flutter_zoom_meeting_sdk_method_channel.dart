@@ -25,6 +25,9 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
     'flutter_zoom_meeting_sdk/meeting_events',
   );
 
+  @visibleForTesting
+  final eventChannel = const EventChannel('flutter_zoom_meeting_sdk/events');
+
   /// Streams for auth and meeting events
   @override
   Stream<ZoomMeetingAuthEventResponse> get onAuthEvent =>
@@ -39,6 +42,12 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
         final Map<String, dynamic> resultMap = Map<String, dynamic>.from(event);
         return ZoomMeetingMeetingEventResponse.fromMap(resultMap);
       });
+
+  @override
+  Stream get onZoomEvent => eventChannel.receiveBroadcastStream().map((event) {
+    print("Plugin Zoom Event: $event");
+    return event;
+  });
 
   @override
   Future<String?> getPlatformVersion() async {

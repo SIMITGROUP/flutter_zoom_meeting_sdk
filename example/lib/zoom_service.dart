@@ -16,11 +16,13 @@ class ZoomService {
 
   StreamSubscription? _authSubscription;
   StreamSubscription? _meetingSubscription;
+  StreamSubscription? _zoomEventSubscription;
 
   // Expose streams for listeners
   Stream<ZoomMeetingAuthEventResponse> get onAuthEvent => _zoomSdk.onAuthEvent;
   Stream<ZoomMeetingMeetingEventResponse> get onMeetingEvent =>
       _zoomSdk.onMeetingEvent;
+  Stream get onZoomEvent => _zoomSdk.onZoomEvent;
 
   Future<StandardZoomMeetingResponse> initZoom() async {
     final result = await _zoomSdk.initZoom();
@@ -79,10 +81,15 @@ class ZoomService {
       print('Meeting event: $event');
       print('Meeting event: ${jsonEncode(event.toMap())}');
     });
+
+    _zoomEventSubscription = _zoomSdk.onZoomEvent.listen((event) {
+      print('Example Zoom event: $event');
+    });
   }
 
   void dispose() {
     _authSubscription?.cancel();
     _meetingSubscription?.cancel();
+    _zoomEventSubscription?.cancel();
   }
 }

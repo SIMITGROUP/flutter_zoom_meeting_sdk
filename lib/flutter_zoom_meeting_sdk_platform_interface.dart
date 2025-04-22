@@ -37,6 +37,10 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
     throw UnimplementedError('onMeetingEvent has not been implemented.');
   }
 
+  Stream get onZoomEvent {
+    throw UnimplementedError('onZoomEvent has not been implemented.');
+  }
+
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }

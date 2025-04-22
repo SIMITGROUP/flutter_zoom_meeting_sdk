@@ -3,6 +3,7 @@ package com.simitgroup.flutter_zoom_meeting_sdk
 import android.content.Context
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -18,6 +19,10 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
     /// when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
 
+    private lateinit var eventChannel: EventChannel
+
+    private var eventSink: EventChannel.EventSink? = null
+
     private lateinit var context: Context
 
 
@@ -26,6 +31,16 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_zoom_meeting_sdk")
         channel.setMethodCallHandler(this)
 
+        eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "flutter_zoom_meeting_sdk/events")
+        eventChannel.setStreamHandler(object : EventChannel.StreamHandler {
+            override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                eventSink = events
+            }
+
+            override fun onCancel(arguments: Any?) {
+                eventSink = null
+            }
+        })
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
@@ -33,7 +48,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             val sdk = ZoomSDK.getInstance()
             val params = ZoomSDKInitParams().apply {
                 jwtToken =
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NTMxNTMxNCwiaWF0IjoxNzQ1MzExNzE0LCJleHAiOjE3NDUzMTUzMTR9.Mh8ipYnFIbMzCp4uLkFsUyhiUxy29mNO_ck-Fh8jsy4" // TODO: Retrieve your JWT Token and enter it here
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NTMxNzIyMSwiaWF0IjoxNzQ1MzEzNjIxLCJleHAiOjE3NDUzMTcyMjF9.thawFF8tTPQROE8xvnQbIhD1pYUnTmGMxZDydcIV79A" // TODO: Retrieve your JWT Token and enter it here
                 domain = "zoom.us"
                 enableLog = true // Optional: enable logging for debugging
             }
@@ -65,6 +80,13 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                                 if (meetingStatus === MeetingStatus.MEETING_STATUS_FAILED && errorCode == MeetingError.MEETING_ERROR_CLIENT_INCOMPATIBLE) {
                                     Log.e("ZoomMeetingStatus", "Failed to join meeting")
                                 }
+
+                                eventSink?.success(mapOf(
+                                    "event" to "onMeetingStatusChanged",
+                                    "meetingStatus" to meetingStatus.name,
+                                    "errorCode" to errorCode,
+                                    "internalErrorCode" to internalErrorCode
+                                ))
                             }
 
                             override fun onMeetingParameterNotification(params: MeetingParameter) {
@@ -73,7 +95,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                         }
 
                         meetingService.addListener(meetingListener)
-                        
+
                         val opts = JoinMeetingOptions()
 
                         val params = JoinMeetingParams()
