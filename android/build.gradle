@@ -28,7 +28,8 @@ rootProject.allprojects {
 
         //Add this below <plugin_name> is whatever your plugin is called eg. url_launcher
         flatDir {
-            dirs project(':flutter_zoom_meeting_sdk').file('libs')
+           dirs project(':flutter_zoom_meeting_sdk').file('libs')
+            // dirs file('libs')
         }
     }
 }
