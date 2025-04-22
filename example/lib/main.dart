@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    // _zoomService.dispose();
+    _zoomService.dispose();
     super.dispose();
   }
 

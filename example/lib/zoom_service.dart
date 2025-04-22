@@ -18,6 +18,8 @@ class ZoomService {
   StreamSubscription? _meetingSubscription;
   StreamSubscription? _zoomEventSubscription;
 
+  StreamSubscription? _meetingStatusSub;
+
   // Expose streams for listeners
   Stream<ZoomMeetingAuthEventResponse> get onAuthEvent => _zoomSdk.onAuthEvent;
   Stream<ZoomMeetingMeetingEventResponse> get onMeetingEvent =>
@@ -68,22 +70,26 @@ class ZoomService {
 
   void initEventListeners() {
     // Listen to auth events
-    _authSubscription = _zoomSdk.onAuthEvent.listen((event) {
-      print('Auth event: $event');
-      print('Auth event: ${jsonEncode(event.toMap())}');
-      // if (event.statusText == 'Success') {
-      joinMeeting();
-      // }
-    });
+    // _authSubscription = _zoomSdk.onAuthEvent.listen((event) {
+    //   print('Auth event: $event');
+    //   print('Auth event: ${jsonEncode(event.toMap())}');
+    //   // if (event.statusText == 'Success') {
+    //   joinMeeting();
+    //   // }
+    // });
 
-    // Listen to meeting events
-    _meetingSubscription = _zoomSdk.onMeetingEvent.listen((event) {
-      print('Meeting event: $event');
-      print('Meeting event: ${jsonEncode(event.toMap())}');
-    });
+    // // Listen to meeting events
+    // _meetingSubscription = _zoomSdk.onMeetingEvent.listen((event) {
+    //   print('Meeting event: $event');
+    //   print('Meeting event: ${jsonEncode(event.toMap())}');
+    // });
 
-    _zoomEventSubscription = _zoomSdk.onZoomEvent.listen((event) {
-      print('Example Zoom event: $event');
+    // _zoomEventSubscription = _zoomSdk.onZoomEvent.listen((event) {
+    //   print('Example Zoom event: $event');
+    // });
+
+    _meetingStatusSub = _zoomSdk.onMeetingStatusChanged.listen((event) {
+      print("Example App Status: $event");
     });
   }
 
@@ -91,5 +97,7 @@ class ZoomService {
     _authSubscription?.cancel();
     _meetingSubscription?.cancel();
     _zoomEventSubscription?.cancel();
+
+    _meetingStatusSub?.cancel();
   }
 }

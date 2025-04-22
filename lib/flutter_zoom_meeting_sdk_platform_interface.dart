@@ -27,6 +27,10 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  Stream<Map<String, dynamic>> get onMeetingStatusChanged;
+
+  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult;
+
   /// Stream for authentication events from the Zoom SDK
   Stream<ZoomMeetingAuthEventResponse> get onAuthEvent {
     throw UnimplementedError('onAuthEvent has not been implemented.');

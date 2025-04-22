@@ -28,6 +28,18 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   @visibleForTesting
   final eventChannel = const EventChannel('flutter_zoom_meeting_sdk/events');
 
+  late final Stream<Map<String, dynamic>> _eventStream = eventChannel
+      .receiveBroadcastStream()
+      .map((event) => Map<String, dynamic>.from(event));
+
+  @override
+  Stream<Map<String, dynamic>> get onMeetingStatusChanged =>
+      _eventStream.where((e) => e['event'] == 'onMeetingStatusChanged');
+
+  @override
+  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
+      _eventStream.where((e) => e['event'] == 'onZoomSDKInitializeResult');
+
   /// Streams for auth and meeting events
   @override
   Stream<ZoomMeetingAuthEventResponse> get onAuthEvent =>

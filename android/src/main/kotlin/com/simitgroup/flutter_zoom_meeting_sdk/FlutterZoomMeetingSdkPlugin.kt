@@ -48,7 +48,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             val sdk = ZoomSDK.getInstance()
             val params = ZoomSDKInitParams().apply {
                 jwtToken =
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NTMxNzIyMSwiaWF0IjoxNzQ1MzEzNjIxLCJleHAiOjE3NDUzMTcyMjF9.thawFF8tTPQROE8xvnQbIhD1pYUnTmGMxZDydcIV79A" // TODO: Retrieve your JWT Token and enter it here
+                    "TODO_JWT_TOKEN" // TODO: Retrieve your JWT Token and enter it here
                 domain = "zoom.us"
                 enableLog = true // Optional: enable logging for debugging
             }

@@ -23,6 +23,12 @@ class FlutterZoomMeetingSdk {
 
   Stream get onZoomEvent => FlutterZoomMeetingSdkPlatform.instance.onZoomEvent;
 
+  Stream<Map<String, dynamic>> get onMeetingStatusChanged =>
+      FlutterZoomMeetingSdkPlatform.instance.onMeetingStatusChanged;
+
+  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
+      FlutterZoomMeetingSdkPlatform.instance.onZoomSDKInitializeResult;
+
   Future<String?> getPlatformVersion() {
     return FlutterZoomMeetingSdkPlatform.instance.getPlatformVersion();
   }
