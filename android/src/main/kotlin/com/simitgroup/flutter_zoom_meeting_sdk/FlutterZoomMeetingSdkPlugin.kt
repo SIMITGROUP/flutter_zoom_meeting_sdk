@@ -1,10 +1,13 @@
 package com.simitgroup.flutter_zoom_meeting_sdk
 
+import android.util.Log
+import android.content.Context
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import us.zoom.sdk.*
 
 /** FlutterZoomMeetingSdkPlugin */
 class FlutterZoomMeetingSdkPlugin: FlutterPlugin, MethodCallHandler {
@@ -14,16 +17,50 @@ class FlutterZoomMeetingSdkPlugin: FlutterPlugin, MethodCallHandler {
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
 
+  private lateinit var context: Context
+
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    context = flutterPluginBinding.applicationContext
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_zoom_meeting_sdk")
     channel.setMethodCallHandler(this)
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     if (call.method == "initZoom") {
+      val sdk = ZoomSDK.getInstance()
+      val params = ZoomSDKInitParams().apply {
+        jwtToken =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJzZGtLZXkiOiJBYlhXS2VDTFJ5Q1pyUURRWEVtMVEiLCJtbiI6IjMyNzM1ODg2MTMiLCJyb2xlIjowLCJ0b2tlbkV4cCI6MTc0NTMxMTg0MCwiaWF0IjoxNzQ1MzA4MjQwLCJleHAiOjE3NDUzMTE4NDB9.LSF8D5a5pHSJbyWx9bxtxf10dsFqLq3-v7_xMCjyPjA" // TODO: Retrieve your JWT Token and enter it here
+        domain = "zoom.us"
+        enableLog = true // Optional: enable logging for debugging
+      }
+
+
+      val listener = object : ZoomSDKInitializeListener {
+        /**
+         * If the [errorCode] is [ZoomError.ZOOM_ERROR_SUCCESS], the SDK was initialized and can
+         * now be used to join/start a meeting.
+         */
+        override fun onZoomSDKInitializeResult(errorCode: Int, internalErrorCode: Int) {
+          println("Zoom Init: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
+          Log.d("ZoomInit", "Zoom SDK Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
+          if (errorCode == ZoomError.ZOOM_ERROR_SUCCESS) {
+            Log.d("ZoomInit", "Zoom SDK initialized successfully")
+          } else {
+            Log.e("ZoomInit", "Zoom SDK initialization failed!")
+          }
+        }
+
+        override fun onZoomAuthIdentityExpired() {
+          Log.w("ZoomInit", "Zoom SDK auth identity expired")
+        }
+      }
+
+      sdk.initialize(context, listener, params)
+
       val response = StandardZoomMeetingResponse(
         success = true,
-        message = "Initialized successfully",
+        message = "Initialized successfully haha",
         statusCode = 0,
         statusText = "Success"
       )
