@@ -25,13 +25,18 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
 
     private lateinit var context: Context
 
+    companion object {
+        const val PLATFORM = "android"
+    }
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_zoom_meeting_sdk")
         channel.setMethodCallHandler(this)
 
-        eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "flutter_zoom_meeting_sdk/events")
+        eventChannel =
+            EventChannel(flutterPluginBinding.binaryMessenger, "flutter_zoom_meeting_sdk/events")
+
         eventChannel.setStreamHandler(object : EventChannel.StreamHandler {
             override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
                 eventSink = events
@@ -44,83 +49,25 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
-        if (call.method == "initZoom") {
-            val sdk = ZoomSDK.getInstance()
-            val params = ZoomSDKInitParams().apply {
-                jwtToken =
-                    "TODO_JWT_TOKEN" // TODO: Retrieve your JWT Token and enter it here
-                domain = "zoom.us"
-                enableLog = true // Optional: enable logging for debugging
-            }
-
-
-            val listener = object : ZoomSDKInitializeListener {
-                /**
-                 * If the [errorCode] is [ZoomError.ZOOM_ERROR_SUCCESS], the SDK was initialized and can
-                 * now be used to join/start a meeting.
-                 */
-                override fun onZoomSDKInitializeResult(errorCode: Int, internalErrorCode: Int) {
-                    println("Zoom Init: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
-                    Log.d(
-                        "ZoomInit",
-                        "Zoom SDK Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode"
-                    )
-                    if (errorCode == ZoomError.ZOOM_ERROR_SUCCESS) {
-                        Log.d("ZoomInit", "Zoom SDK initialized successfully")
-                        val meetingService = ZoomSDK.getInstance().meetingService
-
-
-                        val meetingListener = object : MeetingServiceListener {
-                            override fun onMeetingStatusChanged(
-                                meetingStatus: MeetingStatus, errorCode: Int,
-                                internalErrorCode: Int
-                            ) {
-                                Log.e("ZoomMeetingStatus", "Zoom Meeting Status Changed: $meetingStatus")
-
-                                if (meetingStatus === MeetingStatus.MEETING_STATUS_FAILED && errorCode == MeetingError.MEETING_ERROR_CLIENT_INCOMPATIBLE) {
-                                    Log.e("ZoomMeetingStatus", "Failed to join meeting")
-                                }
-
-                                eventSink?.success(mapOf(
-                                    "event" to "onMeetingStatusChanged",
-                                    "meetingStatus" to meetingStatus.name,
-                                    "errorCode" to errorCode,
-                                    "internalErrorCode" to internalErrorCode
-                                ))
-                            }
-
-                            override fun onMeetingParameterNotification(params: MeetingParameter) {
-
-                            }
-                        }
-
-                        meetingService.addListener(meetingListener)
-
-                        val opts = JoinMeetingOptions()
-
-                        val params = JoinMeetingParams()
-                        params.meetingNo = "3273588613"
-                        params.password = "6SuCMB"
-                        params.displayName = "Yong"
-
-                        meetingService.joinMeetingWithParams(context, params, opts)
-                    } else {
-                        Log.e("ZoomInit", "Zoom SDK initialization failed!")
-                    }
-                }
-
-                override fun onZoomAuthIdentityExpired() {
-                    Log.w("ZoomInit", "Zoom SDK auth identity expired")
-                }
-            }
-
-
-
-            sdk.initialize(context, listener, params)
+ 
+        if (call.method == "authZoom") {
+            initZoom(call)
 
             val response = StandardZoomMeetingResponse(
                 success = true,
-                message = "Initial Sent... Waiting Callback",
+                message = "Init Zoom Triggered... Waiting Callback",
+                statusCode = 0,
+                statusText = "Success"
+            )
+
+            result.success(response.toMap())
+
+        }else if (call.method == "joinMeeting") {
+            joinZoomMeeting(call)
+
+            val response = StandardZoomMeetingResponse(
+                success = true,
+                message = "Join Zoom Meeting Triggered... Waiting Callback",
                 statusCode = 0,
                 statusText = "Success"
             )
@@ -132,12 +79,133 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 
+    private fun initZoom(call: MethodCall) {
+        val arguments = call.arguments<Map<String, String>>() ?: emptyMap()
+        val token = arguments["jwtToken"]
 
+        val sdk = ZoomSDK.getInstance()
+
+        val params = ZoomSDKInitParams().apply {
+            jwtToken = token
+            domain = "zoom.us"
+        }
+
+        sdk.initialize(context, createZoomInitListener(), params)
+    }
+
+    private fun joinZoomMeeting(call: MethodCall) {
+        Log.d(
+            "joinZoomMeeting",
+            "Start Join Meeting Process"
+        )
+
+        val arguments = call.arguments<Map<String, String>>() ?: emptyMap()
+        val meetingNumber = arguments["meetingNumber"]
+        val password = arguments["password"]
+        val displayName = arguments["displayName"]
+
+        val meetingService = ZoomSDK.getInstance().meetingService
+
+        meetingService.addListener(createMeetingServiceListener())
+
+        val opts = JoinMeetingOptions()
+
+        val params = JoinMeetingParams()
+        params.meetingNo = meetingNumber
+        params.password = password
+        params.displayName = displayName
+
+        val joinResult = meetingService.joinMeetingWithParams(context, params, opts)
+        Log.d(
+            "joinZoomMeeting",
+            "Result: $joinResult"
+        )
+    }
+
+    private fun createZoomInitListener(): ZoomSDKInitializeListener {
+        return object : ZoomSDKInitializeListener {
+            override fun onZoomSDKInitializeResult(errorCode: Int, internalErrorCode: Int) {
+                Log.d(
+                    "eventOnZoomSDKInitializeResult",
+                    "Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode"
+                )
+
+                if (errorCode == ZoomError.ZOOM_ERROR_SUCCESS) {
+                    Log.d("eventOnZoomSDKInitializeResult", "Zoom SDK initialized successfully")
+                } else {
+                    Log.e("eventOnZoomSDKInitializeResult", "Zoom SDK initialization failed!")
+                }
+
+                eventSink?.success(
+                    mapOf(
+                        "platform" to PLATFORM,
+                        "event" to "onZoomSDKInitializeResult",
+                        "oriEvent" to "onZoomSDKInitializeResult",
+                        "params" to mapOf(
+                            "errorCode" to errorCode,
+                            "internalErrorCode" to internalErrorCode
+                        )
+                    )
+                )
+            }
+
+            override fun onZoomAuthIdentityExpired() {
+                Log.w("eventOnZoomAuthIdentityExpired", "Zoom SDK auth identity expired")
+
+                eventSink?.success(
+                    mapOf(
+                        "platform" to PLATFORM,
+                        "event" to "onZoomAuthIdentityExpired",
+                        "oriEvent" to "onZoomAuthIdentityExpired",
+                        "params" to emptyMap<String, Any>()
+                    )
+                )
+            }
+        }
+    }
+
+    private fun createMeetingServiceListener(): MeetingServiceListener {
+        return object : MeetingServiceListener {
+            override fun onMeetingStatusChanged(
+                meetingStatus: MeetingStatus,
+                errorCode: Int,
+                internalErrorCode: Int
+            ) {
+                Log.e("eventOnMeetingStatusChanged", "Zoom Meeting Status Changed: $meetingStatus")
+
+                eventSink?.success(
+                    mapOf(
+                        "platform" to PLATFORM,
+                        "event" to "onMeetingStatusChanged",
+                        "oriEvent" to "onMeetingStatusChanged",
+                        "params" to mapOf(
+                            "status" to meetingStatus.ordinal,
+                            "statusName" to meetingStatus.name,
+                            "errorCode" to errorCode,
+                            "internalErrorCode" to internalErrorCode
+                        )
+                    )
+                )
+            }
+
+            override fun onMeetingParameterNotification(params: MeetingParameter) {
+                Log.e("eventOnMeetingParameterNotification", "Params: $params")
+
+                eventSink?.success(
+                    mapOf(
+                        "platform" to PLATFORM,
+                        "event" to "onMeetingParameterNotification",
+                        "oriEvent" to "onMeetingParameterNotification",
+                        "params" to params
+                    )
+                )
+            }
+        }
+    }
 }
 
 data class StandardZoomMeetingResponse(
