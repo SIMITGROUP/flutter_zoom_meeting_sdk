@@ -33,12 +33,20 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
       .map((event) => Map<String, dynamic>.from(event));
 
   @override
+  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
+      _eventStream.where((e) => e['event'] == 'onZoomSDKInitializeResult');
+
+  @override
+  Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired =>
+      _eventStream.where((e) => e['event'] == 'onZoomAuthIdentityExpired');
+
+  @override
   Stream<Map<String, dynamic>> get onMeetingStatusChanged =>
       _eventStream.where((e) => e['event'] == 'onMeetingStatusChanged');
 
   @override
-  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
-      _eventStream.where((e) => e['event'] == 'onZoomSDKInitializeResult');
+  Stream<Map<String, dynamic>> get onMeetingParameterNotification =>
+      _eventStream.where((e) => e['event'] == 'onMeetingParameterNotification');
 
   /// Streams for auth and meeting events
   @override

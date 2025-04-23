@@ -31,12 +31,14 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
+
+        // Method Channel
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_zoom_meeting_sdk")
         channel.setMethodCallHandler(this)
 
+        // Event Channel
         eventChannel =
             EventChannel(flutterPluginBinding.binaryMessenger, "flutter_zoom_meeting_sdk/events")
-
         eventChannel.setStreamHandler(object : EventChannel.StreamHandler {
             override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
                 eventSink = events
@@ -63,14 +65,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             result.success(response.toMap())
 
         }else if (call.method == "joinMeeting") {
-            joinZoomMeeting(call)
-
-            val response = StandardZoomMeetingResponse(
-                success = true,
-                message = "Join Zoom Meeting Triggered... Waiting Callback",
-                statusCode = 0,
-                statusText = "Success"
-            )
+            val response = joinZoomMeeting(call)
 
             result.success(response.toMap())
 
@@ -81,10 +76,19 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
+        eventSink = null
+        eventChannel.setStreamHandler(null)
+
+        ZoomSDK.getInstance().uninitialize()
+    }
+
+    private fun log(tag: String, message: String)
+    {
+        Log.d("FlutterZoomMeetingSDK::$tag", message)
     }
 
     private fun initZoom(call: MethodCall) {
-        val arguments = call.arguments<Map<String, String>>() ?: emptyMap()
+        val arguments = call.arguments<Map<String, String>>() ?: emptyMap<String, String>()
         val token = arguments["jwtToken"]
 
         val sdk = ZoomSDK.getInstance()
@@ -97,13 +101,13 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         sdk.initialize(context, createZoomInitListener(), params)
     }
 
-    private fun joinZoomMeeting(call: MethodCall) {
+    private fun joinZoomMeeting(call: MethodCall) : StandardZoomMeetingResponse{
         Log.d(
             "joinZoomMeeting",
             "Start Join Meeting Process"
         )
 
-        val arguments = call.arguments<Map<String, String>>() ?: emptyMap()
+        val arguments = call.arguments<Map<String, String>>() ?: emptyMap<String, String>()
         val meetingNumber = arguments["meetingNumber"]
         val password = arguments["password"]
         val displayName = arguments["displayName"]
@@ -119,25 +123,48 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         params.password = password
         params.displayName = displayName
 
+        val response: StandardZoomMeetingResponse
+
         val joinResult = meetingService.joinMeetingWithParams(context, params, opts)
-        Log.d(
-            "joinZoomMeeting",
-            "Result: $joinResult"
-        )
+        if(joinResult == MeetingError.MEETING_ERROR_SUCCESS){
+            Log.d(
+                "joinZoomMeeting",
+                "Join Meeting Success"
+            )
+
+            response = StandardZoomMeetingResponse(
+                success = true,
+                message = "Join Zoom Meeting Triggered... Waiting Callback",
+                statusCode = joinResult,
+                statusText = "Success"
+            )
+
+        }else {
+            Log.d(
+                "joinZoomMeeting",
+                "Join Meeting Fail"
+            )
+
+            response = StandardZoomMeetingResponse(
+                success = false,
+                message = "Join Zoom Meeting Triggered... Waiting Callback",
+                statusCode = joinResult,
+                statusText = "Fail"
+            )
+        }
+
+        return response;
     }
 
     private fun createZoomInitListener(): ZoomSDKInitializeListener {
         return object : ZoomSDKInitializeListener {
             override fun onZoomSDKInitializeResult(errorCode: Int, internalErrorCode: Int) {
-                Log.d(
-                    "eventOnZoomSDKInitializeResult",
-                    "Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode"
-                )
+                log("eventOnZoomSDKInitializeResult", "Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
 
                 if (errorCode == ZoomError.ZOOM_ERROR_SUCCESS) {
-                    Log.d("eventOnZoomSDKInitializeResult", "Zoom SDK initialized successfully")
+                    log("eventOnZoomSDKInitializeResult", "Zoom SDK initialized successfully")
                 } else {
-                    Log.e("eventOnZoomSDKInitializeResult", "Zoom SDK initialization failed!")
+                    log("eventOnZoomSDKInitializeResult", "Zoom SDK initialization failed!")
                 }
 
                 eventSink?.success(
@@ -154,7 +181,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             override fun onZoomAuthIdentityExpired() {
-                Log.w("eventOnZoomAuthIdentityExpired", "Zoom SDK auth identity expired")
+                log("eventOnZoomAuthIdentityExpired", "Zoom SDK auth identity expired")
 
                 eventSink?.success(
                     mapOf(
@@ -175,7 +202,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 errorCode: Int,
                 internalErrorCode: Int
             ) {
-                Log.e("eventOnMeetingStatusChanged", "Zoom Meeting Status Changed: $meetingStatus")
+                log("eventOnMeetingStatusChanged", "Zoom Meeting Status Changed: $meetingStatus")
 
                 eventSink?.success(
                     mapOf(
@@ -193,7 +220,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             override fun onMeetingParameterNotification(params: MeetingParameter) {
-                Log.e("eventOnMeetingParameterNotification", "Params: $params")
+                log("eventOnMeetingParameterNotification", "Params: $params")
 
                 eventSink?.success(
                     mapOf(
@@ -208,19 +235,5 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
     }
 }
 
-data class StandardZoomMeetingResponse(
-    val success: Boolean,
-    val message: String,
-    val statusCode: Int,
-    val statusText: String
-) {
-    fun toMap(): Map<String, Any> {
-        return mapOf(
-            "success" to success,
-            "message" to message,
-            "statusCode" to statusCode,
-            "statusText" to statusText
-        )
-    }
-}
+
 
