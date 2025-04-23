@@ -20,6 +20,10 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
     let meetingEventChannel = FlutterEventChannel(
       name: "flutter_zoom_meeting_sdk/meeting_events", binaryMessenger: registrar.messenger())
     meetingEventChannel.setStreamHandler(MeetingStreamHandler(plugin: instance))
+
+    let eventChannel = FlutterEventChannel(
+      name: "flutter_zoom_meeting_sdk/events", binaryMessenger: registrar.messenger())
+    eventChannel.setStreamHandler(MeetingStreamHandler(plugin: instance))
   }
 
   // Event sink setters
