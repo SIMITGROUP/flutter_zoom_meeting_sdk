@@ -162,33 +162,36 @@ namespace flutter_zoom_meeting_sdk
       if (meetingServiceInitReturnVal == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
       {
 
+        ArgReader reader(method_call);
+
         std::cout << "Meeting Service Init Success" << std::endl;
 
         // Join meeting for end user with JoinParam object
-        ZOOM_SDK_NAMESPACE::JoinParam joinMeetingParam;
-        // Provide meeting credentials for end user using JoinParam4NormalUser
-        ZOOM_SDK_NAMESPACE::JoinParam4NormalUser joinMeetingForNormalUserLoginParam;
 
-        joinMeetingParam.userType = ZOOM_SDK_NAMESPACE::SDK_UT_NORMALUSER;
+        ZOOM_SDK_NAMESPACE::JoinParam joinParam;
+        joinParam.userType = ZOOM_SDK_NAMESPACE::SDK_UT_NORMALUSER;
+        auto &normalParam = joinParam.param.normaluserJoin;
 
-        joinMeetingForNormalUserLoginParam.meetingNumber = 3273588613;
-        joinMeetingForNormalUserLoginParam.psw = L"6SuCMB";
-        joinMeetingForNormalUserLoginParam.userName = L"Yong";
-        // joinMeetingForNormalUserLoginParam.vanityID = NULL;
-        // joinMeetingForNormalUserLoginParam.hDirectShareAppWnd = NULL;
-        // joinMeetingForNormalUserLoginParam.customer_key = NULL;
-        // joinMeetingForNormalUserLoginParam.webinarToken = NULL;
-        // joinMeetingForNormalUserLoginParam.isVideoOff = false;
-        // joinMeetingForNormalUserLoginParam.isAudioOff = false;
-        // joinMeetingForNormalUserLoginParam.isDirectShareDesktop = false;
+        // Get meeting number as UINT64 using our new helper
+        auto meetingNumber = reader.GetUINT64("meetingNumber").value_or(0);
+        // Continue with string parameters
+        auto password = reader.GetWString("password").value_or(L"");
+        auto displayName = reader.GetWString("displayName").value_or(L"Zoom User");
 
-        joinMeetingParam.param.normaluserJoin = joinMeetingForNormalUserLoginParam;
+        std::wcout << L"meetingNumber: " << meetingNumber << std::endl;
+        std::wcout << L"password: " << password << std::endl;
+        std::wcout << L"displayName: " << displayName << std::endl;
 
-        ZOOM_SDK_NAMESPACE::SDKError joinMeetingCallReturnValue(ZOOM_SDK_NAMESPACE::SDKERR_UNKNOWN);
-        joinMeetingCallReturnValue = meetingService->Join(joinMeetingParam);
+        normalParam.meetingNumber = meetingNumber;
+        normalParam.userName = displayName.c_str();
+        normalParam.psw = password.c_str();
+        normalParam.isVideoOff = false;
+        normalParam.isAudioOff = false;
 
-        std::cout << "joinMeetingCallReturnValue: " << joinMeetingCallReturnValue << std::endl;
-        if (joinMeetingCallReturnValue == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
+        auto joinResult = meetingService->Join(joinParam);
+
+        std::cout << "joinResult: " << joinResult << std::endl;
+        if (joinResult == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
         {
           // Join meeting call succeeded, listen for join meeting result using the onMeetingStatusChanged callback
           result->Success(CreateStandardZoomMeetingResponse(

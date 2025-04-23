@@ -4,6 +4,33 @@
 #include <flutter/standard_method_codec.h>
 #include <optional>
 #include <string>
+#include <stdint.h>
+
+// Helper function to convert string to UINT64
+inline uint64_t StringToUINT64(const std::string &str)
+{
+    try
+    {
+        return std::stoull(str);
+    }
+    catch (...)
+    {
+        return 0;
+    }
+}
+
+// Helper function to convert wstring to UINT64
+inline uint64_t WStringToUINT64(const std::wstring &wstr)
+{
+    try
+    {
+        return std::stoull(wstr);
+    }
+    catch (...)
+    {
+        return 0;
+    }
+}
 
 class ArgReader
 {
@@ -24,6 +51,36 @@ public:
     std::optional<bool> GetBool(const std::string &key) const
     {
         return Get<bool>(key);
+    }
+
+    // Helper method to get a wide string representation directly
+    std::optional<std::wstring> GetWString(const std::string &key) const
+    {
+        auto str = GetString(key);
+        if (str.has_value())
+        {
+            return std::wstring(str.value().begin(), str.value().end());
+        }
+        return std::nullopt;
+    }
+
+    // Get a UINT64 from a string parameter
+    std::optional<uint64_t> GetUINT64(const std::string &key) const
+    {
+        auto str = GetString(key);
+        if (str.has_value())
+        {
+            return StringToUINT64(str.value());
+        }
+
+        // Try as integer if string didn't work
+        auto intVal = GetInt(key);
+        if (intVal.has_value())
+        {
+            return static_cast<uint64_t>(intVal.value());
+        }
+
+        return std::nullopt;
     }
 
 private:
