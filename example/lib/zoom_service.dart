@@ -7,8 +7,8 @@ part 'zoom_service_config.dart';
 class ZoomService {
   final FlutterZoomMeetingSdk _zoomSdk = FlutterZoomMeetingSdk();
 
-  // String _authEndpoint = "http://localhost:4000";
-  String _authEndpoint = "http://10.0.2.2:4000"; // android emulator
+  String _authEndpoint = "http://localhost:4000";
+  // String _authEndpoint = "http://10.0.2.2:4000"; // android emulator
 
   String _meetingNumber = "";
   String _userName = "";
@@ -89,14 +89,19 @@ class ZoomService {
     //   print('Example Zoom event: $event');
     // });
 
-    _zoomSdk.onZoomSDKInitializeResult.listen((event) {
-      print("Example App onZoomSDKInitializeResult: $event");
+    _zoomSdk.onAuthenticationReturn.listen((event) {
+      print("Example App onAuthenticationReturn: $event");
       joinMeeting();
     });
 
-    _meetingStatusSub = _zoomSdk.onMeetingStatusChanged.listen((event) {
-      print("Example App onMeetingStatusChanged: $event");
-    });
+    // _zoomSdk.onZoomSDKInitializeResult.listen((event) {
+    //   print("Example App onZoomSDKInitializeResult: $event");
+    //   joinMeeting();
+    // });
+
+    // _meetingStatusSub = _zoomSdk.onMeetingStatusChanged.listen((event) {
+    //   print("Example App onMeetingStatusChanged: $event");
+    // });
   }
 
   void dispose() {

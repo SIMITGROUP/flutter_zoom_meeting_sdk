@@ -24,6 +24,13 @@ class FlutterZoomMeetingSdk {
   Stream get onZoomEvent => FlutterZoomMeetingSdkPlatform.instance.onZoomEvent;
 
   // Events
+
+  Stream<Map<String, dynamic>> get onAuthenticationReturn =>
+      FlutterZoomMeetingSdkPlatform.instance.onAuthenticationReturn;
+
+  Stream<Map<String, dynamic>> get onLoginReturnWithReason =>
+      FlutterZoomMeetingSdkPlatform.instance.onLoginReturnWithReason;
+
   Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
       FlutterZoomMeetingSdkPlatform.instance.onZoomSDKInitializeResult;
 

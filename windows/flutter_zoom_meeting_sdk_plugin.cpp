@@ -9,15 +9,22 @@
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
 #include <flutter/standard_method_codec.h>
+#include <flutter/event_channel.h>
 
 #include <memory>
 #include <sstream>
 #include <zoom_sdk.h>
 #include "auth_service_interface.h"
 #include "meeting_service_interface.h"
+#include "arg_reader.h"
+#include "event_auth.h"
+#include "zoom_event_stream_handler.h"
 
 namespace flutter_zoom_meeting_sdk
 {
+  // Using a raw pointer for the global event handler
+  static ZoomEventStreamHandler *g_event_handler_ptr = nullptr;
+
   flutter::EncodableMap CreateStandardZoomMeetingResponse(bool success, std::string message, uint32_t statusCode, std::string statusText)
   {
     flutter::EncodableMap response;
@@ -38,6 +45,19 @@ namespace flutter_zoom_meeting_sdk
             &flutter::StandardMethodCodec::GetInstance());
 
     auto plugin = std::make_unique<FlutterZoomMeetingSdkPlugin>();
+
+    // Set up the event channel for Zoom SDK events
+    auto event_channel = std::make_unique<flutter::EventChannel<flutter::EncodableValue>>(
+        registrar->messenger(),
+        "flutter_zoom_meeting_sdk/events",
+        &flutter::StandardMethodCodec::GetInstance());
+
+    // Create the event handler
+    auto handler = std::make_unique<ZoomEventStreamHandler>();
+    g_event_handler_ptr = handler.get(); // Store global pointer before transferring ownership
+
+    // Set the stream handler
+    event_channel->SetStreamHandler(std::move(handler));
 
     channel->SetMethodCallHandler(
         [plugin_pointer = plugin.get()](const auto &call, auto result)
@@ -65,9 +85,10 @@ namespace flutter_zoom_meeting_sdk
       auto initResult = ZOOM_SDK_NAMESPACE::InitSDK(initParam);
       if (initResult == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
       {
+
         result->Success(CreateStandardZoomMeetingResponse(
             true,
-            "Initialized successfully 222333",
+            "Initialized successfully",
             0,
             "SDKERR_SUCCESS"));
       }
@@ -75,28 +96,116 @@ namespace flutter_zoom_meeting_sdk
       {
 
         result->Success(CreateStandardZoomMeetingResponse(
-            true,
-            "Initialized successfully 333444",
-            0,
-            "SDKERR_SUCCESS"));
+            false,
+            "Initialization failed",
+            static_cast<uint32_t>(initResult),
+            "SDKERR_FAILURE"));
       }
     }
     else if (method_call.method_name().compare("authZoom") == 0)
     {
-      const auto *args = std::get_if<flutter::EncodableMap>(method_call.arguments());
-      if (args)
-      {
-        auto jwt_iter = args->find(flutter::EncodableValue("jwtToken"));
-        if (jwt_iter != args->end())
-        {
+      std::wcout << L"Enter Auth Zoom: " << std::endl;
+      ArgReader reader(method_call);
 
-          const auto &jwt_value = jwt_iter->second;
-          std::string jwt_token = std::get<std::string>(jwt_value);
+      auto token = reader.GetString("jwtToken").value_or("");
+
+      ZOOM_SDK_NAMESPACE::IAuthService *authService;
+      ZOOM_SDK_NAMESPACE::SDKError authServiceInitReturnVal = ZOOM_SDK_NAMESPACE::CreateAuthService(&authService);
+      if (authServiceInitReturnVal == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
+      {
+        // Create IAuthServiceEvent object to listen for Auth events from SDK
+        ZoomSDKAuthServiceEventListener *authListener = new ZoomSDKAuthServiceEventListener();
+        // Set the event handler - using the global event handler
+        if (g_event_handler_ptr)
+        {
+          std::cout << "Setting event handler for auth events" << std::endl;
+          authListener->SetEventHandler(g_event_handler_ptr);
+        }
+        else
+        {
+          std::cout << "WARNING: Global event handler is null!" << std::endl;
+        }
+
+        // Auth SDK with AuthContext object
+        ZOOM_SDK_NAMESPACE::AuthContext authContext;
+        ZOOM_SDK_NAMESPACE::SDKError authCallReturnValue(ZOOM_SDK_NAMESPACE::SDKERR_UNAUTHENTICATION);
+        // Call SetEvent to assign your IAuthServiceEvent listener
+        authService->SetEvent(authListener);
+
+        // Provide your JWT to the AuthContext object
+        std::wstring wide_token(token.begin(), token.end()); // Convert the token to wide string
+        authContext.jwt_token = wide_token.c_str();
+        authCallReturnValue = authService->SDKAuth(authContext);
+        if (authCallReturnValue == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
+        {
+          // SDK Auth in progress
           result->Success(CreateStandardZoomMeetingResponse(
               true,
-              jwt_token,
+              "SDK Auth in progress",
               0,
               "SDKERR_SUCCESS"));
+          return;
+        }
+      }
+
+      result->Success(CreateStandardZoomMeetingResponse(
+          true,
+          token,
+          0,
+          "SDKERR_SUCCESS"));
+    }
+    else if (method_call.method_name().compare("joinMeeting") == 0)
+    {
+      //
+      ZOOM_SDK_NAMESPACE::IMeetingService *meetingService;
+      ZOOM_SDK_NAMESPACE::SDKError meetingServiceInitReturnVal = ZOOM_SDK_NAMESPACE::CreateMeetingService(&meetingService);
+      if (meetingServiceInitReturnVal == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
+      {
+
+        std::cout << "Meeting Service Init Success" << std::endl;
+
+        // Join meeting for end user with JoinParam object
+        ZOOM_SDK_NAMESPACE::JoinParam joinMeetingParam;
+        // Provide meeting credentials for end user using JoinParam4NormalUser
+        ZOOM_SDK_NAMESPACE::JoinParam4NormalUser joinMeetingForNormalUserLoginParam;
+
+        joinMeetingParam.userType = ZOOM_SDK_NAMESPACE::SDK_UT_NORMALUSER;
+
+        joinMeetingForNormalUserLoginParam.meetingNumber = 3273588613;
+        joinMeetingForNormalUserLoginParam.psw = L"6SuCMB";
+        joinMeetingForNormalUserLoginParam.userName = L"Yong";
+        // joinMeetingForNormalUserLoginParam.vanityID = NULL;
+        // joinMeetingForNormalUserLoginParam.hDirectShareAppWnd = NULL;
+        // joinMeetingForNormalUserLoginParam.customer_key = NULL;
+        // joinMeetingForNormalUserLoginParam.webinarToken = NULL;
+        // joinMeetingForNormalUserLoginParam.isVideoOff = false;
+        // joinMeetingForNormalUserLoginParam.isAudioOff = false;
+        // joinMeetingForNormalUserLoginParam.isDirectShareDesktop = false;
+
+        joinMeetingParam.param.normaluserJoin = joinMeetingForNormalUserLoginParam;
+
+        ZOOM_SDK_NAMESPACE::SDKError joinMeetingCallReturnValue(ZOOM_SDK_NAMESPACE::SDKERR_UNKNOWN);
+        joinMeetingCallReturnValue = meetingService->Join(joinMeetingParam);
+
+        std::cout << "joinMeetingCallReturnValue: " << joinMeetingCallReturnValue << std::endl;
+        if (joinMeetingCallReturnValue == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
+        {
+          // Join meeting call succeeded, listen for join meeting result using the onMeetingStatusChanged callback
+          result->Success(CreateStandardZoomMeetingResponse(
+              true,
+              "Join meeting call succeeded",
+              0,
+              "SDKERR_SUCCESS"));
+          return;
+        }
+        else
+        {
+          result->Success(CreateStandardZoomMeetingResponse(
+              true,
+              "Join meeting call failed",
+              0,
+              "SDKERR_SUCCESS"));
+          return;
         }
       }
     }
@@ -105,48 +214,4 @@ namespace flutter_zoom_meeting_sdk
       result->NotImplemented();
     }
   }
-
-  void FlutterZoomMeetingSdkPlugin::onAuthenticationReturn(ZOOM_SDK_NAMESPACE::AuthResult ret)
-  {
-    std::wcout << L"onAuthenticationReturn called with result: " << ret << std::endl;
-    if (ret == ZOOM_SDK_NAMESPACE::AuthResult::AUTHRET_SUCCESS)
-    {
-      std::wcout << L"Authentication successful" << std::endl;
-    }
-    else
-    {
-      std::wcout << L"Authentication failed: " << ret << std::endl;
-    }
-  }
-
-  // Other event handlers
-  void FlutterZoomMeetingSdkPlugin::onLoginReturn(ZOOM_SDK_NAMESPACE::LOGINSTATUS status)
-  {
-    std::wcout << L"onLoginReturn called with status: " << status << std::endl;
-  }
-  void FlutterZoomMeetingSdkPlugin::onLogout()
-  {
-    std::wcout << L"onLogout called" << std::endl;
-  }
-  void FlutterZoomMeetingSdkPlugin::onZoomIdentityExpired()
-  {
-    std::wcout << L"onZoomIdentityExpired called" << std::endl;
-  }
-  void FlutterZoomMeetingSdkPlugin::onZoomAuthIdentityExpired()
-  {
-    std::wcout << L"onZoomAuthIdentityExpired called" << std::endl;
-  }
-  void FlutterZoomMeetingSdkPlugin::onLoginReturnWithReason(ZOOM_SDK_NAMESPACE::LOGINSTATUS status, ZOOM_SDK_NAMESPACE::IAccountInfo *pAccountInfo, ZOOM_SDK_NAMESPACE::LoginFailReason reason)
-  {
-    std::wcout << L"onLoginReturnWithReason called with status: " << status << L", reason: " << reason << std::endl;
-  }
-  void FlutterZoomMeetingSdkPlugin::onSSOLoginURINotification(const wchar_t *uri)
-  {
-    std::wcout << L"onSSOLoginURINotification called with URI: " << (uri ? uri : L"null") << std::endl;
-  }
-  void FlutterZoomMeetingSdkPlugin::onNotificationServiceStatus(ZOOM_SDK_NAMESPACE::SDKNotificationServiceStatus status, ZOOM_SDK_NAMESPACE::SDKNotificationServiceError error)
-  {
-    std::wcout << L"onNotificationServiceStatus called with status: " << status << L", error: " << error << std::endl;
-  }
-
 } // namespace flutter_zoom_meeting_sdk

@@ -20,6 +20,9 @@ set(PLUGIN_NAME "flutter_zoom_meeting_sdk_plugin")
 list(APPEND PLUGIN_SOURCES
   "flutter_zoom_meeting_sdk_plugin.cpp"
   "flutter_zoom_meeting_sdk_plugin.h"
+  "event_auth.cpp"
+  "event_auth.h"
+  "zoom_event_stream_handler.h"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment

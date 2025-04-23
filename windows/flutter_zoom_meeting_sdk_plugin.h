@@ -8,11 +8,12 @@
 #include "zoom_sdk.h"
 #include "auth_service_interface.h"
 #include "meeting_service_interface.h"
+#include "zoom_event_stream_handler.h"
 
 namespace flutter_zoom_meeting_sdk
 {
 
-    class FlutterZoomMeetingSdkPlugin : public flutter::Plugin, public ZOOM_SDK_NAMESPACE::IAuthServiceEvent
+    class FlutterZoomMeetingSdkPlugin : public flutter::Plugin
     {
     public:
         static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
@@ -21,15 +22,7 @@ namespace flutter_zoom_meeting_sdk
 
         virtual ~FlutterZoomMeetingSdkPlugin();
 
-        // IAuthServiceEvent overrides
-        void onAuthenticationReturn(ZOOM_SDK_NAMESPACE::AuthResult ret) override;
-        void onLoginReturn(ZOOM_SDK_NAMESPACE::LOGINSTATUS status);
-        void onLogout() override;
-        void onZoomIdentityExpired() override;
-        void onZoomAuthIdentityExpired() override;
-        void onLoginReturnWithReason(ZOOM_SDK_NAMESPACE::LOGINSTATUS status, ZOOM_SDK_NAMESPACE::IAccountInfo *pAccountInfo, ZOOM_SDK_NAMESPACE::LoginFailReason reason) override;
-        void onSSOLoginURINotification(const wchar_t *uri);
-        void onNotificationServiceStatus(ZOOM_SDK_NAMESPACE::SDKNotificationServiceStatus status, ZOOM_SDK_NAMESPACE::SDKNotificationServiceError error) override;
+        std::unique_ptr<ZoomEventStreamHandler> event_stream_handler_;
 
         // Disallow copy and assign.
         FlutterZoomMeetingSdkPlugin(const FlutterZoomMeetingSdkPlugin &) = delete;

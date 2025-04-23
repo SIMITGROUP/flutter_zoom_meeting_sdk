@@ -33,6 +33,14 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
       .map((event) => Map<String, dynamic>.from(event));
 
   @override
+  Stream<Map<String, dynamic>> get onAuthenticationReturn =>
+      _eventStream.where((e) => e['event'] == 'onAuthenticationReturn');
+
+  @override
+  Stream<Map<String, dynamic>> get onLoginReturnWithReason =>
+      _eventStream.where((e) => e['event'] == 'onLoginReturnWithReason');
+
+  @override
   Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
       _eventStream.where((e) => e['event'] == 'onZoomSDKInitializeResult');
 

@@ -27,6 +27,10 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  Stream<Map<String, dynamic>> get onAuthenticationReturn;
+
+  Stream<Map<String, dynamic>> get onLoginReturnWithReason;
+
   // Initialization Events
   Stream<Map<String, dynamic>> get onZoomSDKInitializeResult;
 
