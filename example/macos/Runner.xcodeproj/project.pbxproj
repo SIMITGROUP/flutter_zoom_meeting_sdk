@@ -569,7 +569,7 @@
 				EC4D5BF386960B74FC4323ED /* [CP] Embed Pods Frameworks */,
 				3350CE1C2DAF9350003FE592 /* CopyFiles */,
 				3350D3C52DAFE9AA003FE592 /* CopyFiles */,
-				3350D7162DAFEA53003FE592 /* ShellScript */,
+				3350D7162DAFEA53003FE592 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -652,7 +652,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3350D7162DAFEA53003FE592 /* ShellScript */ = {
+		3350D7162DAFEA53003FE592 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -661,6 +661,7 @@
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputFileListPaths = (
 			);
 			outputPaths = (
