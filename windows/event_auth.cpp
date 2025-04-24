@@ -1,6 +1,8 @@
 #include "event_auth.h"
 #include <iostream>
 #include "zoom_event_stream_handler.h"
+#include "helper_enum.h"
+#include "helper.h"
 
 ZoomSDKAuthServiceEventListener::ZoomSDKAuthServiceEventListener() : event_handler_(nullptr) {}
 ZoomSDKAuthServiceEventListener::~ZoomSDKAuthServiceEventListener() {}
@@ -12,13 +14,15 @@ void ZoomSDKAuthServiceEventListener::SetEventHandler(ZoomEventStreamHandler *ha
 
 void ZoomSDKAuthServiceEventListener::SendAuthEvent(const std::string &eventName, const flutter::EncodableMap &params)
 {
+    const std::string tag = "SendAuthEventToFlutter";
+
     if (!event_handler_)
     {
-        std::cout << "ERROR: Event handler is NULL, cannot send " << eventName << " event!" << std::endl;
+        sLog(tag, "=== ERROR: Event handler is NULL, cannot send: " + eventName + " event ===");
         return;
     }
 
-    std::cout << "Sending event: " << eventName << std::endl;
+    sLog(tag, "=== Sending event: " + eventName + " ===");
 
     flutter::EncodableMap eventMap;
     eventMap[flutter::EncodableValue("platform")] = flutter::EncodableValue("windows");
@@ -31,99 +35,98 @@ void ZoomSDKAuthServiceEventListener::SendAuthEvent(const std::string &eventName
 
 void ZoomSDKAuthServiceEventListener::onAuthenticationReturn(ZOOM_SDK_NAMESPACE::AuthResult ret)
 {
-    std::wcout << L"Authentication result: " << ret << std::endl;
-
-    // Create the parameters map for the event
-    flutter::EncodableMap params;
-    params[flutter::EncodableValue("result")] = flutter::EncodableValue(static_cast<int>(ret));
-
-    // Add a readable status message
-    std::string status_message = "Unknown";
-    if (ret == ZOOM_SDK_NAMESPACE::AuthResult::AUTHRET_SUCCESS)
-    {
-        status_message = "Authentication successful";
-    }
-    else if (ret == ZOOM_SDK_NAMESPACE::AuthResult::AUTHRET_KEYORSECRETWRONG)
-    {
-        status_message = "SDK key or secret is wrong";
-    }
-    else if (ret == ZOOM_SDK_NAMESPACE::AuthResult::AUTHRET_ACCOUNTNOTSUPPORT)
-    {
-        status_message = "Account does not support";
-    }
-    else if (ret == ZOOM_SDK_NAMESPACE::AuthResult::AUTHRET_ACCOUNTNOTENABLESDK)
-    {
-        status_message = "Account does not enable SDK";
-    }
-    else if (ret == ZOOM_SDK_NAMESPACE::AuthResult::AUTHRET_UNKNOWN)
-    {
-        status_message = "Unknown error";
-    }
-    params[flutter::EncodableValue("message")] = flutter::EncodableValue(status_message);
-
-    // Print the event being sent for debugging
-    std::cout << "Sending onAuthenticationReturn with result code: " << static_cast<int>(ret) << std::endl;
-
-    // Send the event to Flutter
-    SendAuthEvent("onAuthenticationReturn", params);
+    const std::string tag = "onAuthenticationReturn";
+    sLog(tag, L"Authentication result: " + std::to_wstring(ret));
 
     if (ret == ZOOM_SDK_NAMESPACE::AuthResult::AUTHRET_SUCCESS)
     {
-        std::wcout << L"Authentication successful" << std::endl;
+        sLog(tag, L"Authentication successful");
     }
     else
     {
-        std::wcout << L"Authentication failed" << std::endl;
+        sLog(tag, L"Authentication failed");
     }
+
+    flutter::EncodableMap params;
+
+    params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(ret));
+    params[flutter::EncodableValue("statusName")] = flutter::EncodableValue(EnumToString(ret));
+
+    SendAuthEvent(tag, params);
 }
 
 void ZoomSDKAuthServiceEventListener::onLoginReturnWithReason(ZOOM_SDK_NAMESPACE::LOGINSTATUS ret,
                                                               ZOOM_SDK_NAMESPACE::IAccountInfo *pAccountInfo,
                                                               ZOOM_SDK_NAMESPACE::LoginFailReason reason)
 {
-    std::wcout << L"Login status: " << ret << L", reason: " << reason << std::endl;
+    const std::string tag = "onLoginReturnWithReason";
+    sLog(tag, L"Login status: " + std::to_wstring(ret));
+    sLog(tag, L"Login Fail Reason: " + std::to_wstring(reason));
 
     flutter::EncodableMap params;
     params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(ret));
+    params[flutter::EncodableValue("statusName")] = flutter::EncodableValue(EnumToString(ret));
     params[flutter::EncodableValue("reason")] = flutter::EncodableValue(static_cast<int>(reason));
+    params[flutter::EncodableValue("reasonName")] = flutter::EncodableValue(EnumToString(reason));
 
-    SendAuthEvent("onLoginReturnWithReason", params);
+    flutter::EncodableMap accountInfo;
+    if (pAccountInfo)
+    {
+        const ZOOMSDK::LoginType loginType = pAccountInfo->GetLoginType();
+        std::wstring wDisplayName = pAccountInfo->GetDisplayName();
+        std::string displayName = WStringToString(wDisplayName);
+
+        accountInfo[flutter::EncodableValue("loginType")] = flutter::EncodableValue(static_cast<int>(loginType));
+        accountInfo[flutter::EncodableValue("loginTypeName")] = flutter::EncodableValue(EnumToString(loginType));
+        accountInfo[flutter::EncodableValue("displayName")] = flutter::EncodableValue(displayName);
+
+        params[flutter::EncodableValue("accountInfo")] = flutter::EncodableValue(accountInfo);
+    }
+
+    SendAuthEvent(tag, params);
 }
 
 void ZoomSDKAuthServiceEventListener::onLogout()
 {
-    std::wcout << L"Logout" << std::endl;
+    const std::string tag = "onLogout";
+    sLog(tag, L"");
 
     flutter::EncodableMap params;
-    SendAuthEvent("onLogout", params);
+    SendAuthEvent(tag, params);
 }
 
 void ZoomSDKAuthServiceEventListener::onZoomIdentityExpired()
 {
-    std::wcout << L"Zoom Identity Expired" << std::endl;
+    const std::string tag = "onZoomIdentityExpired";
+    sLog(tag, L"");
 
     flutter::EncodableMap params;
-    SendAuthEvent("onZoomIdentityExpired", params);
+    SendAuthEvent(tag, params);
 }
 
 void ZoomSDKAuthServiceEventListener::onZoomAuthIdentityExpired()
 {
-    std::wcout << L"Zoom Auth Identity Expired" << std::endl;
+    const std::string tag = "onZoomAuthIdentityExpired";
+    sLog(tag, L"");
 
     flutter::EncodableMap params;
-    SendAuthEvent("onZoomAuthIdentityExpired", params);
+    SendAuthEvent(tag, params);
 }
 
 #if defined(WIN32)
 void ZoomSDKAuthServiceEventListener::onNotificationServiceStatus(ZOOM_SDK_NAMESPACE::SDKNotificationServiceStatus status,
                                                                   ZOOM_SDK_NAMESPACE::SDKNotificationServiceError error)
 {
-    std::wcout << L"Notification service status: " << status << L", error: " << error << std::endl;
+    const std::string tag = "onNotificationServiceStatus";
+    sLog(tag, L"Status: " + std::to_wstring(status));
+    sLog(tag, L"Error: " + std::to_wstring(error));
 
     flutter::EncodableMap params;
     params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(status));
+    params[flutter::EncodableValue("statusName")] = flutter::EncodableValue(EnumToString(status));
     params[flutter::EncodableValue("error")] = flutter::EncodableValue(static_cast<int>(error));
+    params[flutter::EncodableValue("errorName")] = flutter::EncodableValue(EnumToString(error));
 
-    SendAuthEvent("onNotificationServiceStatus", params);
+    SendAuthEvent(tag, params);
 }
 #endif
