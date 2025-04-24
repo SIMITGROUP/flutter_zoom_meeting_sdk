@@ -23,6 +23,10 @@ list(APPEND PLUGIN_SOURCES
   "event_auth.cpp"
   "event_auth.h"
   "zoom_event_stream_handler.h"
+  "zoom_event_listener_base.h"
+  "zoom_event_listener_base.cpp"
+  "zoom_event_listener_meeting_service.h"
+  "zoom_event_listener_meeting_service.cpp"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment

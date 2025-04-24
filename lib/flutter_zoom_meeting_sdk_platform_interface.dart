@@ -27,19 +27,53 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  // Auth Events
+
+  // windows
   Stream<Map<String, dynamic>> get onAuthenticationReturn;
 
+  // windows
   Stream<Map<String, dynamic>> get onLoginReturnWithReason;
+
+  // windows
+  Stream<Map<String, dynamic>> get onLogout;
+
+  // windows
+  Stream<Map<String, dynamic>> get onZoomIdentityExpired;
+
+  // windows, android
+  Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired;
+
+  // windows
+  Stream<Map<String, dynamic>> get onNotificationServiceStatus;
+
+  // Meeting Events
+
+  // windows, android
+  Stream<Map<String, dynamic>> get onMeetingStatusChanged;
+
+  // windows
+  Stream<Map<String, dynamic>> get onMeetingStatisticsWarningNotification;
+
+  // windows, android
+  Stream<Map<String, dynamic>> get onMeetingParameterNotification;
+
+  // windows
+  Stream<Map<String, dynamic>> get onSuspendParticipantsActivities;
+
+  // windows
+  Stream<Map<String, dynamic>> get onAICompanionActiveChangeNotice;
+
+  // windows
+  Stream<Map<String, dynamic>> get onMeetingTopicChanged;
+
+  // windows
+  Stream<Map<String, dynamic>> get onMeetingFullToWatchLiveStream;
+
+  // ---
 
   // Initialization Events
   Stream<Map<String, dynamic>> get onZoomSDKInitializeResult;
-
-  Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired;
-
-  // Meeting Service Events
-  Stream<Map<String, dynamic>> get onMeetingStatusChanged;
-
-  Stream<Map<String, dynamic>> get onMeetingParameterNotification;
 
   /// Stream for authentication events from the Zoom SDK
   Stream<ZoomMeetingAuthEventResponse> get onAuthEvent {

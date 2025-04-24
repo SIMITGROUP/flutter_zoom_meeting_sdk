@@ -19,6 +19,7 @@
 #include "arg_reader.h"
 #include "event_auth.h"
 #include "zoom_event_stream_handler.h"
+#include "zoom_event_listener_meeting_service.h"
 
 namespace flutter_zoom_meeting_sdk
 {
@@ -187,6 +188,21 @@ namespace flutter_zoom_meeting_sdk
         normalParam.psw = password.c_str();
         normalParam.isVideoOff = false;
         normalParam.isAudioOff = false;
+
+        ZoomSDKEventListenerMeetingService *meetingListener = new ZoomSDKEventListenerMeetingService();
+        // Set the event handler - using the global event handler
+        if (g_event_handler_ptr)
+        {
+          std::cout << "Setting event handler for auth events" << std::endl;
+          meetingListener->SetEventHandler(g_event_handler_ptr);
+        }
+        else
+        {
+          std::cout << "WARNING: Global event handler is null!" << std::endl;
+        }
+
+        // Call SetEvent to assign your IAuthServiceEvent listener
+        meetingService->SetEvent(meetingListener);
 
         auto joinResult = meetingService->Join(joinParam);
 

@@ -23,25 +23,68 @@ class FlutterZoomMeetingSdk {
 
   Stream get onZoomEvent => FlutterZoomMeetingSdkPlatform.instance.onZoomEvent;
 
-  // Events
+  // Auth Events
 
+  // windows
   Stream<Map<String, dynamic>> get onAuthenticationReturn =>
       FlutterZoomMeetingSdkPlatform.instance.onAuthenticationReturn;
 
+  // windows
   Stream<Map<String, dynamic>> get onLoginReturnWithReason =>
       FlutterZoomMeetingSdkPlatform.instance.onLoginReturnWithReason;
 
-  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
-      FlutterZoomMeetingSdkPlatform.instance.onZoomSDKInitializeResult;
+  // windows
+  Stream<Map<String, dynamic>> get onLogout =>
+      FlutterZoomMeetingSdkPlatform.instance.onLogout;
 
+  // windows
+  Stream<Map<String, dynamic>> get onZoomIdentityExpired =>
+      FlutterZoomMeetingSdkPlatform.instance.onZoomIdentityExpired;
+
+  // windows, android
   Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired =>
       FlutterZoomMeetingSdkPlatform.instance.onZoomAuthIdentityExpired;
 
+  // windows
+  Stream<Map<String, dynamic>> get onNotificationServiceStatus =>
+      FlutterZoomMeetingSdkPlatform.instance.onNotificationServiceStatus;
+
+  // Meeting Evetns
+
+  // windows, android
   Stream<Map<String, dynamic>> get onMeetingStatusChanged =>
       FlutterZoomMeetingSdkPlatform.instance.onMeetingStatusChanged;
 
+  // windows
+  Stream<Map<String, dynamic>> get onMeetingStatisticsWarningNotification =>
+      FlutterZoomMeetingSdkPlatform
+          .instance
+          .onMeetingStatisticsWarningNotification;
+
+  // windows, android
   Stream<Map<String, dynamic>> get onMeetingParameterNotification =>
       FlutterZoomMeetingSdkPlatform.instance.onMeetingParameterNotification;
+
+  // windows
+  Stream<Map<String, dynamic>> get onSuspendParticipantsActivities =>
+      FlutterZoomMeetingSdkPlatform.instance.onSuspendParticipantsActivities;
+
+  // windows
+  Stream<Map<String, dynamic>> get onAICompanionActiveChangeNotice =>
+      FlutterZoomMeetingSdkPlatform.instance.onAICompanionActiveChangeNotice;
+
+  // windows
+  Stream<Map<String, dynamic>> get onMeetingTopicChanged =>
+      FlutterZoomMeetingSdkPlatform.instance.onMeetingTopicChanged;
+
+  // windows
+  Stream<Map<String, dynamic>> get onMeetingFullToWatchLiveStream =>
+      FlutterZoomMeetingSdkPlatform.instance.onMeetingFullToWatchLiveStream;
+
+  // ---
+
+  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
+      FlutterZoomMeetingSdkPlatform.instance.onZoomSDKInitializeResult;
 
   Future<String?> getPlatformVersion() {
     return FlutterZoomMeetingSdkPlatform.instance.getPlatformVersion();

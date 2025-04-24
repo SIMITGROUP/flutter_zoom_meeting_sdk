@@ -32,29 +32,87 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
       .receiveBroadcastStream()
       .map((event) => Map<String, dynamic>.from(event));
 
+  // Auth Events
+
+  // windows
   @override
   Stream<Map<String, dynamic>> get onAuthenticationReturn =>
       _eventStream.where((e) => e['event'] == 'onAuthenticationReturn');
 
+  // windows
   @override
   Stream<Map<String, dynamic>> get onLoginReturnWithReason =>
       _eventStream.where((e) => e['event'] == 'onLoginReturnWithReason');
 
+  // windows
   @override
-  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
-      _eventStream.where((e) => e['event'] == 'onZoomSDKInitializeResult');
+  Stream<Map<String, dynamic>> get onLogout =>
+      _eventStream.where((e) => e['event'] == 'onLogout');
 
+  // windows
+  @override
+  Stream<Map<String, dynamic>> get onZoomIdentityExpired =>
+      _eventStream.where((e) => e['event'] == 'onZoomIdentityExpired');
+
+  // windows, android
   @override
   Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired =>
       _eventStream.where((e) => e['event'] == 'onZoomAuthIdentityExpired');
 
+  // windows
+  @override
+  Stream<Map<String, dynamic>> get onNotificationServiceStatus =>
+      _eventStream.where((e) => e['event'] == 'onNotificationServiceStatus');
+
+  // Meeting Events
+
+  // windows, android
   @override
   Stream<Map<String, dynamic>> get onMeetingStatusChanged =>
       _eventStream.where((e) => e['event'] == 'onMeetingStatusChanged');
 
+  // windows
+  @override
+  Stream<Map<String, dynamic>> get onMeetingStatisticsWarningNotification =>
+      _eventStream.where(
+        (e) => e['event'] == 'onMeetingStatisticsWarningNotification',
+      );
+
+  // windows, android
   @override
   Stream<Map<String, dynamic>> get onMeetingParameterNotification =>
       _eventStream.where((e) => e['event'] == 'onMeetingParameterNotification');
+
+  // windows
+  @override
+  Stream<Map<String, dynamic>> get onSuspendParticipantsActivities =>
+      _eventStream.where(
+        (e) => e['event'] == 'onSuspendParticipantsActivities',
+      );
+
+  // windows
+  @override
+  Stream<Map<String, dynamic>> get onAICompanionActiveChangeNotice =>
+      _eventStream.where(
+        (e) => e['event'] == 'onAICompanionActiveChangeNotice',
+      );
+
+  // windows
+  @override
+  Stream<Map<String, dynamic>> get onMeetingTopicChanged =>
+      _eventStream.where((e) => e['event'] == 'onMeetingTopicChanged');
+
+  // windows
+  @override
+  Stream<Map<String, dynamic>> get onMeetingFullToWatchLiveStream =>
+      _eventStream.where((e) => e['event'] == 'onMeetingFullToWatchLiveStream');
+
+  // --
+
+  // android
+  @override
+  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
+      _eventStream.where((e) => e['event'] == 'onZoomSDKInitializeResult');
 
   /// Streams for auth and meeting events
   @override

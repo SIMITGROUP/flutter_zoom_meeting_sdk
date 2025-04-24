@@ -66,10 +66,11 @@ void ZoomSDKAuthServiceEventListener::onLoginReturnWithReason(ZOOM_SDK_NAMESPACE
     flutter::EncodableMap params;
     params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(ret));
     params[flutter::EncodableValue("statusName")] = flutter::EncodableValue(EnumToString(ret));
-    params[flutter::EncodableValue("reason")] = flutter::EncodableValue(static_cast<int>(reason));
-    params[flutter::EncodableValue("reasonName")] = flutter::EncodableValue(EnumToString(reason));
+    params[flutter::EncodableValue("failReason")] = flutter::EncodableValue(static_cast<int>(reason));
+    params[flutter::EncodableValue("failReasonName")] = flutter::EncodableValue(EnumToString(reason));
 
     flutter::EncodableMap accountInfo;
+
     if (pAccountInfo)
     {
         const ZOOMSDK::LoginType loginType = pAccountInfo->GetLoginType();
@@ -79,9 +80,9 @@ void ZoomSDKAuthServiceEventListener::onLoginReturnWithReason(ZOOM_SDK_NAMESPACE
         accountInfo[flutter::EncodableValue("loginType")] = flutter::EncodableValue(static_cast<int>(loginType));
         accountInfo[flutter::EncodableValue("loginTypeName")] = flutter::EncodableValue(EnumToString(loginType));
         accountInfo[flutter::EncodableValue("displayName")] = flutter::EncodableValue(displayName);
-
-        params[flutter::EncodableValue("accountInfo")] = flutter::EncodableValue(accountInfo);
     }
+
+    params[flutter::EncodableValue("accountInfo")] = flutter::EncodableValue(accountInfo);
 
     SendAuthEvent(tag, params);
 }

@@ -94,14 +94,18 @@ class ZoomService {
       joinMeeting();
     });
 
+    _zoomSdk.onLoginReturnWithReason.listen((event) {
+      print("Example App onLoginReturnWithReason: $event");
+    });
+
     // _zoomSdk.onZoomSDKInitializeResult.listen((event) {
     //   print("Example App onZoomSDKInitializeResult: $event");
     //   joinMeeting();
     // });
 
-    // _meetingStatusSub = _zoomSdk.onMeetingStatusChanged.listen((event) {
-    //   print("Example App onMeetingStatusChanged: $event");
-    // });
+    _meetingStatusSub = _zoomSdk.onMeetingStatusChanged.listen((event) {
+      print("Example App onMeetingStatusChanged: $event");
+    });
   }
 
   void dispose() {
