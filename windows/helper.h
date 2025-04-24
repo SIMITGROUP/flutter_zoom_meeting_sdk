@@ -15,8 +15,21 @@ inline const void sLog(const std::string tag, const std::string message)
 
 inline std::string WStringToString(const std::wstring &wstr)
 {
-    // int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), NULL, 0, NULL, NULL);
-    // std::string str(size_needed, 0);
-    // WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &str[0], size_needed, NULL, NULL);
-    return "";
+    // Calculate the required size of the buffer
+    size_t len;
+    wcstombs_s(&len, nullptr, 0, wstr.c_str(), 0); // Get the length of the required buffer
+
+    // Allocate the buffer with the required size
+    char *buffer = new char[len];
+
+    // Perform the conversion with wcstombs_s
+    wcstombs_s(&len, buffer, len, wstr.c_str(), len);
+
+    // Create the std::string from the char buffer
+    std::string str(buffer);
+
+    // Clean up the buffer
+    delete[] buffer;
+
+    return str;
 }
