@@ -20,11 +20,10 @@
 #include "event_auth.h"
 #include "zoom_event_stream_handler.h"
 #include "zoom_event_listener_meeting_service.h"
+#include "zoom_event_manager.h"
 
 namespace flutter_zoom_meeting_sdk
 {
-  // Using a raw pointer for the global event handler
-  static ZoomEventStreamHandler *g_event_handler_ptr = nullptr;
 
   flutter::EncodableMap CreateStandardZoomMeetingResponse(bool success, std::string message, uint32_t statusCode, std::string statusText)
   {
@@ -55,7 +54,7 @@ namespace flutter_zoom_meeting_sdk
 
     // Create the event handler
     auto handler = std::make_unique<ZoomEventStreamHandler>();
-    g_event_handler_ptr = handler.get(); // Store global pointer before transferring ownership
+    ZoomEventManager::GetInstance().SetEventHandler(handler.get());
 
     // Set the stream handler
     event_channel->SetStreamHandler(std::move(handler));
@@ -71,7 +70,10 @@ namespace flutter_zoom_meeting_sdk
 
   FlutterZoomMeetingSdkPlugin::FlutterZoomMeetingSdkPlugin() {}
 
-  FlutterZoomMeetingSdkPlugin::~FlutterZoomMeetingSdkPlugin() {}
+  FlutterZoomMeetingSdkPlugin::~FlutterZoomMeetingSdkPlugin()
+  {
+    ZoomEventManager::GetInstance().SetEventHandler(nullptr);
+  }
 
   void FlutterZoomMeetingSdkPlugin::HandleMethodCall(
       const flutter::MethodCall<flutter::EncodableValue> &method_call,
@@ -116,15 +118,11 @@ namespace flutter_zoom_meeting_sdk
       {
         // Create IAuthServiceEvent object to listen for Auth events from SDK
         ZoomSDKAuthServiceEventListener *authListener = new ZoomSDKAuthServiceEventListener();
-        // Set the event handler - using the global event handler
-        if (g_event_handler_ptr)
+
+        auto handler = ZoomEventManager::GetInstance().GetEventHandler();
+        if (handler)
         {
-          std::cout << "Setting event handler for auth events" << std::endl;
-          authListener->SetEventHandler(g_event_handler_ptr);
-        }
-        else
-        {
-          std::cout << "WARNING: Global event handler is null!" << std::endl;
+          authListener->SetEventHandler(handler);
         }
 
         // Auth SDK with AuthContext object
@@ -190,15 +188,11 @@ namespace flutter_zoom_meeting_sdk
         normalParam.isAudioOff = false;
 
         ZoomSDKEventListenerMeetingService *meetingListener = new ZoomSDKEventListenerMeetingService();
-        // Set the event handler - using the global event handler
-        if (g_event_handler_ptr)
+
+        auto handler = ZoomEventManager::GetInstance().GetEventHandler();
+        if (handler)
         {
-          std::cout << "Setting event handler for auth events" << std::endl;
-          meetingListener->SetEventHandler(g_event_handler_ptr);
-        }
-        else
-        {
-          std::cout << "WARNING: Global event handler is null!" << std::endl;
+          meetingListener->SetEventHandler(handler);
         }
 
         // Call SetEvent to assign your IAuthServiceEvent listener
