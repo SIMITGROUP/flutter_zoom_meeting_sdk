@@ -14,7 +14,7 @@
 namespace flutter_zoom_meeting_sdk
 {
     ZoomResponse InitZoom();
-    ZoomResponse AuthZoom(const std::string token);
+    ZoomResponse AuthZoom(const std::wstring token);
     ZoomResponse JoinMeeting(uint64_t meetingNumber, const std::wstring password, const std::wstring displayName);
 
     class FlutterZoomMeetingSdkPlugin : public flutter::Plugin

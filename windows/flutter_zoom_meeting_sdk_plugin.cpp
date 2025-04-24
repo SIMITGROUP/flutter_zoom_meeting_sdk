@@ -30,37 +30,48 @@ namespace flutter_zoom_meeting_sdk
 
     std::unique_ptr<ZoomSDKEventListenerAuthService> authListener;
     std::unique_ptr<ZoomSDKEventListenerMeetingService> meetingListener;
+
+    std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>> CreateMethodChannel(
+        flutter::PluginRegistrarWindows *registrar)
+    {
+      return std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+          registrar->messenger(),
+          "flutter_zoom_meeting_sdk",
+          &flutter::StandardMethodCodec::GetInstance());
+    }
+
+    std::unique_ptr<flutter::EventChannel<flutter::EncodableValue>> CreateEventChannel(
+        flutter::PluginRegistrarWindows *registrar)
+    {
+      return std::make_unique<flutter::EventChannel<flutter::EncodableValue>>(
+          registrar->messenger(),
+          "flutter_zoom_meeting_sdk/events",
+          &flutter::StandardMethodCodec::GetInstance());
+    }
   }
 
   // static
   void FlutterZoomMeetingSdkPlugin::RegisterWithRegistrar(
       flutter::PluginRegistrarWindows *registrar)
   {
-    auto channel =
-        std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
-            registrar->messenger(), "flutter_zoom_meeting_sdk",
-            &flutter::StandardMethodCodec::GetInstance());
-
-    auto event_channel = std::make_unique<flutter::EventChannel<flutter::EncodableValue>>(
-        registrar->messenger(),
-        "flutter_zoom_meeting_sdk/events",
-        &flutter::StandardMethodCodec::GetInstance());
+    auto method_channel = CreateMethodChannel(registrar);
+    auto event_channel = CreateEventChannel(registrar);
 
     auto plugin = std::make_unique<FlutterZoomMeetingSdkPlugin>();
 
-    channel->SetMethodCallHandler(
-        [plugin_pointer = plugin.get()](const auto &call, auto result)
+    // Set up method call handling
+    method_channel->SetMethodCallHandler(
+        [plugin_ptr = plugin.get()](const auto &call, auto result)
         {
-          plugin_pointer->HandleMethodCall(call, std::move(result));
+          plugin_ptr->HandleMethodCall(call, std::move(result));
         });
 
-    // Create the event handler
+    // Create and assign event stream handler
     auto handler = std::make_unique<ZoomEventStreamHandler>();
     ZoomEventManager::GetInstance().SetEventHandler(handler.get());
-
-    // Set the stream handler
     event_channel->SetStreamHandler(std::move(handler));
 
+    // Add plugin to registrar
     registrar->AddPlugin(std::move(plugin));
   }
 
@@ -77,20 +88,22 @@ namespace flutter_zoom_meeting_sdk
       const flutter::MethodCall<flutter::EncodableValue> &method_call,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
   {
-    if (method_call.method_name().compare("initZoom") == 0)
+    auto methodName = method_call.method_name();
+
+    if (methodName.compare("initZoom") == 0)
     {
       ZoomResponse response = InitZoom();
       result->Success(flutter::EncodableValue(response.ToEncodableMap()));
     }
-    else if (method_call.method_name().compare("authZoom") == 0)
+    else if (methodName.compare("authZoom") == 0)
     {
       ArgReader reader(method_call);
-      auto token = reader.GetString("jwtToken").value_or("");
+      auto token = reader.GetWString("jwtToken").value_or(L"");
 
       ZoomResponse response = AuthZoom(token);
       result->Success(flutter::EncodableValue(response.ToEncodableMap()));
     }
-    else if (method_call.method_name().compare("joinMeeting") == 0)
+    else if (methodName.compare("joinMeeting") == 0)
     {
       ArgReader reader(method_call);
 
@@ -141,7 +154,7 @@ namespace flutter_zoom_meeting_sdk
         .Build();
   }
 
-  ZoomResponse AuthZoom(std::string token)
+  ZoomResponse AuthZoom(std::wstring token)
   {
     std::string tag = "authZoom";
 
@@ -170,11 +183,9 @@ namespace flutter_zoom_meeting_sdk
     authListener->SetEventHandler(handler);
     authService->SetEvent(authListener.get());
 
-    std::wstring wide_token(token.begin(), token.end());
-
     ZOOM_SDK_NAMESPACE::SDKError authCallReturnValue(ZOOM_SDK_NAMESPACE::SDKERR_UNAUTHENTICATION);
     ZOOM_SDK_NAMESPACE::AuthContext authContext;
-    authContext.jwt_token = wide_token.c_str();
+    authContext.jwt_token = token.c_str();
 
     authCallReturnValue = authService->SDKAuth(authContext);
 
