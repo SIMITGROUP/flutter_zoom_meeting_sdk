@@ -13,10 +13,9 @@
 
 namespace flutter_zoom_meeting_sdk
 {
-    // Function declarations for SDK operations
-    ZoomResponse initZoom();
-    ZoomResponse authZoom(std::string token);
-    ZoomResponse joinMeeting(uint64_t meetingNumber, std::wstring password, std::wstring displayName);
+    ZoomResponse InitZoom();
+    ZoomResponse AuthZoom(const std::string token);
+    ZoomResponse JoinMeeting(uint64_t meetingNumber, const std::wstring password, const std::wstring displayName);
 
     class FlutterZoomMeetingSdkPlugin : public flutter::Plugin
     {
@@ -24,10 +23,7 @@ namespace flutter_zoom_meeting_sdk
         static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
 
         FlutterZoomMeetingSdkPlugin();
-
         virtual ~FlutterZoomMeetingSdkPlugin();
-
-        std::unique_ptr<ZoomEventStreamHandler> event_stream_handler_;
 
         // Disallow copy and assign.
         FlutterZoomMeetingSdkPlugin(const FlutterZoomMeetingSdkPlugin &) = delete;
@@ -37,6 +33,15 @@ namespace flutter_zoom_meeting_sdk
         void HandleMethodCall(
             const flutter::MethodCall<flutter::EncodableValue> &method_call,
             std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
+
+    private:
+        // Plugin-scoped members
+        std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>> method_channel_;
+        std::unique_ptr<flutter::EventChannel<flutter::EncodableValue>> event_channel_;
+        std::unique_ptr<ZoomEventStreamHandler> event_stream_handler_;
+
+        ZOOM_SDK_NAMESPACE::IAuthService *auth_service_ = nullptr;
+        ZOOM_SDK_NAMESPACE::IMeetingService *meeting_service_ = nullptr;
     };
 
 } // namespace flutter_zoom_meeting_sdk

@@ -24,6 +24,14 @@
 
 namespace flutter_zoom_meeting_sdk
 {
+  namespace
+  {
+    bool sdkInitialized = false;
+
+    std::unique_ptr<ZoomSDKEventListenerAuthService> authListener;
+    std::unique_ptr<ZoomSDKEventListenerMeetingService> meetingListener;
+  }
+
   // static
   void FlutterZoomMeetingSdkPlugin::RegisterWithRegistrar(
       flutter::PluginRegistrarWindows *registrar)
@@ -61,6 +69,8 @@ namespace flutter_zoom_meeting_sdk
   FlutterZoomMeetingSdkPlugin::~FlutterZoomMeetingSdkPlugin()
   {
     ZoomEventManager::GetInstance().SetEventHandler(nullptr);
+    authListener.reset();
+    meetingListener.reset();
   }
 
   void FlutterZoomMeetingSdkPlugin::HandleMethodCall(
@@ -69,7 +79,7 @@ namespace flutter_zoom_meeting_sdk
   {
     if (method_call.method_name().compare("initZoom") == 0)
     {
-      ZoomResponse response = initZoom();
+      ZoomResponse response = InitZoom();
       result->Success(flutter::EncodableValue(response.ToEncodableMap()));
     }
     else if (method_call.method_name().compare("authZoom") == 0)
@@ -77,7 +87,7 @@ namespace flutter_zoom_meeting_sdk
       ArgReader reader(method_call);
       auto token = reader.GetString("jwtToken").value_or("");
 
-      ZoomResponse response = authZoom(token);
+      ZoomResponse response = AuthZoom(token);
       result->Success(flutter::EncodableValue(response.ToEncodableMap()));
     }
     else if (method_call.method_name().compare("joinMeeting") == 0)
@@ -88,7 +98,7 @@ namespace flutter_zoom_meeting_sdk
       auto password = reader.GetWString("password").value_or(L"");
       auto displayName = reader.GetWString("displayName").value_or(L"Zoom User");
 
-      ZoomResponse response = joinMeeting(meetingNumber, password, displayName);
+      ZoomResponse response = JoinMeeting(meetingNumber, password, displayName);
       result->Success(flutter::EncodableValue(response.ToEncodableMap()));
     }
     else
@@ -97,9 +107,18 @@ namespace flutter_zoom_meeting_sdk
     }
   }
 
-  ZoomResponse initZoom()
+  ZoomResponse InitZoom()
   {
     std::string tag = "initZoom";
+
+    if (sdkInitialized)
+    {
+      return ZoomResponseBuilder(tag)
+          .Success(true)
+          .Message("Zoom SDK already initialized.")
+          .Build();
+    }
+
     ZOOM_SDK_NAMESPACE::InitParam initParam;
     initParam.strWebDomain = L"https://zoom.us";
 
@@ -113,65 +132,22 @@ namespace flutter_zoom_meeting_sdk
           .Param("statusName", EnumToString(initResult))
           .Build();
     }
-    else
-    {
-      return ZoomResponseBuilder(tag)
-          .Success(false)
-          .Message("Initialization failed")
-          .Param("status", static_cast<int>(initResult))
-          .Param("statusName", EnumToString(initResult))
-          .Build();
-    }
+
+    return ZoomResponseBuilder(tag)
+        .Success(false)
+        .Message("Initialization failed")
+        .Param("status", static_cast<int>(initResult))
+        .Param("statusName", EnumToString(initResult))
+        .Build();
   }
 
-  ZoomResponse authZoom(std::string token)
+  ZoomResponse AuthZoom(std::string token)
   {
     std::string tag = "authZoom";
 
     ZOOM_SDK_NAMESPACE::IAuthService *authService;
     ZOOM_SDK_NAMESPACE::SDKError authServiceInitReturnVal = ZOOM_SDK_NAMESPACE::CreateAuthService(&authService);
-    if (authServiceInitReturnVal == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
-    {
-      auto handler = ZoomEventManager::GetInstance().GetEventHandler();
-      if (!handler)
-      {
-        return ZoomResponseBuilder(tag)
-            .Success(false)
-            .Message("Missing ZoomEventManager handler")
-            .Build();
-      }
-
-      ZoomSDKEventListenerAuthService *authListener = new ZoomSDKEventListenerAuthService();
-      authListener->SetEventHandler(handler);
-
-      ZOOM_SDK_NAMESPACE::AuthContext authContext;
-      ZOOM_SDK_NAMESPACE::SDKError authCallReturnValue(ZOOM_SDK_NAMESPACE::SDKERR_UNAUTHENTICATION);
-      authService->SetEvent(authListener);
-
-      std::wstring wide_token(token.begin(), token.end());
-      authContext.jwt_token = wide_token.c_str();
-
-      authCallReturnValue = authService->SDKAuth(authContext);
-      if (authCallReturnValue == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
-      {
-        return ZoomResponseBuilder(tag)
-            .Success(true)
-            .Message("Authentication call succeeded, listen onAuthenticationReturn for further action.")
-            .Param("status", static_cast<int>(authCallReturnValue))
-            .Param("statusName", EnumToString(authCallReturnValue))
-            .Build();
-      }
-      else
-      {
-        return ZoomResponseBuilder(tag)
-            .Success(false)
-            .Message("SDK Authentication failed")
-            .Param("status", static_cast<int>(authCallReturnValue))
-            .Param("statusName", EnumToString(authCallReturnValue))
-            .Build();
-      }
-    }
-    else
+    if (authServiceInitReturnVal != ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
     {
       return ZoomResponseBuilder(tag)
           .Success(false)
@@ -180,60 +156,54 @@ namespace flutter_zoom_meeting_sdk
           .Param("statusName", EnumToString(authServiceInitReturnVal))
           .Build();
     }
+
+    auto handler = ZoomEventManager::GetInstance().GetEventHandler();
+    if (!handler)
+    {
+      return ZoomResponseBuilder(tag)
+          .Success(false)
+          .Message("Missing ZoomEventManager handler")
+          .Build();
+    }
+
+    authListener = std::make_unique<ZoomSDKEventListenerAuthService>();
+    authListener->SetEventHandler(handler);
+    authService->SetEvent(authListener.get());
+
+    std::wstring wide_token(token.begin(), token.end());
+
+    ZOOM_SDK_NAMESPACE::SDKError authCallReturnValue(ZOOM_SDK_NAMESPACE::SDKERR_UNAUTHENTICATION);
+    ZOOM_SDK_NAMESPACE::AuthContext authContext;
+    authContext.jwt_token = wide_token.c_str();
+
+    authCallReturnValue = authService->SDKAuth(authContext);
+
+    if (authCallReturnValue == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
+    {
+      return ZoomResponseBuilder(tag)
+          .Success(true)
+          .Message("Authentication call succeeded, listen onAuthenticationReturn for further action.")
+          .Param("status", static_cast<int>(authCallReturnValue))
+          .Param("statusName", EnumToString(authCallReturnValue))
+          .Build();
+    }
+
+    return ZoomResponseBuilder(tag)
+        .Success(false)
+        .Message("SDK Authentication failed")
+        .Param("status", static_cast<int>(authCallReturnValue))
+        .Param("statusName", EnumToString(authCallReturnValue))
+        .Build();
   }
 
-  ZoomResponse joinMeeting(uint64_t meetingNumber, std::wstring password, std::wstring displayName)
+  ZoomResponse JoinMeeting(uint64_t meetingNumber, std::wstring password, std::wstring displayName)
   {
     std::string tag = "joinMeeting";
 
     ZOOM_SDK_NAMESPACE::IMeetingService *meetingService;
     ZOOM_SDK_NAMESPACE::SDKError meetingServiceInitReturnVal = ZOOM_SDK_NAMESPACE::CreateMeetingService(&meetingService);
 
-    if (meetingServiceInitReturnVal == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
-    {
-      ZOOM_SDK_NAMESPACE::JoinParam joinParam;
-      joinParam.userType = ZOOM_SDK_NAMESPACE::SDK_UT_NORMALUSER;
-      auto &normalParam = joinParam.param.normaluserJoin;
-      normalParam.meetingNumber = meetingNumber;
-      normalParam.userName = displayName.c_str();
-      normalParam.psw = password.c_str();
-      normalParam.isVideoOff = false;
-      normalParam.isAudioOff = false;
-
-      ZoomSDKEventListenerMeetingService *meetingListener = new ZoomSDKEventListenerMeetingService();
-      auto handler = ZoomEventManager::GetInstance().GetEventHandler();
-      if (!handler)
-      {
-        return ZoomResponseBuilder(tag)
-            .Success(false)
-            .Message("Missing ZoomEventManager handler")
-            .Build();
-      }
-
-      meetingListener->SetEventHandler(handler);
-      meetingService->SetEvent(meetingListener);
-
-      auto joinResult = meetingService->Join(joinParam);
-      if (joinResult == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
-      {
-        return ZoomResponseBuilder(tag)
-            .Success(true)
-            .Message("Join meeting call succeeded, listen for join meeting result using the onMeetingStatusChanged callback")
-            .Param("status", static_cast<int>(joinResult))
-            .Param("statusName", EnumToString(joinResult))
-            .Build();
-      }
-      else
-      {
-        return ZoomResponseBuilder(tag)
-            .Success(false)
-            .Message("Join meeting call failed")
-            .Param("status", static_cast<int>(joinResult))
-            .Param("statusName", EnumToString(joinResult))
-            .Build();
-      }
-    }
-    else
+    if (meetingServiceInitReturnVal != ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
     {
       return ZoomResponseBuilder(tag)
           .Success(false)
@@ -242,6 +212,46 @@ namespace flutter_zoom_meeting_sdk
           .Param("statusName", EnumToString(meetingServiceInitReturnVal))
           .Build();
     }
+
+    ZOOM_SDK_NAMESPACE::JoinParam joinParam;
+    joinParam.userType = ZOOM_SDK_NAMESPACE::SDK_UT_NORMALUSER;
+    auto &normalParam = joinParam.param.normaluserJoin;
+    normalParam.meetingNumber = meetingNumber;
+    normalParam.userName = displayName.c_str();
+    normalParam.psw = password.c_str();
+    normalParam.isVideoOff = false;
+    normalParam.isAudioOff = false;
+
+    auto handler = ZoomEventManager::GetInstance().GetEventHandler();
+    if (!handler)
+    {
+      return ZoomResponseBuilder(tag)
+          .Success(false)
+          .Message("Missing ZoomEventManager handler")
+          .Build();
+    }
+
+    meetingListener = std::make_unique<ZoomSDKEventListenerMeetingService>();
+    meetingListener->SetEventHandler(handler);
+    meetingService->SetEvent(meetingListener.get());
+
+    auto joinResult = meetingService->Join(joinParam);
+    if (joinResult == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
+    {
+      return ZoomResponseBuilder(tag)
+          .Success(true)
+          .Message("Join meeting call succeeded, listen for join meeting result using the onMeetingStatusChanged callback")
+          .Param("status", static_cast<int>(joinResult))
+          .Param("statusName", EnumToString(joinResult))
+          .Build();
+    }
+
+    return ZoomResponseBuilder(tag)
+        .Success(false)
+        .Message("Join meeting call failed")
+        .Param("status", static_cast<int>(joinResult))
+        .Param("statusName", EnumToString(joinResult))
+        .Build();
   }
 
 } // namespace flutter_zoom_meeting_sdk
