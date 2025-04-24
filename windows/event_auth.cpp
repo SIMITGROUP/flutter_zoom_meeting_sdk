@@ -74,12 +74,12 @@ void ZoomSDKAuthServiceEventListener::onLoginReturnWithReason(ZOOM_SDK_NAMESPACE
     if (pAccountInfo)
     {
         const ZOOMSDK::LoginType loginType = pAccountInfo->GetLoginType();
-        std::wstring wDisplayName = pAccountInfo->GetDisplayName();
-        std::string displayName = WStringToString(wDisplayName);
+        // std::wstring wDisplayName = pAccountInfo->GetDisplayName();
+        // std::string displayName = WStringToString(wDisplayName);
 
         accountInfo[flutter::EncodableValue("loginType")] = flutter::EncodableValue(static_cast<int>(loginType));
         accountInfo[flutter::EncodableValue("loginTypeName")] = flutter::EncodableValue(EnumToString(loginType));
-        accountInfo[flutter::EncodableValue("displayName")] = flutter::EncodableValue(displayName);
+        // accountInfo[flutter::EncodableValue("displayName")] = flutter::EncodableValue(displayName);
     }
 
     params[flutter::EncodableValue("accountInfo")] = flutter::EncodableValue(accountInfo);

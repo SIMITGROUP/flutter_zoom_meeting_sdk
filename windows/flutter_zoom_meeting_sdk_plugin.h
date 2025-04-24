@@ -9,9 +9,14 @@
 #include "auth_service_interface.h"
 #include "meeting_service_interface.h"
 #include "zoom_event_stream_handler.h"
+#include "zoom_response_builder.h"
 
 namespace flutter_zoom_meeting_sdk
 {
+    // Function declarations for SDK operations
+    ZoomResponse initZoom();
+    ZoomResponse authZoom(std::string token);
+    ZoomResponse joinMeeting(uint64_t meetingNumber, std::wstring password, std::wstring displayName);
 
     class FlutterZoomMeetingSdkPlugin : public flutter::Plugin
     {
