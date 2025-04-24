@@ -14,7 +14,7 @@
 #include "auth_service_interface.h"
 #include "meeting_service_interface.h"
 #include "arg_reader.h"
-#include "event_auth.h"
+#include "zoom_event_listener_auth_service.h"
 #include "zoom_event_stream_handler.h"
 #include "zoom_event_listener_meeting_service.h"
 #include "zoom_event_manager.h"
@@ -33,13 +33,18 @@ namespace flutter_zoom_meeting_sdk
             registrar->messenger(), "flutter_zoom_meeting_sdk",
             &flutter::StandardMethodCodec::GetInstance());
 
-    auto plugin = std::make_unique<FlutterZoomMeetingSdkPlugin>();
-
-    // Set up the event channel for Zoom SDK events
     auto event_channel = std::make_unique<flutter::EventChannel<flutter::EncodableValue>>(
         registrar->messenger(),
         "flutter_zoom_meeting_sdk/events",
         &flutter::StandardMethodCodec::GetInstance());
+
+    auto plugin = std::make_unique<FlutterZoomMeetingSdkPlugin>();
+
+    channel->SetMethodCallHandler(
+        [plugin_pointer = plugin.get()](const auto &call, auto result)
+        {
+          plugin_pointer->HandleMethodCall(call, std::move(result));
+        });
 
     // Create the event handler
     auto handler = std::make_unique<ZoomEventStreamHandler>();
@@ -47,12 +52,6 @@ namespace flutter_zoom_meeting_sdk
 
     // Set the stream handler
     event_channel->SetStreamHandler(std::move(handler));
-
-    channel->SetMethodCallHandler(
-        [plugin_pointer = plugin.get()](const auto &call, auto result)
-        {
-          plugin_pointer->HandleMethodCall(call, std::move(result));
-        });
 
     registrar->AddPlugin(std::move(plugin));
   }
@@ -142,7 +141,7 @@ namespace flutter_zoom_meeting_sdk
             .Build();
       }
 
-      ZoomSDKAuthServiceEventListener *authListener = new ZoomSDKAuthServiceEventListener();
+      ZoomSDKEventListenerAuthService *authListener = new ZoomSDKEventListenerAuthService();
       authListener->SetEventHandler(handler);
 
       ZOOM_SDK_NAMESPACE::AuthContext authContext;
