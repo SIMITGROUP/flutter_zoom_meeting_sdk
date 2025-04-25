@@ -2,11 +2,13 @@ class ZoomMeetingSdkRequest {
   final String meetingNumber;
   final String password;
   final String displayName;
+  final String? webinarToken;
 
   ZoomMeetingSdkRequest({
     required this.meetingNumber,
     required this.password,
     required this.displayName,
+    this.webinarToken,
   });
 
   // Factory method to create the object from a Map
@@ -15,6 +17,7 @@ class ZoomMeetingSdkRequest {
       meetingNumber: map['meetingNumber'] ?? '',
       password: map['password'] ?? '',
       displayName: map['displayName'] ?? '',
+      webinarToken: map['webinarToken'],
     );
   }
 
@@ -24,6 +27,7 @@ class ZoomMeetingSdkRequest {
       'meetingNumber': meetingNumber,
       'password': password,
       'displayName': displayName,
+      'webinarToken': webinarToken,
     };
   }
 }

@@ -54,6 +54,8 @@ class MeetingCardList extends StatelessWidget {
                   Text('Password: ${meeting['password']}'),
                   const SizedBox(height: 8),
                   Text('Display Name: ${meeting['displayName']}'),
+                  const SizedBox(height: 8),
+                  Text('Webinar Token: ${meeting['webinarToken']}'),
                   const Spacer(),
                   Align(
                     alignment: Alignment.bottomRight,

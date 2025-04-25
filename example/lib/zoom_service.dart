@@ -13,6 +13,7 @@ class ZoomService {
   String _meetingNumber = "";
   String _userName = "";
   String _passCode = "";
+  String? _webinarToken;
   int _role = 0;
 
   StreamSubscription? _authSubscription;
@@ -41,7 +42,9 @@ class ZoomService {
       meetingNumber: _meetingNumber,
       password: _passCode,
       displayName: _userName,
+      webinarToken: _webinarToken,
     );
+
     final result = await _zoomSdk.joinMeeting(request);
     print('Join response: ${jsonEncode(result.toMap())}');
     return result;

@@ -37,8 +37,17 @@ class _MyAppState extends State<MyApp> {
     },
     {
       'meetingNumber': '98667185101',
-      'password': '708049',
+      'password': 'QI8xbfyBFqt5h2lqrOYJf3e7JXNFjY.1',
       'displayName': 'John Doe',
+      'webinarToken':
+          '3U-fmkgKTk9AdPczv7AstfKsFNHRlmbEI_3gdKSe6kE.DQcAAAAW-QXDzRYtYV9tZEFMUlJjLTFrUm82Wmo2RjlnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    },
+    {
+      'meetingNumber': '81905298441',
+      'password': 'PAJyyCw8jrnftFASg9IAzJ2WFSHz7Q.1',
+      'displayName': 'Yong JH',
+      'webinarToken':
+          'u9D6MKUReBvGBPIkjfVSIPHLvXHStOvtrgDHqafw0gM.DQcAAAATEe-sCRZBbmExR0taWlRrbTJ5V2J0eXQ5d2dnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
     },
   ];
 
@@ -46,6 +55,7 @@ class _MyAppState extends State<MyApp> {
     _zoomService.setMeetingNumber(meeting['meetingNumber'] ?? '');
     _zoomService.setPassCode(meeting['password'] ?? '');
     _zoomService.setUserName(meeting['displayName'] ?? '');
+    _zoomService.setWebinarToken(meeting['webinarToken']);
 
     _zoomService.authZoom();
     // Trigger join meeting in event listener

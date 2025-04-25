@@ -131,7 +131,7 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             joinParam.password = args["password"]
             joinParam.userType = ZoomSDKUserType_WithoutLogin
             joinParam.displayName = args["displayName"]
-            joinParam.webinarToken = nil
+            joinParam.webinarToken = (args["webinarToken"]?.isEmpty ?? true) ? nil : args["webinarToken"]
             joinParam.customerKey = nil
             joinParam.isDirectShare = false
             joinParam.displayID = 0
@@ -141,6 +141,7 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             joinParam.zak = nil
 
             let joinResult = meetingService.joinMeeting(joinParam)
+            
 
             result(
                 makeActionResponse(
