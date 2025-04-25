@@ -129,7 +129,7 @@ namespace flutter_zoom_meeting_sdk
     {
       return ZoomResponseBuilder(tag)
           .Success(true)
-          .Message("Zoom SDK already initialized.")
+          .Message("MSG_INITIALIZED")
           .Build();
     }
 
@@ -141,7 +141,7 @@ namespace flutter_zoom_meeting_sdk
     {
       return ZoomResponseBuilder(tag)
           .Success(true)
-          .Message("Initialization successfully.")
+          .Message("MSG_INIT_SUCCESS")
           .Param("status", static_cast<int>(initResult))
           .Param("statusName", EnumToString(initResult))
           .Build();
@@ -149,7 +149,7 @@ namespace flutter_zoom_meeting_sdk
 
     return ZoomResponseBuilder(tag)
         .Success(false)
-        .Message("Initialization failed")
+        .Message("MSG_INIT_FAILED")
         .Param("status", static_cast<int>(initResult))
         .Param("statusName", EnumToString(initResult))
         .Build();
@@ -165,7 +165,7 @@ namespace flutter_zoom_meeting_sdk
     {
       return ZoomResponseBuilder(tag)
           .Success(false)
-          .Message("Failed to create auth service")
+          .Message("MSG_AUTH_SERVICE_NOT_AVAILABLE")
           .Param("status", static_cast<int>(authServiceInitReturnVal))
           .Param("statusName", EnumToString(authServiceInitReturnVal))
           .Build();
@@ -176,7 +176,7 @@ namespace flutter_zoom_meeting_sdk
     {
       return ZoomResponseBuilder(tag)
           .Success(false)
-          .Message("Missing ZoomEventManager handler")
+          .Message("MSG_ZOOM_EVENT_MANAGER_HANDLER_NOT_AVAILABLE")
           .Build();
     }
 
@@ -194,7 +194,7 @@ namespace flutter_zoom_meeting_sdk
     {
       return ZoomResponseBuilder(tag)
           .Success(true)
-          .Message("Authentication call succeeded, listen onAuthenticationReturn for further action.")
+          .Message("MSG_AUTH_SENT_SUCCESS")
           .Param("status", static_cast<int>(authCallReturnValue))
           .Param("statusName", EnumToString(authCallReturnValue))
           .Build();
@@ -202,7 +202,7 @@ namespace flutter_zoom_meeting_sdk
 
     return ZoomResponseBuilder(tag)
         .Success(false)
-        .Message("SDK Authentication failed")
+        .Message("MSG_AUTH_SENT_FAILED")
         .Param("status", static_cast<int>(authCallReturnValue))
         .Param("statusName", EnumToString(authCallReturnValue))
         .Build();
@@ -219,7 +219,7 @@ namespace flutter_zoom_meeting_sdk
     {
       return ZoomResponseBuilder(tag)
           .Success(false)
-          .Message("Failed to create meeting service")
+          .Message("MSG_MEETING_SERVICE_NOT_AVAILABLE")
           .Param("status", static_cast<int>(meetingServiceInitReturnVal))
           .Param("statusName", EnumToString(meetingServiceInitReturnVal))
           .Build();
@@ -244,7 +244,7 @@ namespace flutter_zoom_meeting_sdk
     {
       return ZoomResponseBuilder(tag)
           .Success(false)
-          .Message("Missing ZoomEventManager handler")
+          .Message("MSG_ZOOM_EVENT_MANAGER_HANDLER_NOT_AVAILABLE")
           .Build();
     }
 
@@ -257,7 +257,7 @@ namespace flutter_zoom_meeting_sdk
     {
       return ZoomResponseBuilder(tag)
           .Success(true)
-          .Message("Join meeting call succeeded, listen for join meeting result using the onMeetingStatusChanged callback")
+          .Message("MSG_JOIN_SENT_SUCCESS")
           .Param("status", static_cast<int>(joinResult))
           .Param("statusName", EnumToString(joinResult))
           .Build();
@@ -265,7 +265,7 @@ namespace flutter_zoom_meeting_sdk
 
     return ZoomResponseBuilder(tag)
         .Success(false)
-        .Message("Join meeting call failed")
+        .Message("MSG_JOIN_SENT_FAILED")
         .Param("status", static_cast<int>(joinResult))
         .Param("statusName", EnumToString(joinResult))
         .Build();
