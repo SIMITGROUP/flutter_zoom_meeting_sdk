@@ -34,10 +34,10 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   // windows, macos, ios
   Stream<Map<String, dynamic>> get onAuthenticationReturn;
 
-  // windows
+  // windows, ios
   Stream<Map<String, dynamic>> get onLoginReturnWithReason;
 
-  // windows
+  // windows, ios
   Stream<Map<String, dynamic>> get onLogout;
 
   // windows
@@ -46,7 +46,7 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   // windows, android, macos, ios
   Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired;
 
-  // windows
+  // windows, ios
   Stream<Map<String, dynamic>> get onNotificationServiceStatus;
 
   // Meeting Events
