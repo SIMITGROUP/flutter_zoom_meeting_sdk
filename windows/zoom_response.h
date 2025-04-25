@@ -7,6 +7,7 @@
 class ZoomResponse
 {
 public:
+    std::string platform;
     bool isSuccess;
     std::string action;
     std::string message;

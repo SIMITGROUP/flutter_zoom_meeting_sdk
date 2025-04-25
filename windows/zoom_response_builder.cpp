@@ -25,6 +25,7 @@ ZoomResponseBuilder &ZoomResponseBuilder::Param(const std::string &key, flutter:
 ZoomResponse ZoomResponseBuilder::Build() const // Ensure this is defined
 {
     ZoomResponse response;
+    response.platform = platform_;
     response.isSuccess = success_;
     response.action = action_;
     response.message = message_;
@@ -37,6 +38,7 @@ ZoomResponse ZoomResponseBuilder::Build() const // Ensure this is defined
 flutter::EncodableMap ZoomResponse::ToEncodableMap() const
 {
     flutter::EncodableMap map;
+    map[flutter::EncodableValue("platform")] = flutter::EncodableValue(platform);
     map[flutter::EncodableValue("isSuccess")] = flutter::EncodableValue(isSuccess);
     map[flutter::EncodableValue("action")] = flutter::EncodableValue(action);
     map[flutter::EncodableValue("message")] = flutter::EncodableValue(message);
