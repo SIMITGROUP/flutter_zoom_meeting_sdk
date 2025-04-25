@@ -5,6 +5,7 @@ struct StandardZoomResponse {
     let params: [String: Any]
 
     func toDictionary() -> [String: Any] {
+        print("FlutterZoomMeetingSDK::Action::\(action) - \(isSuccess) - \(message) - params: \(params)")
         return [
             "platform": "macos",
             "isSuccess": isSuccess,
@@ -21,6 +22,7 @@ struct StandardZoomEventResponse {
     let params: [String: Any]
 
     func toDictionary() -> [String: Any] {
+        print("FlutterZoomMeetingSDK::Event::\(event) - params: \(params)")
         return [
             "platform": "macos",
             "event": event,
