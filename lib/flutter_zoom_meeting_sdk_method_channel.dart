@@ -14,17 +14,6 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel('flutter_zoom_meeting_sdk');
 
-  /// Event channels for auth and meeting events
-  @visibleForTesting
-  final EventChannel authEventChannel = const EventChannel(
-    'flutter_zoom_meeting_sdk/auth_events',
-  );
-
-  @visibleForTesting
-  final EventChannel meetingEventChannel = const EventChannel(
-    'flutter_zoom_meeting_sdk/meeting_events',
-  );
-
   @visibleForTesting
   final eventChannel = const EventChannel('flutter_zoom_meeting_sdk/events');
 
@@ -32,9 +21,11 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
       .receiveBroadcastStream()
       .map((event) => Map<String, dynamic>.from(event));
 
-  // Auth Events
+  // ======== Events =========
 
-  // windows
+  // ====== Auth Events ======
+
+  // windows, macos, ios
   @override
   Stream<Map<String, dynamic>> get onAuthenticationReturn =>
       _eventStream.where((e) => e['event'] == 'onAuthenticationReturn');
@@ -54,7 +45,7 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   Stream<Map<String, dynamic>> get onZoomIdentityExpired =>
       _eventStream.where((e) => e['event'] == 'onZoomIdentityExpired');
 
-  // windows, android
+  // windows, android, macos, ios
   @override
   Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired =>
       _eventStream.where((e) => e['event'] == 'onZoomAuthIdentityExpired');
@@ -66,7 +57,7 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
 
   // Meeting Events
 
-  // windows, android
+  // windows, android, macos, ios
   @override
   Stream<Map<String, dynamic>> get onMeetingStatusChanged =>
       _eventStream.where((e) => e['event'] == 'onMeetingStatusChanged');
@@ -114,40 +105,14 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
       _eventStream.where((e) => e['event'] == 'onZoomSDKInitializeResult');
 
-  /// Streams for auth and meeting events
-  @override
-  Stream<ZoomMeetingAuthEventResponse> get onAuthEvent =>
-      authEventChannel.receiveBroadcastStream().map((event) {
-        final Map<String, dynamic> resultMap = Map<String, dynamic>.from(event);
-        return ZoomMeetingAuthEventResponse.fromMap(resultMap);
-      });
+  // ======= Functions =======
 
   @override
-  Stream<ZoomMeetingMeetingEventResponse> get onMeetingEvent =>
-      meetingEventChannel.receiveBroadcastStream().map((event) {
-        final Map<String, dynamic> resultMap = Map<String, dynamic>.from(event);
-        return ZoomMeetingMeetingEventResponse.fromMap(resultMap);
-      });
-
-  @override
-  Stream get onZoomEvent => eventChannel.receiveBroadcastStream().map((event) {
-    print("Plugin Zoom Event: $event");
-    return event;
-  });
-
-  @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>(
-      'getPlatformVersion',
-    );
-    return version;
-  }
-
-  @override
-  Future<StandardZoomMeetingResponse> initZoom() async {
+  Future<Map<dynamic, dynamic>> initZoom() async {
     final result = await methodChannel.invokeMethod('initZoom');
-    final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
-    return StandardZoomMeetingResponse.fromMap(resultMap);
+    return result;
+    // final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
+    // return StandardZoomMeetingResponse.fromMap(resultMap);
   }
 
   @override

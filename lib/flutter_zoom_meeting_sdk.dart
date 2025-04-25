@@ -6,26 +6,11 @@ import 'flutter_zoom_meeting_sdk_platform_interface.dart';
 export 'models/zoom_meeting_sdk_response.dart';
 
 class FlutterZoomMeetingSdk {
-  /// Stream of Zoom SDK authentication events
-  ///
-  /// Events include:
-  /// - onZoomSDKAuthReturn: Authentication result
-  /// - onZoomAuthIdentityExpired: Auth token expired
-  Stream<ZoomMeetingAuthEventResponse> get onAuthEvent =>
-      FlutterZoomMeetingSdkPlatform.instance.onAuthEvent;
+  // ======== Events =========
 
-  /// Stream of Zoom SDK meeting events
-  ///
-  /// Events include:
-  /// - onMeetingStatusChange: Meeting status changes
-  Stream<ZoomMeetingMeetingEventResponse> get onMeetingEvent =>
-      FlutterZoomMeetingSdkPlatform.instance.onMeetingEvent;
+  // ====== Auth Events ======
 
-  Stream get onZoomEvent => FlutterZoomMeetingSdkPlatform.instance.onZoomEvent;
-
-  // Auth Events
-
-  // windows
+  // windows, macos, ios
   Stream<Map<String, dynamic>> get onAuthenticationReturn =>
       FlutterZoomMeetingSdkPlatform.instance.onAuthenticationReturn;
 
@@ -41,7 +26,7 @@ class FlutterZoomMeetingSdk {
   Stream<Map<String, dynamic>> get onZoomIdentityExpired =>
       FlutterZoomMeetingSdkPlatform.instance.onZoomIdentityExpired;
 
-  // windows, android
+  // windows, android, macos, ios
   Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired =>
       FlutterZoomMeetingSdkPlatform.instance.onZoomAuthIdentityExpired;
 
@@ -49,9 +34,9 @@ class FlutterZoomMeetingSdk {
   Stream<Map<String, dynamic>> get onNotificationServiceStatus =>
       FlutterZoomMeetingSdkPlatform.instance.onNotificationServiceStatus;
 
-  // Meeting Evetns
+  // ====== Meeting Events ======
 
-  // windows, android
+  // windows, android, macos, ios
   Stream<Map<String, dynamic>> get onMeetingStatusChanged =>
       FlutterZoomMeetingSdkPlatform.instance.onMeetingStatusChanged;
 
@@ -86,11 +71,9 @@ class FlutterZoomMeetingSdk {
   Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
       FlutterZoomMeetingSdkPlatform.instance.onZoomSDKInitializeResult;
 
-  Future<String?> getPlatformVersion() {
-    return FlutterZoomMeetingSdkPlatform.instance.getPlatformVersion();
-  }
+  // ======= Functions =======
 
-  Future<StandardZoomMeetingResponse> initZoom() {
+  Future<Map<dynamic, dynamic>> initZoom() {
     return FlutterZoomMeetingSdkPlatform.instance.initZoom();
   }
 

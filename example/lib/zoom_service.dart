@@ -21,15 +21,10 @@ class ZoomService {
 
   StreamSubscription? _meetingStatusSub;
 
-  // Expose streams for listeners
-  Stream<ZoomMeetingAuthEventResponse> get onAuthEvent => _zoomSdk.onAuthEvent;
-  Stream<ZoomMeetingMeetingEventResponse> get onMeetingEvent =>
-      _zoomSdk.onMeetingEvent;
-  Stream get onZoomEvent => _zoomSdk.onZoomEvent;
-
-  Future<StandardZoomMeetingResponse> initZoom() async {
+  Future<Map<dynamic, dynamic>> initZoom() async {
     final result = await _zoomSdk.initZoom();
-    print('Init response: ${jsonEncode(result.toMap())}');
+    print('Init response: $result');
+    // print('Init response: ${jsonEncode(result.toMap())}');
     return result;
   }
 
@@ -37,7 +32,7 @@ class ZoomService {
     final jwtToken = await getJWTToken();
 
     final result = await _zoomSdk.authZoom(jwtToken: jwtToken);
-    print('Init response: ${jsonEncode(result.toMap())}');
+    print('Auth response: ${jsonEncode(result.toMap())}');
     return result;
   }
 
@@ -48,7 +43,7 @@ class ZoomService {
       displayName: _userName,
     );
     final result = await _zoomSdk.joinMeeting(request);
-    print('Init response: ${jsonEncode(result.toMap())}');
+    print('Join response: ${jsonEncode(result.toMap())}');
     return result;
   }
 
@@ -70,25 +65,6 @@ class ZoomService {
   }
 
   void initEventListeners() {
-    // Listen to auth events
-    // _authSubscription = _zoomSdk.onAuthEvent.listen((event) {
-    //   print('Auth event: $event');
-    //   print('Auth event: ${jsonEncode(event.toMap())}');
-    //   // if (event.statusText == 'Success') {
-    //   joinMeeting();
-    //   // }
-    // });
-
-    // // Listen to meeting events
-    // _meetingSubscription = _zoomSdk.onMeetingEvent.listen((event) {
-    //   print('Meeting event: $event');
-    //   print('Meeting event: ${jsonEncode(event.toMap())}');
-    // });
-
-    // _zoomEventSubscription = _zoomSdk.onZoomEvent.listen((event) {
-    //   print('Example Zoom event: $event');
-    // });
-
     _zoomSdk.onAuthenticationReturn.listen((event) {
       print("Example App onAuthenticationReturn: $event");
       joinMeeting();

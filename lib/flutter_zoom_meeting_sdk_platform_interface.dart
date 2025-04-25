@@ -27,9 +27,11 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  // Auth Events
+  // ======== Events =========
 
-  // windows
+  // ====== Auth Events ======
+
+  // windows, macos, ios
   Stream<Map<String, dynamic>> get onAuthenticationReturn;
 
   // windows
@@ -41,7 +43,7 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   // windows
   Stream<Map<String, dynamic>> get onZoomIdentityExpired;
 
-  // windows, android
+  // windows, android, macos, ios
   Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired;
 
   // windows
@@ -49,7 +51,7 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
 
   // Meeting Events
 
-  // windows, android
+  // windows, android, macos, ios
   Stream<Map<String, dynamic>> get onMeetingStatusChanged;
 
   // windows
@@ -75,25 +77,9 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   // Initialization Events
   Stream<Map<String, dynamic>> get onZoomSDKInitializeResult;
 
-  /// Stream for authentication events from the Zoom SDK
-  Stream<ZoomMeetingAuthEventResponse> get onAuthEvent {
-    throw UnimplementedError('onAuthEvent has not been implemented.');
-  }
+  // ======= Functions =======
 
-  /// Stream for meeting events from the Zoom SDK
-  Stream<ZoomMeetingMeetingEventResponse> get onMeetingEvent {
-    throw UnimplementedError('onMeetingEvent has not been implemented.');
-  }
-
-  Stream get onZoomEvent {
-    throw UnimplementedError('onZoomEvent has not been implemented.');
-  }
-
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
-  Future<StandardZoomMeetingResponse> initZoom() {
+  Future<Map<dynamic, dynamic>> initZoom() {
     throw UnimplementedError('initZoom() has not been implemented.');
   }
 
