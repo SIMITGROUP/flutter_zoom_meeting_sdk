@@ -1,55 +1,33 @@
-struct StandardZoomMeetingResponse {
-  let success: Bool
-  let message: String
-  let statusCode: UInt32
-  let statusText: String
-
-  func toDictionary() -> [String: Any] {
-    return [
-      "success": success,
-      "message": message,
-      "statusCode": statusCode,
-      "statusText": statusText,
-    ]
-  }
+struct StandardZoomResponse {
+    let isSuccess: Bool
+    let message: String
+    let action: String
+    let params: [String: Any]
+    
+    func toDictionary() -> [String: Any] {
+        return [
+            "platform": "macos",
+            "isSuccess": isSuccess,
+            "message": message,
+            "action": action,
+            "params": params,
+        ]
+    }
+    
+    
 }
 
-struct StandardZoomMeetingEventResponse {
-  let event: String
-  let success: Bool
-  let message: String
-  let statusCode: UInt32
-  let statusText: String
+struct StandardZoomEventResponse {
+    let event: String
+    let oriEvent: String
+    let params: [String: Any]
 
-  func toDictionary() -> [String: Any] {
-    return [
-      "event": event,
-      "success": success,
-      "message": message,
-      "statusCode": statusCode,
-      "statusText": statusText,
-    ]
-  }
-}
-
-struct ZoomMeetingStatusChangeEventResponse {
-  let event: String
-  let meetingStatus: UInt32
-  let meetingStatusText: String
-  let meetingError: UInt32
-  let meetingErrorText: String
-  let endMeetingReason: UInt32
-  let endMeetingReasonText: String
-
-  func toDictionary() -> [String: Any] {
-    return [
-      "event": event,
-      "meetingStatus": meetingStatus,
-      "meetingStatusText": meetingStatusText,
-      "meetingError": meetingError,
-      "meetingErrorText": meetingErrorText,
-      "endMeetingReason": endMeetingReason,
-      "endMeetingReasonText": endMeetingReasonText,
-    ]
-  }
+    func toDictionary() -> [String: Any] {
+        return [
+            "platform": "macos",
+            "event": event,
+            "oriEvent": oriEvent,
+            "params": params,
+        ]
+    }
 }

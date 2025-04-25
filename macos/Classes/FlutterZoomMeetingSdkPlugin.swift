@@ -3,242 +3,242 @@ import FlutterMacOS
 import ZoomSDK
 
 public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
-  private var authEventSink: FlutterEventSink?
-  private var meetingEventSink: FlutterEventSink?
+    private var eventSink: FlutterEventSink?
 
-  public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(
-      name: "flutter_zoom_meeting_sdk", binaryMessenger: registrar.messenger)
-    let instance = FlutterZoomMeetingSdkPlugin()
-    registrar.addMethodCallDelegate(instance, channel: channel)
-
-    // Register event channels
-    let authEventChannel = FlutterEventChannel(
-      name: "flutter_zoom_meeting_sdk/auth_events", binaryMessenger: registrar.messenger)
-    authEventChannel.setStreamHandler(AuthStreamHandler(plugin: instance))
-
-    let meetingEventChannel = FlutterEventChannel(
-      name: "flutter_zoom_meeting_sdk/meeting_events", binaryMessenger: registrar.messenger)
-    meetingEventChannel.setStreamHandler(MeetingStreamHandler(plugin: instance))
-  }
-
-  // Event sink setters
-  func setAuthEventSink(_ eventSink: FlutterEventSink?) {
-    self.authEventSink = eventSink
-  }
-
-  func setMeetingEventSink(_ eventSink: FlutterEventSink?) {
-    self.meetingEventSink = eventSink
-  }
-
-  public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    switch call.method {
-    case "getPlatformVersion":
-      result("macOS " + ProcessInfo.processInfo.operatingSystemVersionString)
-
-    case "initZoom":
-      let zoomSdk = ZoomSDK.shared()
-      let initParams = ZoomSDKInitParams()
-      initParams.zoomDomain = "zoom.us"
-
-      let initResult = zoomSdk.initSDK(with: initParams)
-      let response = StandardZoomMeetingResponse(
-        success: initResult == ZoomSDKError_Success,
-        message: initResult == ZoomSDKError_Success
-          ? "Initialized successfully" : "Failed to initialize",
-        statusCode: initResult.rawValue,
-        statusText: initResult.name,
-      )
-
-      result(response.toDictionary())
-
-    case "authZoom":
-      guard let args = call.arguments as? [String: String] else {
-        let response = StandardZoomMeetingResponse(
-          success: false,
-          message: "No arguments provided",
-          statusCode: 200,
-          statusText: ""
+    public static func register(with registrar: FlutterPluginRegistrar) {
+        let channel = FlutterMethodChannel(
+            name: "flutter_zoom_meeting_sdk",
+            binaryMessenger: registrar.messenger
         )
-        result(response.toDictionary())
-        return
-      }
-      guard let jwtToken = args["jwtToken"] else {
-        let response = StandardZoomMeetingResponse(
-          success: false,
-          message: "No JWT token provided",
-          statusCode: 200,
-          statusText: ""
+        let instance = FlutterZoomMeetingSdkPlugin()
+        registrar.addMethodCallDelegate(instance, channel: channel)
+
+        // Register event channels
+        let eventChannel = FlutterEventChannel(
+            name: "flutter_zoom_meeting_sdk/events",
+            binaryMessenger: registrar.messenger
         )
-        result(response.toDictionary())
-        return
-      }
+        eventChannel.setStreamHandler(EventStreamHandler(plugin: instance))
 
-      let zoomSdk = ZoomSDK.shared()
-      let authService = zoomSdk.getAuthService()
-      authService.delegate = self
-
-      let authContext = ZoomSDKAuthContext()
-      authContext.jwtToken = jwtToken
-
-      let authResult = authService.sdkAuth(authContext)
-
-      let response = StandardZoomMeetingResponse(
-        success: authResult == ZoomSDKError_Success,
-        message: authResult == ZoomSDKError_Success
-          ? "Successfully sent auth request" : "Failed to send auth request",
-        statusCode: authResult.rawValue,
-        statusText: authResult.name,
-      )
-
-      result(response.toDictionary())
-
-    case "joinMeeting":
-
-      guard let args = call.arguments as? [String: String] else {
-        let response = StandardZoomMeetingResponse(
-          success: false,
-          message: "No arguments provided",
-          statusCode: 200,
-          statusText: ""
-        )
-        result(response.toDictionary())
-        return
-      }
-
-      guard let meetingService = ZoomSDK.shared().getMeetingService() else {
-        let response = StandardZoomMeetingResponse(
-          success: false,
-          message: "No meeting service available",
-          statusCode: 200,
-          statusText: ""
-        )
-        result(response.toDictionary())
-        return
-      }
-
-      meetingService.delegate = self
-
-      let joinParam = ZoomSDKJoinMeetingElements()
-      joinParam.meetingNumber = Int64(args["meetingNumber"] ?? "") ?? 0
-      joinParam.password = args["password"]
-      joinParam.userType = ZoomSDKUserType_WithoutLogin
-      joinParam.displayName = args["displayName"]
-      joinParam.webinarToken = nil
-      joinParam.customerKey = nil
-      joinParam.isDirectShare = false
-      joinParam.displayID = 0
-      joinParam.isNoVideo = false
-      joinParam.isNoAudio = false
-      joinParam.vanityID = nil
-      joinParam.zak = nil
-
-      let joinResult = meetingService.joinMeeting(joinParam)
-
-      let response = StandardZoomMeetingResponse(
-        success: joinResult == ZoomSDKError_Success,
-        message: joinResult == ZoomSDKError_Success
-          ? "Successfully joined meeting" : "Failed to join meeting",
-        statusCode: joinResult.rawValue,
-        statusText: joinResult.name,
-      )
-
-      result(response.toDictionary())
-
-    default:
-      result(FlutterMethodNotImplemented)
     }
-  }
+
+    // Event sink setters
+    func setEventSink(_ eventSink: FlutterEventSink?) {
+        self.eventSink = eventSink
+    }
+
+    public func handle(
+        _ call: FlutterMethodCall,
+        result: @escaping FlutterResult
+    ) {
+        let action = call.method
+
+        switch action {
+        case "initZoom":
+            let zoomSdk = ZoomSDK.shared()
+            let initParams = ZoomSDKInitParams()
+            initParams.zoomDomain = "zoom.us"
+
+            let initResult = zoomSdk.initSDK(with: initParams)
+            let response = StandardZoomResponse(
+                isSuccess: initResult == ZoomSDKError_Success,
+                message: initResult == ZoomSDKError_Success
+                    ? "MSG_INIT_SUCCESS"
+                    : "MSG_INIT_FAILED",
+                action: action,
+                params: [
+                    "status": initResult.rawValue,
+                    "statusName": initResult.name,
+                ]
+
+            )
+
+            result(response.toDictionary())
+
+        case "authZoom":
+            guard let args = call.arguments as? [String: String] else {
+
+                let response = StandardZoomResponse(
+                    isSuccess: false,
+                    message: "MSG_NO_ARGS_PROVIDED",
+                    action: action,
+                    params: [:]
+
+                )
+
+                result(response.toDictionary())
+                return
+            }
+
+            guard let jwtToken = args["jwtToken"] else {
+                let response = StandardZoomResponse(
+                    isSuccess: false,
+                    message: "MSG_NO_JWT_TOKEN_PROVIDED",
+                    action: action,
+                    params: [:]
+                )
+
+                result(response.toDictionary())
+                return
+            }
+
+            let zoomSdk = ZoomSDK.shared()
+            let authService = zoomSdk.getAuthService()
+            authService.delegate = self
+
+            let authContext = ZoomSDKAuthContext()
+            authContext.jwtToken = jwtToken
+
+            let authResult = authService.sdkAuth(authContext)
+
+            let response = StandardZoomResponse(
+                isSuccess: authResult == ZoomSDKError_Success,
+                message: authResult == ZoomSDKError_Success
+                    ? "MSG_AUTH_SENT_SUCCESS"
+                    : "MSG_AUTH_SENT_FAILED",
+                action: action,
+                params: [
+                    "status": authResult.rawValue,
+                    "statusName": authResult.name,
+                ]
+            )
+
+            result(response.toDictionary())
+
+        case "joinMeeting":
+            guard let args = call.arguments as? [String: String] else {
+                let response = StandardZoomResponse(
+                    isSuccess: false,
+                    message: "MSG_NO_ARGS_PROVIDED",
+                    action: action,
+                    params: [:]
+                )
+
+                result(response.toDictionary())
+                return
+            }
+
+            guard let meetingService = ZoomSDK.shared().getMeetingService()
+            else {
+                let response = StandardZoomResponse(
+                    isSuccess: false,
+                    message: "MSG_MEETING_SERVICE_NOT_AVAILABLE",
+                    action: action,
+                    params: [:]
+                )
+                result(response.toDictionary())
+                return
+            }
+
+            meetingService.delegate = self
+
+            let joinParam = ZoomSDKJoinMeetingElements()
+            joinParam.meetingNumber = Int64(args["meetingNumber"] ?? "") ?? 0
+            joinParam.password = args["password"]
+            joinParam.userType = ZoomSDKUserType_WithoutLogin
+            joinParam.displayName = args["displayName"]
+            joinParam.webinarToken = nil
+            joinParam.customerKey = nil
+            joinParam.isDirectShare = false
+            joinParam.displayID = 0
+            joinParam.isNoVideo = false
+            joinParam.isNoAudio = false
+            joinParam.vanityID = nil
+            joinParam.zak = nil
+
+            let joinResult = meetingService.joinMeeting(joinParam)
+
+            let response = StandardZoomResponse(
+                isSuccess: joinResult == ZoomSDKError_Success,
+                message: joinResult == ZoomSDKError_Success
+                    ? "MSG_AUTH_SENT_SUCCESS"
+                    : "MSG_AUTH_SENT_FAILED",
+                action: action,
+                params: [
+                    "status": joinResult.rawValue,
+                    "statusName": joinResult.name,
+                ]
+            )
+
+            result(response.toDictionary())
+
+        default:
+            result(FlutterMethodNotImplemented)
+        }
+    }
 }
 
 // Stream handlers for event channels
-class AuthStreamHandler: NSObject, FlutterStreamHandler {
-  private let plugin: FlutterZoomMeetingSdkPlugin
+class EventStreamHandler: NSObject, FlutterStreamHandler {
+    private let plugin: FlutterZoomMeetingSdkPlugin
 
-  init(plugin: FlutterZoomMeetingSdkPlugin) {
-    self.plugin = plugin
-    super.init()
-  }
+    init(plugin: FlutterZoomMeetingSdkPlugin) {
+        self.plugin = plugin
+        super.init()
+    }
 
-  public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink)
-    -> FlutterError?
-  {
-    plugin.setAuthEventSink(events)
-    return nil
-  }
+    public func onListen(
+        withArguments arguments: Any?,
+        eventSink events: @escaping FlutterEventSink
+    )
+        -> FlutterError?
+    {
+        plugin.setEventSink(events)
+        return nil
+    }
 
-  public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-    plugin.setAuthEventSink(nil)
-    return nil
-  }
-}
-
-class MeetingStreamHandler: NSObject, FlutterStreamHandler {
-  private let plugin: FlutterZoomMeetingSdkPlugin
-
-  init(plugin: FlutterZoomMeetingSdkPlugin) {
-    self.plugin = plugin
-    super.init()
-  }
-
-  public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink)
-    -> FlutterError?
-  {
-    plugin.setMeetingEventSink(events)
-    return nil
-  }
-
-  public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-    plugin.setMeetingEventSink(nil)
-    return nil
-  }
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        plugin.setEventSink(nil)
+        return nil
+    }
 }
 
 extension FlutterZoomMeetingSdkPlugin: ZoomSDKAuthDelegate {
-  public func onZoomSDKAuthReturn(_ returnValue: ZoomSDKAuthError) {
-    let response = StandardZoomMeetingEventResponse(
-      event: "onZoomSDKAuthReturn",
-      success: returnValue == ZoomSDKAuthError_Success,
-      message: returnValue == ZoomSDKAuthError_Success
-        ? "Successfully authenticated" : "Failed to authenticate",
-      statusCode: returnValue.rawValue,
-      statusText: returnValue.name,
-    )
+    public func onZoomSDKAuthReturn(_ returnValue: ZoomSDKAuthError) {
+        let response = StandardZoomEventResponse(
+            event: "onAuthenticationReturn",
+            oriEvent: "onZoomSDKAuthReturn",
+            params: [
+                "status": returnValue.rawValue,
+                "statusName": returnValue.name,
+            ]
+        )
 
-    // Send event to Flutter
-    self.authEventSink?(response.toDictionary())
-  }
+        self.eventSink?(response.toDictionary())
+    }
 
-  public func onZoomAuthIdentityExpired() {
-    let response = StandardZoomMeetingEventResponse(
-      event: "onZoomAuthIdentityExpired",
-      success: true,
-      message: "Zoom Auth Identity Expired",
-      statusCode: 0,
-      statusText: "",
-    )
+    public func onZoomAuthIdentityExpired() {
+        let response = StandardZoomEventResponse(
+            event: "onZoomAuthIdentityExpired",
+            oriEvent: "onZoomAuthIdentityExpired",
+            params: [:]
+        )
 
-    self.authEventSink?(response.toDictionary())
-  }
+        self.eventSink?(response.toDictionary())
+    }
 }
 
 extension FlutterZoomMeetingSdkPlugin: ZoomSDKMeetingServiceDelegate {
-  public func onMeetingStatusChange(
-    _ state: ZoomSDKMeetingStatus, meetingError error: ZoomSDKMeetingError,
-    end reason: EndMeetingReason
-  ) {
+    public func onMeetingStatusChange(
+        _ state: ZoomSDKMeetingStatus,
+        meetingError error: ZoomSDKMeetingError,
+        end reason: EndMeetingReason
+    ) {
 
-    let response = ZoomMeetingStatusChangeEventResponse(
-      event: "onMeetingStatusChange",
-      meetingStatus: state.rawValue,
-      meetingStatusText: state.name,
-      meetingError: error.rawValue,
-      meetingErrorText: error.name,
-      endMeetingReason: reason.rawValue,
-      endMeetingReasonText: reason.name,
-    )
+        let response = StandardZoomEventResponse(
+            event: "onMeetingStatusChanged",
+            oriEvent: "onMeetingStatusChange",
+            params: [
+                "status": state.rawValue,
+                "statusName": state.name,
+                "failReason": error.rawValue,
+                "failReasonName": error.name,
+                "endReason": reason.rawValue,
+                "endReasonName": reason.name,
+            ]
+        )
 
-    self.meetingEventSink?(response.toDictionary())
+        self.eventSink?(response.toDictionary())
 
-  }
+    }
 }
