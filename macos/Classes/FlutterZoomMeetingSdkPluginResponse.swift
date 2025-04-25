@@ -3,7 +3,7 @@ struct StandardZoomResponse {
     let message: String
     let action: String
     let params: [String: Any]
-    
+
     func toDictionary() -> [String: Any] {
         return [
             "platform": "macos",
@@ -13,8 +13,6 @@ struct StandardZoomResponse {
             "params": params,
         ]
     }
-    
-    
 }
 
 struct StandardZoomEventResponse {
