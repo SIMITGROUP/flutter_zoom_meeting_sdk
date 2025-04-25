@@ -143,3 +143,66 @@ extension EndMeetingReason {
     }
   }
 }
+
+extension ZoomSDKLoginStatus {
+  var name: String {
+    switch self {
+    case ZoomSDKLoginStatus_Idle: return "Idle"
+    case ZoomSDKLoginStatus_Success: return "Success"
+    case ZoomSDKLoginStatus_Failed: return "Failed"
+    case ZoomSDKLoginStatus_Processing: return "Processing"
+    default: return "Unknown(\(self.rawValue))"
+    }
+  }
+}
+
+extension ZoomSDKLoginFailReason {
+  var name: String {
+    switch self {
+    case ZoomSDKLoginFailReason_None: return "None"
+    case ZoomSDKLoginFailReason_EmailLoginDisabled: return "EmailLoginDisabled"
+    case ZoomSDKLoginFailReason_UserNotExist: return "UserNotExist"
+    case ZoomSDKLoginFailReason_WrongPassword: return "WrongPassword"
+    case ZoomSDKLoginFailReason_AccountLocked: return "AccountLocked"
+    case ZoomSDKLoginFailReason_SDKNeedUpdate: return "SDKNeedUpdate"
+    case ZoomSDKLoginFailReason_TooManyFailedAttempts: return "TooManyFailedAttempts"
+    case ZoomSDKLoginFailReason_SMSCodeError: return "SMSCodeError"
+    case ZoomSDKLoginFailReason_SMSCodeExpired: return "SMSCodeExpired"
+    case ZoomSDKLoginFailReason_PhoneNumberFormatInValid: return "PhoneNumberFormatInValid"
+    case ZoomSDKLoginFailReason_LoginTokenInvalid: return "LoginTokenInvalid"
+    case ZoomSDKLoginFailReason_UserDisagreeLoginDisclaimer: return "UserDisagreeLoginDisclaimer"
+    case ZoomSDKLoginFailReason_MFARequired: return "MFARequired"
+    case ZoomSDKLoginFailReason_NeedBirthdayAsk: return "NeedBirthdayAsk"
+    case ZoomSDKLoginFailReason_Other_Issue: return "Other_Issue"
+    default: return "Unknown(\(self.rawValue))"
+    }
+  }
+}
+
+extension ZoomSDKNotificationServiceStatus {
+  var name: String {
+    switch self {
+    case ZoomSDKNotificationServiceStatus_None: return "None"
+    case ZoomSDKNotificationServiceStatus_Starting: return "Starting"
+    case ZoomSDKNotificationServiceStatus_Started: return "Started"
+    case ZoomSDKNotificationServiceStatus_StartFailed: return "StartFailed"
+    case ZoomSDKNotificationServiceStatus_Closed: return "Closed"
+    default: return "Unknown(\(self.rawValue))"
+    }
+  }
+}
+
+extension ZoomSDKNotificationServiceError {
+  var name: String {
+    switch self {
+    case ZoomSDKNotificationServiceError_Success: return "Success"
+    case ZoomSDKNotificationServiceError_Unknown: return "Unknown"
+    case ZoomSDKNotificationServiceError_Internal_Error: return "Internal_Error"
+    case ZoomSDKNotificationServiceError_Invalid_Token: return "Invalid_Token"
+    case ZoomSDKNotificationServiceError_Multi_Connect: return "Multi_Connect"
+    case ZoomSDKNotificationServiceError_Network_Issue: return "Network_Issue"
+    case ZoomSDKNotificationServiceError_Max_Duration: return "Max_Duration"
+    default: return "Unknown(\(self.rawValue))"
+    }
+  }
+}

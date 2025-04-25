@@ -23,4 +23,60 @@ extension FlutterZoomMeetingSdkPlugin: ZoomSDKAuthDelegate {
             )
         )
     }
+
+    public func onZoomSDKLoginResult(
+        _ loginStatus: ZoomSDKLoginStatus,
+        failReason: ZoomSDKLoginFailReason
+    ) {
+        self.eventSink?(
+            makeEventResponse(
+                event: "onLoginReturnWithReason",
+                oriEvent: "onZoomSDKLoginResult",
+                params: [
+                    "status": loginStatus.rawValue,
+                    "statusName": loginStatus.name,
+                    "failReason": failReason.rawValue,
+                    "failReasonName": failReason.name,
+                ]
+            )
+        )
+    }
+
+    public func onZoomSDKLogout() {
+        self.eventSink?(
+            makeEventResponse(
+                event: "onLogout",
+                oriEvent: "onZoomSDKLogout",
+                params: [:]
+            )
+        )
+    }
+
+    public func onZoomIdentityExpired() {
+        self.eventSink?(
+            makeEventResponse(
+                event: "onZoomIdentityExpired",
+                oriEvent: "onZoomIdentityExpired",
+                params: [:]
+            )
+        )
+    }
+
+    public func onNotificationServiceStatus(
+        _ status: ZoomSDKNotificationServiceStatus,
+        error: ZoomSDKNotificationServiceError
+    ) {
+        self.eventSink?(
+            makeEventResponse(
+                event: "onNotificationServiceStatus",
+                oriEvent: "onNotificationServiceStatus",
+                params: [
+                    "status": status.rawValue,
+                    "statusName": status.name,
+                    "error": error.rawValue,
+                    "errorName": error.name,
+                ]
+            )
+        )
+    }
 }
