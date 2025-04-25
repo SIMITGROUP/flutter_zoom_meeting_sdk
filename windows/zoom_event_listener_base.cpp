@@ -17,11 +17,11 @@ void ZoomSDKEventListenerBase::SendEvent(const std::string &eventName, const flu
 
     if (!event_handler_)
     {
-        sLog(tag, "=== ERROR: Event handler is NULL, cannot send: " + eventName + " event ===");
+        sEventLog(tag, "=== ERROR: Event handler is NULL, cannot send: " + eventName + " event ===");
         return;
     }
 
-    sLog(tag, "=== Sending event: " + eventName + " ===");
+    sEventLog(tag, "=== Sending event: " + eventName + " ===");
 
     flutter::EncodableMap eventMap;
     eventMap[flutter::EncodableValue("platform")] = flutter::EncodableValue("windows");

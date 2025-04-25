@@ -31,7 +31,7 @@ ZoomResponse ZoomResponseBuilder::Build() const // Ensure this is defined
     response.message = message_;
     response.params = params_;
 
-    sLog(action_, message_);
+    sActionLog(action_, message_);
     return response;
 }
 

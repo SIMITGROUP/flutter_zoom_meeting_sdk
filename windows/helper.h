@@ -13,6 +13,26 @@ inline const void sLog(const std::string tag, const std::string message)
     std::cout << "FlutterZoomMeetingSDK::" << tag << " " << message << std::endl;
 }
 
+inline const void sEventLog(const std::string tag, const std::wstring message)
+{
+    sLog("Event::" + tag, message);
+}
+
+inline const void sEventLog(const std::string tag, const std::string message)
+{
+    sLog("Event::" + tag, message);
+}
+
+inline const void sActionLog(const std::string tag, const std::wstring message)
+{
+    sLog("Action::" + tag, message);
+}
+
+inline const void sActionLog(const std::string tag, const std::string message)
+{
+    sLog("Action::" + tag, message);
+}
+
 inline std::string WStringToString(const std::wstring &wstr)
 {
     // Calculate the required size of the buffer

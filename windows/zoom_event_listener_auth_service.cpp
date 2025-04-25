@@ -16,15 +16,15 @@ ZoomSDKEventListenerAuthService::~ZoomSDKEventListenerAuthService() {}
 void ZoomSDKEventListenerAuthService::onAuthenticationReturn(ZOOM_SDK_NAMESPACE::AuthResult ret)
 {
     const std::string tag = "onAuthenticationReturn";
-    sLog(tag, L"Authentication result: " + std::to_wstring(ret));
+    sEventLog(tag, L"Authentication result: " + std::to_wstring(ret));
 
     if (ret == ZOOM_SDK_NAMESPACE::AuthResult::AUTHRET_SUCCESS)
     {
-        sLog(tag, L"Authentication successful");
+        sEventLog(tag, L"Authentication successful");
     }
     else
     {
-        sLog(tag, L"Authentication failed");
+        sEventLog(tag, L"Authentication failed");
     }
 
     flutter::EncodableMap params;
@@ -40,8 +40,8 @@ void ZoomSDKEventListenerAuthService::onLoginReturnWithReason(ZOOM_SDK_NAMESPACE
                                                               ZOOM_SDK_NAMESPACE::LoginFailReason reason)
 {
     const std::string tag = "onLoginReturnWithReason";
-    sLog(tag, L"Login status: " + std::to_wstring(ret));
-    sLog(tag, L"Login Fail Reason: " + std::to_wstring(reason));
+    sEventLog(tag, L"Login status: " + std::to_wstring(ret));
+    sEventLog(tag, L"Login Fail Reason: " + std::to_wstring(reason));
 
     flutter::EncodableMap params;
     params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(ret));
@@ -56,7 +56,7 @@ void ZoomSDKEventListenerAuthService::onLoginReturnWithReason(ZOOM_SDK_NAMESPACE
         const ZOOMSDK::LoginType loginType = pAccountInfo->GetLoginType();
         std::wstring displayName = pAccountInfo->GetDisplayName();
 
-                accountInfo[flutter::EncodableValue("loginType")] = flutter::EncodableValue(static_cast<int>(loginType));
+        accountInfo[flutter::EncodableValue("loginType")] = flutter::EncodableValue(static_cast<int>(loginType));
         accountInfo[flutter::EncodableValue("loginTypeName")] = flutter::EncodableValue(EnumToString(loginType));
         accountInfo[flutter::EncodableValue("displayName")] = flutter::EncodableValue(WStringToString(displayName));
     }
@@ -69,7 +69,7 @@ void ZoomSDKEventListenerAuthService::onLoginReturnWithReason(ZOOM_SDK_NAMESPACE
 void ZoomSDKEventListenerAuthService::onLogout()
 {
     const std::string tag = "onLogout";
-    sLog(tag, L"");
+    sEventLog(tag, L"");
 
     flutter::EncodableMap params;
     SendEvent(tag, params);
@@ -78,7 +78,7 @@ void ZoomSDKEventListenerAuthService::onLogout()
 void ZoomSDKEventListenerAuthService::onZoomIdentityExpired()
 {
     const std::string tag = "onZoomIdentityExpired";
-    sLog(tag, L"");
+    sEventLog(tag, L"");
 
     flutter::EncodableMap params;
     SendEvent(tag, params);
@@ -87,7 +87,7 @@ void ZoomSDKEventListenerAuthService::onZoomIdentityExpired()
 void ZoomSDKEventListenerAuthService::onZoomAuthIdentityExpired()
 {
     const std::string tag = "onZoomAuthIdentityExpired";
-    sLog(tag, L"");
+    sEventLog(tag, L"");
 
     flutter::EncodableMap params;
     SendEvent(tag, params);
@@ -98,8 +98,8 @@ void ZoomSDKEventListenerAuthService::onNotificationServiceStatus(ZOOM_SDK_NAMES
                                                                   ZOOM_SDK_NAMESPACE::SDKNotificationServiceError error)
 {
     const std::string tag = "onNotificationServiceStatus";
-    sLog(tag, L"Status: " + std::to_wstring(status));
-    sLog(tag, L"Error: " + std::to_wstring(error));
+    sEventLog(tag, L"Status: " + std::to_wstring(status));
+    sEventLog(tag, L"Error: " + std::to_wstring(error));
 
     flutter::EncodableMap params;
     params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(status));

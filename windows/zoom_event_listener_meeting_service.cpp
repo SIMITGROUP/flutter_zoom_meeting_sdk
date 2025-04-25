@@ -18,7 +18,7 @@ ZoomSDKEventListenerMeetingService::~ZoomSDKEventListenerMeetingService() {}
 void ZoomSDKEventListenerMeetingService::onMeetingStatusChanged(ZOOM_SDK_NAMESPACE::MeetingStatus status, int iResult)
 {
     const std::string tag = "onMeetingStatusChanged";
-    sLog(tag, L"Status: " + std::to_wstring(status) + L", iResult: " + std::to_wstring(iResult));
+    sEventLog(tag, L"Status: " + std::to_wstring(status) + L", iResult: " + std::to_wstring(iResult));
 
     flutter::EncodableMap params;
 
@@ -52,7 +52,7 @@ void ZoomSDKEventListenerMeetingService::onMeetingStatusChanged(ZOOM_SDK_NAMESPA
 void ZoomSDKEventListenerMeetingService::onMeetingStatisticsWarningNotification(ZOOM_SDK_NAMESPACE::StatisticsWarningType type)
 {
     const std::string tag = "onMeetingStatisticsWarningNotification";
-    sLog(tag, L"StatisticsWarningType: " + std::to_wstring(type));
+    sEventLog(tag, L"StatisticsWarningType: " + std::to_wstring(type));
 
     flutter::EncodableMap params;
 
@@ -65,7 +65,7 @@ void ZoomSDKEventListenerMeetingService::onMeetingStatisticsWarningNotification(
 void ZoomSDKEventListenerMeetingService::onMeetingParameterNotification(const ZOOM_SDK_NAMESPACE::MeetingParameter *meeting_param)
 {
     const std::string tag = "onMeetingParameterNotification";
-    sLog(tag, L"");
+    sEventLog(tag, L"");
 
     flutter::EncodableMap params;
 
@@ -75,7 +75,7 @@ void ZoomSDKEventListenerMeetingService::onMeetingParameterNotification(const ZO
 void ZoomSDKEventListenerMeetingService::onSuspendParticipantsActivities()
 {
     const std::string tag = "onSuspendParticipantsActivities";
-    sLog(tag, L"");
+    sEventLog(tag, L"");
 
     flutter::EncodableMap params;
 
@@ -85,7 +85,7 @@ void ZoomSDKEventListenerMeetingService::onSuspendParticipantsActivities()
 void ZoomSDKEventListenerMeetingService::onAICompanionActiveChangeNotice(bool bActive)
 {
     const std::string tag = "onAICompanionActiveChangeNotice";
-    sLog(tag, L"");
+    sEventLog(tag, L"");
 
     flutter::EncodableMap params;
 
@@ -95,7 +95,7 @@ void ZoomSDKEventListenerMeetingService::onAICompanionActiveChangeNotice(bool bA
 void ZoomSDKEventListenerMeetingService::onMeetingTopicChanged(const zchar_t *sTopic)
 {
     const std::string tag = "onMeetingTopicChanged";
-    sLog(tag, L"");
+    sEventLog(tag, L"");
 
     flutter::EncodableMap params;
 
@@ -105,7 +105,7 @@ void ZoomSDKEventListenerMeetingService::onMeetingTopicChanged(const zchar_t *sT
 void ZoomSDKEventListenerMeetingService::onMeetingFullToWatchLiveStream(const zchar_t *sLiveStreamUrl)
 {
     const std::string tag = "onMeetingFullToWatchLiveStream";
-    sLog(tag, L"");
+    sEventLog(tag, L"");
 
     flutter::EncodableMap params;
 
