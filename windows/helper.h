@@ -33,3 +33,12 @@ inline std::string WStringToString(const std::wstring &wstr)
 
     return str;
 }
+
+inline std::wstring StringToWString(const std::string &str)
+{
+    std::wstring wstr;
+    size_t size;
+    wstr.resize(str.length());
+    mbstowcs_s(&size, &wstr[0], wstr.size() + 1, str.c_str(), str.size());
+    return wstr;
+}

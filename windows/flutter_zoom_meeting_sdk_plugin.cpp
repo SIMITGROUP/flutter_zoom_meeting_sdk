@@ -110,8 +110,9 @@ namespace flutter_zoom_meeting_sdk
       auto meetingNumber = reader.GetUINT64("meetingNumber").value_or(0);
       auto password = reader.GetWString("password").value_or(L"");
       auto displayName = reader.GetWString("displayName").value_or(L"Zoom User");
+      auto webinarToken = reader.GetWString("webinarToken");
 
-      ZoomResponse response = JoinMeeting(meetingNumber, password, displayName);
+      ZoomResponse response = JoinMeeting(meetingNumber, password, displayName, webinarToken);
       result->Success(flutter::EncodableValue(response.ToEncodableMap()));
     }
     else
@@ -207,7 +208,7 @@ namespace flutter_zoom_meeting_sdk
         .Build();
   }
 
-  ZoomResponse JoinMeeting(uint64_t meetingNumber, std::wstring password, std::wstring displayName)
+  ZoomResponse JoinMeeting(uint64_t meetingNumber, std::wstring password, std::wstring displayName, std::optional<std::wstring> webinarToken)
   {
     std::string tag = "joinMeeting";
 
@@ -232,6 +233,11 @@ namespace flutter_zoom_meeting_sdk
     normalParam.psw = password.c_str();
     normalParam.isVideoOff = false;
     normalParam.isAudioOff = false;
+
+    std::wstring tokenStr; // Holds the webinar token to keep its memory alive
+    normalParam.webinarToken = webinarToken.has_value()
+                                   ? (tokenStr = webinarToken.value(), tokenStr.c_str()) // Assign the value, then return a safe pointer
+                                   : nullptr;                                            // No token provided, so pass nullptr
 
     auto handler = ZoomEventManager::GetInstance().GetEventHandler();
     if (!handler)

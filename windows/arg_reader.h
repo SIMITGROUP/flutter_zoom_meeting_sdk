@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 #include <stdint.h>
+#include "helper.h"
 
 // Helper function to convert string to UINT64
 inline uint64_t StringToUINT64(const std::string &str)
@@ -59,7 +60,8 @@ public:
         auto str = GetString(key);
         if (str.has_value())
         {
-            return std::wstring(str.value().begin(), str.value().end());
+            // return std::wstring(str.value().begin(), str.value().end());
+            return StringToWString(str.value());
         }
         return std::nullopt;
     }
