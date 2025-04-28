@@ -114,7 +114,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             domain = "zoom.us"
         }
 
-        sdk.initialize(context, createZoomAuthListener(), params)
+        sdk.initialize(context, FlutterZoomEventListenerAuth(eventSink), params)
 
         return StandardZoomResponse(
             isSuccess = true,
@@ -151,7 +151,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 action = action
             )
 
-        meetingService.addListener(createMeetingServiceListener())
+        meetingService.addListener(FlutterZoomEventListenerMeeting(eventSink))
 
         val opts = JoinMeetingOptions()
 
@@ -173,79 +173,6 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         )
 
         return response;
-    }
-
-    private fun createZoomAuthListener(): ZoomSDKInitializeListener {
-        return object : ZoomSDKInitializeListener {
-            override fun onZoomSDKInitializeResult(errorCode: Int, internalErrorCode: Int) {
-                eventLog("onZoomSDKInitializeResult", "Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
-
-                eventSink?.success(
-                    mapOf(
-                        "platform" to PLATFORM,
-                        "event" to "onAuthenticationReturn",
-                        "oriEvent" to "onZoomSDKInitializeResult",
-                        "params" to mapOf(
-                            "status" to errorCode,
-                            "statusName" to MapperZoomError.getErrorName(errorCode),
-                            "internalErrorCode" to internalErrorCode
-                        )
-                    )
-                )
-            }
-
-            override fun onZoomAuthIdentityExpired() {
-                eventLog("onZoomAuthIdentityExpired", "Zoom SDK auth identity expired")
-
-                eventSink?.success(
-                    mapOf(
-                        "platform" to PLATFORM,
-                        "event" to "onZoomAuthIdentityExpired",
-                        "oriEvent" to "onZoomAuthIdentityExpired",
-                        "params" to emptyMap<String, Any>()
-                    )
-                )
-            }
-        }
-    }
-
-    private fun createMeetingServiceListener(): MeetingServiceListener {
-        return object : MeetingServiceListener {
-            override fun onMeetingStatusChanged(
-                meetingStatus: MeetingStatus,
-                errorCode: Int,
-                internalErrorCode: Int
-            ) {
-                eventLog("onMeetingStatusChanged", "Zoom Meeting Status Changed: $meetingStatus")
-                eventSink?.success(
-                    mapOf(
-                        "platform" to PLATFORM,
-                        "event" to "onMeetingStatusChanged",
-                        "oriEvent" to "onMeetingStatusChanged",
-                        "params" to mapOf(
-                            "status" to meetingStatus.ordinal,
-                            "statusName" to meetingStatus.name,
-                            "error" to errorCode,
-                            "errorName" to MapperMeetingError.getErrorName(errorCode),
-                            "internalErrorCode" to internalErrorCode
-                        )
-                    )
-                )
-            }
-
-            override fun onMeetingParameterNotification(params: MeetingParameter) {
-                eventLog("eventOnMeetingParameterNotification", "Params: $params")
-
-                eventSink?.success(
-                    mapOf(
-                        "platform" to PLATFORM,
-                        "event" to "onMeetingParameterNotification",
-                        "oriEvent" to "onMeetingParameterNotification",
-                        "params" to params
-                    )
-                )
-            }
-        }
     }
 }
 
