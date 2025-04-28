@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
 import 'package:flutter_zoom_meeting_sdk/models/flutter_zoom_meeting_sdk_action_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
@@ -120,18 +119,21 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   }
 
   @override
-  Future<StandardZoomMeetingResponse> authZoom({
+  Future<FlutterZoomMeetingSdkActionResponse<AuthParamsResponse>> authZoom({
     required String jwtToken,
   }) async {
     final result = await methodChannel.invokeMethod('authZoom', {
       'jwtToken': jwtToken,
     });
     final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
-    return StandardZoomMeetingResponse.fromMap(resultMap);
+    return FlutterZoomMeetingSdkActionResponse.fromMap(
+      resultMap,
+      AuthParamsResponse.fromMap,
+    );
   }
 
   @override
-  Future<StandardZoomMeetingResponse> joinMeeting(
+  Future<FlutterZoomMeetingSdkActionResponse<JoinParamsResponse>> joinMeeting(
     ZoomMeetingSdkRequest request,
   ) async {
     final result = await methodChannel.invokeMethod('joinMeeting', {
@@ -141,7 +143,10 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
       'webinarToken': request.webinarToken ?? "",
     });
     final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
-    return StandardZoomMeetingResponse.fromMap(resultMap);
+    return FlutterZoomMeetingSdkActionResponse.fromMap(
+      resultMap,
+      JoinParamsResponse.fromMap,
+    );
   }
 
   @override

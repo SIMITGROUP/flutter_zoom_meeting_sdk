@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter_zoom_meeting_sdk/enums/platform_type.dart';
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
 import 'package:flutter_zoom_meeting_sdk/models/flutter_zoom_meeting_sdk_action_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
@@ -31,15 +30,14 @@ class ZoomService {
     return result;
   }
 
-  Future<StandardZoomMeetingResponse> authZoom() async {
+  Future<FlutterZoomMeetingSdkActionResponse> authZoom() async {
     final jwtToken = await getJWTToken();
-
     final result = await _zoomSdk.authZoom(jwtToken: jwtToken);
     print('Auth response: ${jsonEncode(result.toMap())}');
     return result;
   }
 
-  Future<StandardZoomMeetingResponse> joinMeeting() async {
+  Future<FlutterZoomMeetingSdkActionResponse> joinMeeting() async {
     final request = ZoomMeetingSdkRequest(
       meetingNumber: _meetingNumber,
       password: _passCode,

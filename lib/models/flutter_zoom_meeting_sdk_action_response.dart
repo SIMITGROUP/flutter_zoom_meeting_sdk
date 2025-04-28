@@ -7,7 +7,7 @@ class FlutterZoomMeetingSdkActionResponse<T> {
   final ActionType action;
   final bool isSuccess;
   final String message;
-  final T params;
+  final T? params;
 
   FlutterZoomMeetingSdkActionResponse({
     required this.platform,
@@ -26,9 +26,10 @@ class FlutterZoomMeetingSdkActionResponse<T> {
       action: ActionType.values.byName(map['action']),
       isSuccess: map['isSuccess'],
       message: getActionMessage(map['message'] ?? ''),
-      params: paramsParser(
-        Map<String, dynamic>.from(map['params'] ?? {}),
-      ), // Use parser
+      params:
+          map['params'] != null && map['params'].isNotEmpty
+              ? paramsParser(Map<String, dynamic>.from(map['params']))
+              : null,
     );
   }
 
@@ -41,19 +42,59 @@ class FlutterZoomMeetingSdkActionResponse<T> {
       'params':
           params is InitParamsResponse
               ? (params as InitParamsResponse).toMap()
+              : params is AuthParamsResponse
+              ? (params as AuthParamsResponse).toMap()
+              : params is JoinParamsResponse
+              ? (params as JoinParamsResponse).toMap()
               : params,
     };
   }
 }
 
 class InitParamsResponse {
-  final int status;
-  final String statusName;
+  final int? status;
+  final String? statusName;
 
-  InitParamsResponse({required this.status, required this.statusName});
+  InitParamsResponse({this.status, this.statusName});
 
   factory InitParamsResponse.fromMap(Map<String, dynamic> map) {
     return InitParamsResponse(
+      status: map['status'] != null ? (map['status'] as num).toInt() : null,
+      statusName: map['statusName'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {'status': status, 'statusName': statusName};
+  }
+}
+
+class AuthParamsResponse {
+  final int status;
+  final String statusName;
+
+  AuthParamsResponse({required this.status, required this.statusName});
+
+  factory AuthParamsResponse.fromMap(Map<String, dynamic> map) {
+    return AuthParamsResponse(
+      status: map['status'],
+      statusName: map['statusName'] as String,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {'status': status, 'statusName': statusName};
+  }
+}
+
+class JoinParamsResponse {
+  final int status;
+  final String statusName;
+
+  JoinParamsResponse({required this.status, required this.statusName});
+
+  factory JoinParamsResponse.fromMap(Map<String, dynamic> map) {
+    return JoinParamsResponse(
       status: map['status'],
       statusName: map['statusName'] as String,
     );
