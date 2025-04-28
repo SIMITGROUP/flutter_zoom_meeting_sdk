@@ -1,17 +1,18 @@
 package com.simitgroup.flutter_zoom_meeting_sdk
 
-data class StandardZoomMeetingResponse(
-    val success: Boolean,
+data class StandardZoomResponse(
+    val isSuccess: Boolean,
     val message: String,
-    val statusCode: Int,
-    val statusText: String
+    val action: String,
+    val params: Map<String, Any>? = null
 ) {
     fun toMap(): Map<String, Any> {
         return mapOf(
-            "success" to success,
+            "platform" to "android",
+            "isSuccess" to isSuccess,
             "message" to message,
-            "statusCode" to statusCode,
-            "statusText" to statusText
+            "action" to action,
+            "params" to (params ?: emptyMap<String, Any>())
         )
     }
 }

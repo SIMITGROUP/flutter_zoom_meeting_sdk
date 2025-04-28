@@ -51,26 +51,43 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
- 
-        if (call.method == "authZoom") {
-            initZoom(call)
+        val action = call.method
+      
+        when {
+            (action == "initZoom") -> {
+                val response = StandardZoomResponse(
+                    isSuccess = true,
+                    message = "MSG_ANDROID_INIT",
+                    action = action
+                )
 
-            val response = StandardZoomMeetingResponse(
-                success = true,
-                message = "Init Zoom Triggered... Waiting Callback",
-                statusCode = 0,
-                statusText = "Success"
-            )
+                result.success(response.toMap())
+            }
+            (action == "authZoom") -> {
+                initZoom(call)
 
-            result.success(response.toMap())
+                val response = StandardZoomResponse(
+                    isSuccess = true,
+                    message = "MSG_AUTH_SENT_SUCCESS",
+                    action = action,
+                    params = mapOf(
+                        "status" to 0,
+                        "statusName" to "Success"
+                    )
+                )
 
-        }else if (call.method == "joinMeeting") {
-            val response = joinZoomMeeting(call)
+                result.success(response.toMap())
 
-            result.success(response.toMap())
+            }
+            (action == "joinMeeting") -> {
+                val response = joinZoomMeeting(call)
 
-        } else {
-            result.notImplemented()
+                result.success(response.toMap())
+
+            }
+            else -> {
+                result.notImplemented()
+            }
         }
     }
 
@@ -101,7 +118,9 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         sdk.initialize(context, createZoomInitListener(), params)
     }
 
-    private fun joinZoomMeeting(call: MethodCall) : StandardZoomMeetingResponse{
+    private fun joinZoomMeeting(call: MethodCall) : StandardZoomResponse{
+        val action = "joinMeeting"
+
         Log.d(
             "joinZoomMeeting",
             "Start Join Meeting Process"
@@ -123,35 +142,17 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         params.password = password
         params.displayName = displayName
 
-        val response: StandardZoomMeetingResponse
-
         val joinResult = meetingService.joinMeetingWithParams(context, params, opts)
-        if(joinResult == MeetingError.MEETING_ERROR_SUCCESS){
-            Log.d(
-                "joinZoomMeeting",
-                "Join Meeting Success"
-            )
 
-            response = StandardZoomMeetingResponse(
-                success = true,
-                message = "Join Zoom Meeting Triggered... Waiting Callback",
-                statusCode = joinResult,
-                statusText = "Success"
+        val response = StandardZoomResponse(
+            isSuccess = joinResult == MeetingError.MEETING_ERROR_SUCCESS,
+            message = if (joinResult == MeetingError.MEETING_ERROR_SUCCESS) "MSG_JOIN_SENT_SUCCESS" else "MSG_JOIN_SENT_FAILED",
+            action = action,
+            params = mapOf(
+                "status" to joinResult,
+                "statusName" to "TODO"
             )
-
-        }else {
-            Log.d(
-                "joinZoomMeeting",
-                "Join Meeting Fail"
-            )
-
-            response = StandardZoomMeetingResponse(
-                success = false,
-                message = "Join Zoom Meeting Triggered... Waiting Callback",
-                statusCode = joinResult,
-                statusText = "Fail"
-            )
-        }
+        )
 
         return response;
     }
@@ -170,7 +171,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 eventSink?.success(
                     mapOf(
                         "platform" to PLATFORM,
-                        "event" to "onZoomSDKInitializeResult",
+                        "event" to "onAuthenticationReturn",
                         "oriEvent" to "onZoomSDKInitializeResult",
                         "params" to mapOf(
                             "errorCode" to errorCode,
