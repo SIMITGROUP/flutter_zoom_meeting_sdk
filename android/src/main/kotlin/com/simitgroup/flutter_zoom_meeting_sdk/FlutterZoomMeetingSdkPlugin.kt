@@ -160,13 +160,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
     private fun createZoomInitListener(): ZoomSDKInitializeListener {
         return object : ZoomSDKInitializeListener {
             override fun onZoomSDKInitializeResult(errorCode: Int, internalErrorCode: Int) {
-                log("eventOnZoomSDKInitializeResult", "Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
-
-                if (errorCode == ZoomError.ZOOM_ERROR_SUCCESS) {
-                    log("eventOnZoomSDKInitializeResult", "Zoom SDK initialized successfully")
-                } else {
-                    log("eventOnZoomSDKInitializeResult", "Zoom SDK initialization failed!")
-                }
+                log("onZoomSDKInitializeResult", "Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
 
                 eventSink?.success(
                     mapOf(
@@ -174,7 +168,8 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                         "event" to "onAuthenticationReturn",
                         "oriEvent" to "onZoomSDKInitializeResult",
                         "params" to mapOf(
-                            "errorCode" to errorCode,
+                            "status" to errorCode,
+                            "statusName" to ZoomErrorNameMapper.getErrorName(errorCode),
                             "internalErrorCode" to internalErrorCode
                         )
                     )
@@ -182,7 +177,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             override fun onZoomAuthIdentityExpired() {
-                log("eventOnZoomAuthIdentityExpired", "Zoom SDK auth identity expired")
+                log("onZoomAuthIdentityExpired", "Zoom SDK auth identity expired")
 
                 eventSink?.success(
                     mapOf(
@@ -233,6 +228,28 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 )
             }
         }
+    }
+}
+
+object ZoomErrorNameMapper {
+    private val errorNames = mapOf(
+        ZoomError.ZOOM_ERROR_SUCCESS to "SUCCESS",
+        ZoomError.ZOOM_ERROR_INVALID_ARGUMENTS to "INVALID_ARGUMENTS",
+        ZoomError.ZOOM_ERROR_ILLEGAL_APP_KEY_OR_SECRET to "ILLEGAL_APP_KEY_OR_SECRET",
+        ZoomError.ZOOM_ERROR_NETWORK_UNAVAILABLE to "NETWORK_UNAVAILABLE",
+        ZoomError.ZOOM_ERROR_AUTHRET_CLIENT_INCOMPATIBLE to "AUTHRET_CLIENT_INCOMPATIBLE",
+        ZoomError.ZOOM_ERROR_AUTHRET_TOKENWRONG to "AUTHRET_TOKENWRONG",
+        ZoomError.ZOOM_ERROR_AUTHRET_KEY_OR_SECRET_ERROR to "AUTHRET_KEY_OR_SECRET_ERROR",
+        ZoomError.ZOOM_ERROR_AUTHRET_ACCOUNT_NOT_SUPPORT to "AUTHRET_ACCOUNT_NOT_SUPPORT",
+        ZoomError.ZOOM_ERROR_AUTHRET_ACCOUNT_NOT_ENABLE_SDK to "AUTHRET_ACCOUNT_NOT_ENABLE_SDK",
+        ZoomError.ZOOM_ERROR_AUTHRET_LIMIT_EXCEEDED_EXCEPTION to "AUTHRET_LIMIT_EXCEEDED_EXCEPTION",
+        ZoomError.ZOOM_ERROR_DEVICE_NOT_SUPPORTED to "DEVICE_NOT_SUPPORTED",
+        ZoomError.ZOOM_ERROR_UNKNOWN to "UNKNOWN",
+        ZoomError.ZOOM_ERROR_DOMAIN_DONT_SUPPORT to "DOMAIN_DONT_SUPPORT",
+    )
+
+    fun getErrorName(code: Int): String {
+        return errorNames[code] ?: "UNDEFINED"
     }
 }
 
