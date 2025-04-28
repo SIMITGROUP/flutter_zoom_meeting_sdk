@@ -1,7 +1,9 @@
 name: flutter_zoom_meeting_sdk
 description: "[WIP] A Flutter plugin for the Zoom Meeting SDK."
-version: 0.0.2
-homepage:
+version: 0.0.5
+homepage: https://github.com/SIMITGROUP/flutter_zoom_meeting_sdk
+repository: https://github.com/SIMITGROUP/flutter_zoom_meeting_sdk
+issue_tracker: https://github.com/SIMITGROUP/flutter_zoom_meeting_sdk/issues
 
 environment:
   sdk: ^3.7.2
