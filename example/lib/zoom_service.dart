@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_zoom_meeting_sdk/enums/platform_type.dart';
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
+import 'package:flutter_zoom_meeting_sdk/models/flutter_zoom_meeting_sdk_action_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
 part 'zoom_service_config.dart';
 
@@ -22,10 +24,10 @@ class ZoomService {
 
   StreamSubscription? _meetingStatusSub;
 
-  Future<Map<dynamic, dynamic>> initZoom() async {
+  Future<FlutterZoomMeetingSdkActionResponse> initZoom() async {
     final result = await _zoomSdk.initZoom();
-    print('Init response: $result');
-    // print('Init response: ${jsonEncode(result.toMap())}');
+    // print('Init response: $result');
+    print('Init response: ${jsonEncode(result.toMap())}');
     return result;
   }
 

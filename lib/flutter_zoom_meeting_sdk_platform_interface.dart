@@ -1,4 +1,5 @@
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
+import 'package:flutter_zoom_meeting_sdk/models/flutter_zoom_meeting_sdk_action_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -79,7 +80,7 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
 
   // ======= Functions =======
 
-  Future<Map<dynamic, dynamic>> initZoom() {
+  Future<FlutterZoomMeetingSdkActionResponse<InitParamsResponse>> initZoom() {
     throw UnimplementedError('initZoom() has not been implemented.');
   }
 

@@ -1,3 +1,4 @@
+import 'package:flutter_zoom_meeting_sdk/models/flutter_zoom_meeting_sdk_action_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
@@ -73,7 +74,7 @@ class FlutterZoomMeetingSdk {
 
   // ======= Functions =======
 
-  Future<Map<dynamic, dynamic>> initZoom() {
+  Future<FlutterZoomMeetingSdkActionResponse<InitParamsResponse>> initZoom() {
     return FlutterZoomMeetingSdkPlatform.instance.initZoom();
   }
 
