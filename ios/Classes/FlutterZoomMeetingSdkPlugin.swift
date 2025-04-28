@@ -4,6 +4,7 @@ import UIKit
 
 public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
     var eventSink: FlutterEventSink?
+    var isInitialized: Bool = false
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
@@ -37,12 +38,26 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
         switch action {
 
         case "initZoom":
+            if(isInitialized == true)
+            {
+                result(
+                    makeActionResponse(
+                        action: action,
+                        isSuccess: true,
+                        message: "MSG_INITIALIZED",
+                    )
+                )
+            }
+            
             let context = MobileRTCSDKInitContext()
             context.domain = "zoom.us"
 
-            let sdkInitializedSuccessfully = MobileRTC.shared().initialize(
-                context
-            )
+            let sdkInitializedSuccessfully = MobileRTC.shared().initialize(context)
+            if(sdkInitializedSuccessfully)
+            {
+                isInitialized = true
+            }
+            
             result(
                 makeActionResponse(
                     action: action,
