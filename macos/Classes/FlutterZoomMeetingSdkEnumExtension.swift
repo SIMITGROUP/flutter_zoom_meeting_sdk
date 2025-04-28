@@ -18,7 +18,7 @@ extension ZoomSDKMeetingStatus {
     case ZoomSDKMeetingStatus_Webinar_Depromote: return "WebinarDepromote"
     case ZoomSDKMeetingStatus_Join_Breakout_Room: return "JoinBreakoutRoom"
     case ZoomSDKMeetingStatus_Leave_Breakout_Room: return "LeaveBreakoutRoom"
-    default: return "Unknown"
+    default: return "UNDEFINED"
     }
   }
 }
@@ -26,18 +26,18 @@ extension ZoomSDKMeetingStatus {
 extension ZoomSDKAuthError {
   var name: String {
     switch self {
-    case ZoomSDKAuthError_Success: return "Success"
-    case ZoomSDKAuthError_KeyOrSecretWrong: return "KeyOrSecretWrong"
-    case ZoomSDKAuthError_AccountNotSupport: return "AccountNotSupport"
-    case ZoomSDKAuthError_AccountNotEnableSDK: return "AccountNotEnableSDK"
-    case ZoomSDKAuthError_Timeout: return "Timeout"
-    case ZoomSDKAuthError_NetworkIssue: return "NetworkIssue"
-    case ZoomSDKAuthError_Client_Incompatible: return "Client_Incompatible"
-    case ZoomSDKAuthError_JwtTokenWrong: return "JwtTokenWrong"
-    case ZoomSDKAuthError_KeyOrSecretEmpty: return "KeyOrSecretEmpty"
-    case ZoomSDKAuthError_LimitExceededException: return "LimitExceededException"
-    case ZoomSDKAuthError_Unknown: return "Unknown"
-    default: return "Unknown(\(self.rawValue))"
+    case ZoomSDKAuthError_Success: return "SUCCESS"
+    case ZoomSDKAuthError_KeyOrSecretWrong: return "KEY_OR_SECRET_WRONG"
+    case ZoomSDKAuthError_AccountNotSupport: return "ACCOUNT_NOT_SUPPORT"
+    case ZoomSDKAuthError_AccountNotEnableSDK: return "ACCOUNT_NOT_ENABLE_SDK"
+    case ZoomSDKAuthError_Timeout: return "TIMEOUT"
+    case ZoomSDKAuthError_NetworkIssue: return "NETWORK_ISSUE"
+    case ZoomSDKAuthError_Client_Incompatible: return "CLIENT_INCOMPATIBLE"
+    case ZoomSDKAuthError_JwtTokenWrong: return "JWT_TOKEN_WRONG"
+    case ZoomSDKAuthError_KeyOrSecretEmpty: return "KEY_OR_SECRET_EMPTY"
+    case ZoomSDKAuthError_LimitExceededException: return "LIMIT_EXCEEDED_EXCEPTION"
+    case ZoomSDKAuthError_Unknown: return "UNKNOWN"
+    default: return "UNDEFINED"
     }
   }
 }
@@ -75,7 +75,7 @@ extension ZoomSDKError {
     case ZoomSDKError_HardwareDontSupport: return "HardwareDontSupport"
     case ZoomSDKError_DomainDontSupport: return "DomainDontSupport"
     case ZoomSDKError_FileTransferError: return "FileTransferError"
-    default: return "Unknown(\(self.rawValue))"
+    default: return "UNDEFINED"
     }
   }
 }
@@ -123,7 +123,7 @@ extension ZoomSDKMeetingError {
     case ZoomSDKMeetingError_JmakUserEmailNotMatch: return "JmakUserEmailNotMatch"
     case ZoomSDKMeetingError_None: return "None"
     case ZoomSDKMeetingError_Unknown: return "Unknown"
-    default: return "Unknown(\(self.rawValue))"
+    default: return "UNDEFINED"
     }
   }
 }
@@ -139,7 +139,7 @@ extension EndMeetingReason {
     case EndMeetingReason_HostStartAnotherMeeting: return "HostStartAnotherMeeting"
     case EndMeetingReason_FreeMeetingTimeOut: return "FreeMeetingTimeOut"
     case EndMeetingReason_NetworkBroken: return "NetworkBroken"
-    default: return "Unknown(\(self.rawValue))"
+    default: return "UNDEFINED"
     }
   }
 }
@@ -151,7 +151,7 @@ extension ZoomSDKLoginStatus {
     case ZoomSDKLoginStatus_Success: return "Success"
     case ZoomSDKLoginStatus_Failed: return "Failed"
     case ZoomSDKLoginStatus_Processing: return "Processing"
-    default: return "Unknown(\(self.rawValue))"
+    default: return "UNDEFINED"
     }
   }
 }
@@ -174,7 +174,7 @@ extension ZoomSDKLoginFailReason {
     case ZoomSDKLoginFailReason_MFARequired: return "MFARequired"
     case ZoomSDKLoginFailReason_NeedBirthdayAsk: return "NeedBirthdayAsk"
     case ZoomSDKLoginFailReason_Other_Issue: return "Other_Issue"
-    default: return "Unknown(\(self.rawValue))"
+    default: return "UNDEFINED"
     }
   }
 }
@@ -187,7 +187,7 @@ extension ZoomSDKNotificationServiceStatus {
     case ZoomSDKNotificationServiceStatus_Started: return "Started"
     case ZoomSDKNotificationServiceStatus_StartFailed: return "StartFailed"
     case ZoomSDKNotificationServiceStatus_Closed: return "Closed"
-    default: return "Unknown(\(self.rawValue))"
+    default: return "UNDEFINED"
     }
   }
 }
@@ -202,7 +202,7 @@ extension ZoomSDKNotificationServiceError {
     case ZoomSDKNotificationServiceError_Multi_Connect: return "Multi_Connect"
     case ZoomSDKNotificationServiceError_Network_Issue: return "Network_Issue"
     case ZoomSDKNotificationServiceError_Max_Duration: return "Max_Duration"
-    default: return "Unknown(\(self.rawValue))"
+    default: return "UNDEFINED"
     }
   }
 }

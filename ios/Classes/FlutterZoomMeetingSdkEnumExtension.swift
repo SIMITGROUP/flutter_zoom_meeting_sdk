@@ -17,7 +17,7 @@ extension MobileRTCMeetingState {
         case .webinarDePromote: return "WebinarDePromote"
         case .joinBO: return "JoinBO"
         case .leaveBO: return "LeaveBO"
-        @unknown default: return "Unknown"
+        @unknown default: return "UNDEFINED"
         }
     }
 }
@@ -26,20 +26,20 @@ extension MobileRTCMeetingState {
 extension MobileRTCAuthError {
     var name: String {
         switch self {
-        case .success: return "Success"
-        case .keyOrSecretEmpty: return "KeyOrSecretEmpty"
-        case .keyOrSecretWrong: return "KeyOrSecretWrong"
-        case .accountNotSupport: return "AccountNotSupport"
-        case .accountNotEnableSDK: return "AccountNotEnableSDK"
-        case .unknown: return "Unknown"
-        case .serviceBusy: return "ServiceBusy"
-        case .none: return "None"
-        case .overTime: return "OverTime"
-        case .networkIssue: return "NetworkIssue"
-        case .clientIncompatible: return "ClientIncompatible"
-        case .tokenWrong: return "TokenWrong"
-        case .limitExceededException: return "LimitExceededException"
-        @unknown default: return "Unknown"
+        case .success: return "SUCCESS"
+        case .keyOrSecretEmpty: return "KEY_OR_SECRET_EMPTY"
+        case .keyOrSecretWrong: return "KEY_OR_SECRET_WRONG"
+        case .accountNotSupport: return "ACCOUNT_NOT_SUPPORT"
+        case .accountNotEnableSDK: return "ACCOUNT_NOT_ENABLE_SDK"
+        case .unknown: return "UNKNOWN"
+        case .serviceBusy: return "SERVICE_BUSY"
+        case .none: return "NONE"
+        case .overTime: return "TIMEOUT"
+        case .networkIssue: return "NETWORK_ISSUE"
+        case .clientIncompatible: return "CLIENT_INCOMPATIBLE"
+        case .tokenWrong: return "JWT_TOKEN_WRONG"
+        case .limitExceededException: return "LIMIT_EXCEEDED_EXCEPTION"
+        @unknown default: return "UNDEFINED"
         }
     }
 }
@@ -83,7 +83,7 @@ extension MobileRTCSDKError {
         case .notSupportMultiStreamVideoUser: return "NotSupportMultiStreamVideoUser"
         case .meetingRemoteControlIsOff: return "MeetingRemoteControlIsOff"
         case .fileTransferError: return "FileTransferError"
-        @unknown default: return "Unknown"
+        @unknown default: return "UNDEFINED"
         }
     }
 }
@@ -139,7 +139,7 @@ extension MobileRTCMeetError {
         case .vbGreenScreenNoSupport: return "VBGreenScreenNoSupport"
         case .appPrivilegeTokenError: return "AppPrivilegeTokenError"
         case .unknown: return "Unknown"
-        @unknown default: return "Unknown"
+        @unknown default: return "UNDEFINED"
         }
     }
 }
@@ -156,7 +156,7 @@ extension MobileRTCMeetingEndReason {
         case .hostEndForAnotherMeeting: return "HostEndForAnotherMeeting"
         case .connectBroken: return "ConnectBroken"
         case .unknown: return "Unknown"
-        @unknown default: return "Unknown"
+        @unknown default: return "UNDEFINED"
         }
     }
 }
@@ -183,7 +183,7 @@ extension MobileRTCLoginFailReason {
         case .sdkNotAuthorized: return "SDKNotAuthorized"
         case .inAutoLoginProcess: return "InAutoLoginProcess"
         case .alreayLoggedin: return "AlreayLoggedin"
-        @unknown default: return "Unknown"
+        @unknown default: return "UNDEFINED"
         }
     }
 }
@@ -196,7 +196,7 @@ extension MobileRTCNotificationServiceStatus {
         case .started: return "Started"
         case .startFailed: return "StartFailed"
         case .closed: return "Closed"
-        @unknown default: return "Unknown"
+        @unknown default: return "UNDEFINED"
         }
     }
 }
@@ -212,7 +212,7 @@ extension MobileRTCNotificationServiceError {
         case .network_Issue: return "Network_Issue"
         case .max_Duration: return "Max_Duration"
         case .app_Background: return "App_Background"
-        @unknown default: return "Unknown"
+        @unknown default: return "UNDEFINED"
         }
     }
 }
