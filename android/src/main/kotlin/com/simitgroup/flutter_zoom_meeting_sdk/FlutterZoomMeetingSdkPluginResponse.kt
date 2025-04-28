@@ -6,6 +6,10 @@ data class StandardZoomResponse(
     val action: String,
     val params: Map<String, Any>? = null
 ) {
+    init {
+        actionLog(action, " - $isSuccess - $message - $params")
+    }
+
     fun toMap(): Map<String, Any> {
         return mapOf(
             "platform" to "android",

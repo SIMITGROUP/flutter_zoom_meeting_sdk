@@ -64,26 +64,13 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 result.success(response.toMap())
             }
             (action == "authZoom") -> {
-                initZoom(call)
-
-                val response = StandardZoomResponse(
-                    isSuccess = true,
-                    message = "MSG_AUTH_SENT_SUCCESS",
-                    action = action,
-                    params = mapOf(
-                        "status" to 0,
-                        "statusName" to "Success"
-                    )
-                )
-
+                val response = authZoom(call)
                 result.success(response.toMap())
-
             }
             (action == "joinMeeting") -> {
                 val response = joinZoomMeeting(call)
 
                 result.success(response.toMap())
-
             }
             else -> {
                 result.notImplemented()
@@ -92,21 +79,33 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
         eventSink = null
+        channel.setMethodCallHandler(null)
         eventChannel.setStreamHandler(null)
 
         ZoomSDK.getInstance().uninitialize()
     }
 
-    private fun log(tag: String, message: String)
-    {
-        Log.d("FlutterZoomMeetingSDK::$tag", message)
-    }
-
-    private fun initZoom(call: MethodCall) {
+    private fun authZoom(call: MethodCall) : StandardZoomResponse{
+        val action = "authZoom";
         val arguments = call.arguments<Map<String, String>>() ?: emptyMap<String, String>()
+        if(arguments.isEmpty())
+        {
+            return StandardZoomResponse(
+                isSuccess = false,
+                message = "MSG_NO_ARGS_PROVIDED",
+                action = action
+            )
+        }
+
         val token = arguments["jwtToken"]
+        if (token.isNullOrEmpty()) {
+            return StandardZoomResponse(
+                isSuccess = false,
+                message = "MSG_NO_JWT_TOKEN_PROVIDED",
+                action = action
+            )
+        }
 
         val sdk = ZoomSDK.getInstance()
 
@@ -115,23 +114,42 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             domain = "zoom.us"
         }
 
-        sdk.initialize(context, createZoomInitListener(), params)
+        sdk.initialize(context, createZoomAuthListener(), params)
+
+        return StandardZoomResponse(
+            isSuccess = true,
+            message = "MSG_AUTH_SENT_SUCCESS",
+            action = action,
+            params = mapOf(
+                "status" to 0,
+                "statusName" to "Success"
+            )
+        )
     }
 
     private fun joinZoomMeeting(call: MethodCall) : StandardZoomResponse{
         val action = "joinMeeting"
 
-        Log.d(
-            "joinZoomMeeting",
-            "Start Join Meeting Process"
-        )
-
         val arguments = call.arguments<Map<String, String>>() ?: emptyMap<String, String>()
+        if(arguments.isEmpty())
+        {
+            return StandardZoomResponse(
+                isSuccess = false,
+                message = "MSG_NO_ARGS_PROVIDED",
+                action = action
+            )
+        }
+
         val meetingNumber = arguments["meetingNumber"]
         val password = arguments["password"]
         val displayName = arguments["displayName"]
 
         val meetingService = ZoomSDK.getInstance().meetingService
+            ?: return StandardZoomResponse(
+                isSuccess = false,
+                message = "MSG_MEETING_SERVICE_NOT_AVAILABLE",
+                action = action
+            )
 
         meetingService.addListener(createMeetingServiceListener())
 
@@ -157,10 +175,10 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         return response;
     }
 
-    private fun createZoomInitListener(): ZoomSDKInitializeListener {
+    private fun createZoomAuthListener(): ZoomSDKInitializeListener {
         return object : ZoomSDKInitializeListener {
             override fun onZoomSDKInitializeResult(errorCode: Int, internalErrorCode: Int) {
-                log("onZoomSDKInitializeResult", "Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
+                eventLog("onZoomSDKInitializeResult", "Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
 
                 eventSink?.success(
                     mapOf(
@@ -169,7 +187,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                         "oriEvent" to "onZoomSDKInitializeResult",
                         "params" to mapOf(
                             "status" to errorCode,
-                            "statusName" to ZoomErrorNameMapper.getErrorName(errorCode),
+                            "statusName" to MapperZoomError.getErrorName(errorCode),
                             "internalErrorCode" to internalErrorCode
                         )
                     )
@@ -177,7 +195,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             override fun onZoomAuthIdentityExpired() {
-                log("onZoomAuthIdentityExpired", "Zoom SDK auth identity expired")
+                eventLog("onZoomAuthIdentityExpired", "Zoom SDK auth identity expired")
 
                 eventSink?.success(
                     mapOf(
@@ -198,8 +216,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 errorCode: Int,
                 internalErrorCode: Int
             ) {
-                log("eventOnMeetingStatusChanged", "Zoom Meeting Status Changed: $meetingStatus")
-
+                eventLog("onMeetingStatusChanged", "Zoom Meeting Status Changed: $meetingStatus")
                 eventSink?.success(
                     mapOf(
                         "platform" to PLATFORM,
@@ -208,7 +225,8 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                         "params" to mapOf(
                             "status" to meetingStatus.ordinal,
                             "statusName" to meetingStatus.name,
-                            "errorCode" to errorCode,
+                            "error" to errorCode,
+                            "errorName" to MapperMeetingError.getErrorName(errorCode),
                             "internalErrorCode" to internalErrorCode
                         )
                     )
@@ -216,7 +234,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             override fun onMeetingParameterNotification(params: MeetingParameter) {
-                log("eventOnMeetingParameterNotification", "Params: $params")
+                eventLog("eventOnMeetingParameterNotification", "Params: $params")
 
                 eventSink?.success(
                     mapOf(
@@ -230,28 +248,4 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 }
-
-object ZoomErrorNameMapper {
-    private val errorNames = mapOf(
-        ZoomError.ZOOM_ERROR_SUCCESS to "SUCCESS",
-        ZoomError.ZOOM_ERROR_INVALID_ARGUMENTS to "INVALID_ARGUMENTS",
-        ZoomError.ZOOM_ERROR_ILLEGAL_APP_KEY_OR_SECRET to "ILLEGAL_APP_KEY_OR_SECRET",
-        ZoomError.ZOOM_ERROR_NETWORK_UNAVAILABLE to "NETWORK_UNAVAILABLE",
-        ZoomError.ZOOM_ERROR_AUTHRET_CLIENT_INCOMPATIBLE to "AUTHRET_CLIENT_INCOMPATIBLE",
-        ZoomError.ZOOM_ERROR_AUTHRET_TOKENWRONG to "AUTHRET_TOKENWRONG",
-        ZoomError.ZOOM_ERROR_AUTHRET_KEY_OR_SECRET_ERROR to "AUTHRET_KEY_OR_SECRET_ERROR",
-        ZoomError.ZOOM_ERROR_AUTHRET_ACCOUNT_NOT_SUPPORT to "AUTHRET_ACCOUNT_NOT_SUPPORT",
-        ZoomError.ZOOM_ERROR_AUTHRET_ACCOUNT_NOT_ENABLE_SDK to "AUTHRET_ACCOUNT_NOT_ENABLE_SDK",
-        ZoomError.ZOOM_ERROR_AUTHRET_LIMIT_EXCEEDED_EXCEPTION to "AUTHRET_LIMIT_EXCEEDED_EXCEPTION",
-        ZoomError.ZOOM_ERROR_DEVICE_NOT_SUPPORTED to "DEVICE_NOT_SUPPORTED",
-        ZoomError.ZOOM_ERROR_UNKNOWN to "UNKNOWN",
-        ZoomError.ZOOM_ERROR_DOMAIN_DONT_SUPPORT to "DOMAIN_DONT_SUPPORT",
-    )
-
-    fun getErrorName(code: Int): String {
-        return errorNames[code] ?: "UNDEFINED"
-    }
-}
-
-
 
