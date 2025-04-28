@@ -1,4 +1,5 @@
 import 'package:flutter_zoom_meeting_sdk/models/flutter_zoom_meeting_sdk_action_response.dart';
+import 'package:flutter_zoom_meeting_sdk/models/flutter_zoom_meeting_sdk_event_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/jwt_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -32,45 +33,48 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   // ====== Auth Events ======
 
   // windows, macos, ios
-  Stream<Map<String, dynamic>> get onAuthenticationReturn;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onAuthenticationReturn;
 
   // windows, macos, ios
-  Stream<Map<String, dynamic>> get onLoginReturnWithReason;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onLoginReturnWithReason;
 
   // windows, macos, ios
-  Stream<Map<String, dynamic>> get onLogout;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onLogout;
 
   // windows, macos
-  Stream<Map<String, dynamic>> get onZoomIdentityExpired;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onZoomIdentityExpired;
 
   // windows, android, macos, ios
-  Stream<Map<String, dynamic>> get onZoomAuthIdentityExpired;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onZoomAuthIdentityExpired;
 
   // windows, macos,ios
-  Stream<Map<String, dynamic>> get onNotificationServiceStatus;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onNotificationServiceStatus;
 
   // Meeting Events
 
   // windows, android, macos, ios
-  Stream<Map<String, dynamic>> get onMeetingStatusChanged;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingStatusChanged;
 
   // windows
-  Stream<Map<String, dynamic>> get onMeetingStatisticsWarningNotification;
+  Stream<FlutterZoomMeetingSdkEventResponse>
+  get onMeetingStatisticsWarningNotification;
 
   // windows, android
-  Stream<Map<String, dynamic>> get onMeetingParameterNotification;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingParameterNotification;
 
   // windows
-  Stream<Map<String, dynamic>> get onSuspendParticipantsActivities;
+  Stream<FlutterZoomMeetingSdkEventResponse>
+  get onSuspendParticipantsActivities;
 
   // windows
-  Stream<Map<String, dynamic>> get onAICompanionActiveChangeNotice;
+  Stream<FlutterZoomMeetingSdkEventResponse>
+  get onAICompanionActiveChangeNotice;
 
   // windows
-  Stream<Map<String, dynamic>> get onMeetingTopicChanged;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingTopicChanged;
 
   // windows
-  Stream<Map<String, dynamic>> get onMeetingFullToWatchLiveStream;
+  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingFullToWatchLiveStream;
 
   // ---
 
