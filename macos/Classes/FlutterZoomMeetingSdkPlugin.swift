@@ -4,6 +4,7 @@ import ZoomSDK
 
 public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
     var eventSink: FlutterEventSink?
+    var isInitialized: Bool = false
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
@@ -34,11 +35,26 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
 
         switch action {
         case "initZoom":
+            if(isInitialized == true)
+            {
+                result(
+                    makeActionResponse(
+                        action: action,
+                        isSuccess: true,
+                        message: "MSG_INITIALIZED",
+                    )
+                )
+            }
+            
             let zoomSdk = ZoomSDK.shared()
             let initParams = ZoomSDKInitParams()
             initParams.zoomDomain = "zoom.us"
-
+            
             let initResult = zoomSdk.initSDK(with: initParams)
+            if(initResult == ZoomSDKError_Success)
+            {
+                isInitialized = true
+            }
 
             result(
                 makeActionResponse(
