@@ -33,7 +33,8 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   // ====== Auth Events ======
 
   // windows, macos, ios
-  Stream<FlutterZoomMeetingSdkEventResponse> get onAuthenticationReturn;
+  Stream<FlutterZoomMeetingSdkEventResponse<EventAuthenticateReturnParams>>
+  get onAuthenticationReturn;
 
   // windows, macos, ios
   Stream<FlutterZoomMeetingSdkEventResponse> get onLoginReturnWithReason;
@@ -77,9 +78,6 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingFullToWatchLiveStream;
 
   // ---
-
-  // Initialization Events
-  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult;
 
   // ======= Functions =======
 

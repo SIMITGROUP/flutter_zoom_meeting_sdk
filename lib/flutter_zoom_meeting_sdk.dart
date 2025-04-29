@@ -12,7 +12,8 @@ class FlutterZoomMeetingSdk {
   // ====== Auth Events ======
 
   // windows, macos, ios
-  Stream<FlutterZoomMeetingSdkEventResponse> get onAuthenticationReturn =>
+  Stream<FlutterZoomMeetingSdkEventResponse<EventAuthenticateReturnParams>>
+  get onAuthenticationReturn =>
       FlutterZoomMeetingSdkPlatform.instance.onAuthenticationReturn;
 
   // windows
@@ -73,9 +74,6 @@ class FlutterZoomMeetingSdk {
       FlutterZoomMeetingSdkPlatform.instance.onMeetingFullToWatchLiveStream;
 
   // ---
-
-  Stream<Map<String, dynamic>> get onZoomSDKInitializeResult =>
-      FlutterZoomMeetingSdkPlatform.instance.onZoomSDKInitializeResult;
 
   // ======= Functions =======
 

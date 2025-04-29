@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_zoom_meeting_sdk/enums/status_zoom_error.dart';
 import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
 import 'package:flutter_zoom_meeting_sdk/models/flutter_zoom_meeting_sdk_action_response.dart';
 import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
@@ -70,7 +71,9 @@ class ZoomService {
   void initEventListeners() {
     _zoomSdk.onAuthenticationReturn.listen((event) {
       print("Example App onAuthenticationReturn: ${jsonEncode(event.toMap())}");
-      joinMeeting();
+      if (event.params?.statusEnum == StatusZoomError.success) {
+        joinMeeting();
+      }
     });
 
     _zoomSdk.onLoginReturnWithReason.listen((event) {
