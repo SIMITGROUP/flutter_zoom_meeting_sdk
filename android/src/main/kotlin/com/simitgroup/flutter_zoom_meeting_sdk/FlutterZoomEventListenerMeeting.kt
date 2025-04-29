@@ -35,13 +35,24 @@ class FlutterZoomEventListenerMeeting(private val eventSink: EventChannel.EventS
     override fun onMeetingParameterNotification(params: MeetingParameter) {
         eventLog("eventOnMeetingParameterNotification", "Params: $params")
 
-        eventSink?.success(
-            mapOf(
-                "platform" to PLATFORM,
-                "event" to "onMeetingParameterNotification",
-                "oriEvent" to "onMeetingParameterNotification",
-                "params" to params
-            )
+        val paramMap = mapOf(
+            "isAutoRecordingCloud" to params.is_auto_recording_cloud,
+            "isAutoRecordingLocal" to params.is_auto_recording_local,
+            "isViewOnly" to params.isViewOnly,
+            "meetingHost" to (params.meeting_host ?: ""),
+            "meetingNumber" to params.meeting_number,
+            "meetingTopic" to (params.meeting_topic ?: ""),
+            "meetingType" to params.meeting_type.ordinal,
         )
+
+        val eventMap = mapOf(
+            "platform" to PLATFORM,
+            "event" to "onMeetingParameterNotification",
+            "oriEvent" to "onMeetingParameterNotification",
+            "params" to paramMap
+        )
+
+        eventSink?.success(eventMap)
     }
+
 }

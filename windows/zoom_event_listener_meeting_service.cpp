@@ -62,15 +62,28 @@ void ZoomSDKEventListenerMeetingService::onMeetingStatisticsWarningNotification(
     SendEvent(tag, params);
 }
 
-void ZoomSDKEventListenerMeetingService::onMeetingParameterNotification(const ZOOM_SDK_NAMESPACE::MeetingParameter *meeting_param)
+void ZoomSDKEventListenerMeetingService::onMeetingParameterNotification(const ZOOM_SDK_NAMESPACE::MeetingParameter* meeting_param)
 {
     const std::string tag = "onMeetingParameterNotification";
     sEventLog(tag, L"");
 
+    if (meeting_param == nullptr) {
+        return;
+    }
+
     flutter::EncodableMap params;
+
+    params[flutter::EncodableValue("isAutoRecordingCloud")] = flutter::EncodableValue(meeting_param->is_auto_recording_cloud);
+    params[flutter::EncodableValue("isAutoRecordingLocal")] = flutter::EncodableValue(meeting_param->is_auto_recording_local);
+    params[flutter::EncodableValue("isViewOnly")] = flutter::EncodableValue(meeting_param->isViewOnly);
+    params[flutter::EncodableValue("meetingHost")] = flutter::EncodableValue(meeting_param->meeting_host ? meeting_param->meeting_host : "");
+    params[flutter::EncodableValue("meetingNumber")] = flutter::EncodableValue(meeting_param->meeting_number);
+    params[flutter::EncodableValue("meetingTopic")] = flutter::EncodableValue(meeting_param->meeting_topic ? meeting_param->meeting_topic : "");
+    params[flutter::EncodableValue("meetingType")] = flutter::EncodableValue(meeting_param->meeting_type);
 
     SendEvent(tag, params);
 }
+
 
 void ZoomSDKEventListenerMeetingService::onSuspendParticipantsActivities()
 {

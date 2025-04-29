@@ -76,20 +76,18 @@ class ZoomService {
       }
     });
 
-    _zoomSdk.onLoginReturnWithReason.listen((event) {
-      print("Example App onLoginReturnWithReason: $event");
-    });
-
     _meetingStatusSub = _zoomSdk.onMeetingStatusChanged.listen((event) {
       print(
-        "Example App onMeetingStatusChanged event = $event",
-      ); // <- See if event exists
-      print(
-        "Example App onMeetingStatusChanged event.toMap() = ${event.toMap()}",
-      ); // <- See map
-      print(
         "Example App onMeetingStatusChanged event JSON = ${jsonEncode(event.toMap())}",
-      ); // <- See final json
+      );
+    });
+
+    _meetingStatusSub = _zoomSdk.onMeetingParameterNotification.listen((event) {
+      print("onMeetingParameterNotification");
+      print("Example App onMeetingParameterNotification event $event");
+      print(
+        "Example App onMeetingParameterNotification event JSON = ${jsonEncode(event.toMap())}",
+      );
     });
   }
 

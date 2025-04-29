@@ -46,4 +46,28 @@ extension FlutterZoomMeetingSdkPlugin: MobileRTCMeetingServiceDelegate {
             )
         )
     }
+    
+    public func onMeetingParameterNotification(_ meetingParam: MobileRTCMeetingParameter?) {
+        guard let param = meetingParam else {
+            return
+        }
+
+        let eventData: [String: Any] = [
+            "isAutoRecordingCloud": param.isAutoRecordingCloud,
+            "isAutoRecordingLocal": param.isAutoRecordingLocal,
+            "isViewOnly": param.isViewOnly,
+            "meetingHost": param.meetingHost ?? "",
+            "meetingTopic": param.meetingTopic ?? "",
+            "meetingNumber": param.meetingNumber,
+            "meetingType": param.meetingType.rawValue,
+        ]
+
+        self.eventSink?(
+            makeEventResponse(
+                event: "onMeetingParameterNotification",
+                oriEvent: "onMeetingParameterNotification",
+                params: eventData
+            )
+        )
+    }
 }

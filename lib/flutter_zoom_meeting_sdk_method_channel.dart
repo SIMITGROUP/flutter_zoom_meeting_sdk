@@ -27,7 +27,7 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
 
   // ====== Auth Events ======
 
-  // windows, macos, ios
+  /// mac | ios | android | windows
   @override
   Stream<FlutterZoomMeetingSdkEventResponse<EventAuthenticateReturnParams>>
   get onAuthenticationReturn => _eventStream
@@ -39,42 +39,7 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
         ),
       );
 
-  // windows
-  @override
-  Stream<FlutterZoomMeetingSdkEventResponse> get onLoginReturnWithReason =>
-      _eventStream
-          .where((e) => e['event'] == EventType.onLoginReturnWithReason.name)
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              Map<String, dynamic>.from,
-            ),
-          );
-
-  // windows
-  @override
-  Stream<FlutterZoomMeetingSdkEventResponse> get onLogout => _eventStream
-      .where((e) => e['event'] == EventType.onLogout.name)
-      .map(
-        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-          event,
-          Map<String, dynamic>.from,
-        ),
-      );
-
-  // windows
-  @override
-  Stream<FlutterZoomMeetingSdkEventResponse> get onZoomIdentityExpired =>
-      _eventStream
-          .where((e) => e['event'] == EventType.onZoomIdentityExpired.name)
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              Map<String, dynamic>.from,
-            ),
-          );
-
-  // windows, android, macos, ios
+  /// mac | ios | android | windows
   @override
   Stream<FlutterZoomMeetingSdkEventResponse> get onZoomAuthIdentityExpired =>
       _eventStream
@@ -86,23 +51,9 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
             ),
           );
 
-  // windows
-  @override
-  Stream<FlutterZoomMeetingSdkEventResponse> get onNotificationServiceStatus =>
-      _eventStream
-          .where(
-            (e) => e['event'] == EventType.onNotificationServiceStatus.name,
-          )
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              Map<String, dynamic>.from,
-            ),
-          );
-
   // Meeting Events
 
-  // windows, android, macos, ios
+  /// mac | ios | android | windows
   @override
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>
   get onMeetingStatusChanged => _eventStream
@@ -114,77 +65,11 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
         ),
       );
 
-  // windows
-  @override
-  Stream<FlutterZoomMeetingSdkEventResponse>
-  get onMeetingStatisticsWarningNotification => _eventStream
-      .where(
-        (e) =>
-            e['event'] == EventType.onMeetingStatisticsWarningNotification.name,
-      )
-      .map(
-        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-          event,
-          Map<String, dynamic>.from,
-        ),
-      );
-  // windows, android
+  // mac | ios | android | windows
   @override
   Stream<FlutterZoomMeetingSdkEventResponse>
   get onMeetingParameterNotification => _eventStream
       .where((e) => e['event'] == EventType.onMeetingParameterNotification.name)
-      .map(
-        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-          event,
-          Map<String, dynamic>.from,
-        ),
-      );
-
-  // windows
-  @override
-  Stream<FlutterZoomMeetingSdkEventResponse>
-  get onSuspendParticipantsActivities => _eventStream
-      .where(
-        (e) => e['event'] == EventType.onSuspendParticipantsActivities.name,
-      )
-      .map(
-        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-          event,
-          Map<String, dynamic>.from,
-        ),
-      );
-
-  // windows
-  @override
-  Stream<FlutterZoomMeetingSdkEventResponse>
-  get onAICompanionActiveChangeNotice => _eventStream
-      .where(
-        (e) => e['event'] == EventType.onAICompanionActiveChangeNotice.name,
-      )
-      .map(
-        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-          event,
-          Map<String, dynamic>.from,
-        ),
-      );
-
-  // windows
-  @override
-  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingTopicChanged =>
-      _eventStream
-          .where((e) => e['event'] == EventType.onMeetingTopicChanged.name)
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              Map<String, dynamic>.from,
-            ),
-          );
-
-  // windows
-  @override
-  Stream<FlutterZoomMeetingSdkEventResponse>
-  get onMeetingFullToWatchLiveStream => _eventStream
-      .where((e) => e['event'] == EventType.onMeetingFullToWatchLiveStream.name)
       .map(
         (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
           event,

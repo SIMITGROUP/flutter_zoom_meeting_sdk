@@ -36,20 +36,8 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   Stream<FlutterZoomMeetingSdkEventResponse<EventAuthenticateReturnParams>>
   get onAuthenticationReturn;
 
-  // windows, macos, ios
-  Stream<FlutterZoomMeetingSdkEventResponse> get onLoginReturnWithReason;
-
-  // windows, macos, ios
-  Stream<FlutterZoomMeetingSdkEventResponse> get onLogout;
-
-  // windows, macos
-  Stream<FlutterZoomMeetingSdkEventResponse> get onZoomIdentityExpired;
-
   // windows, android, macos, ios
   Stream<FlutterZoomMeetingSdkEventResponse> get onZoomAuthIdentityExpired;
-
-  // windows, macos,ios
-  Stream<FlutterZoomMeetingSdkEventResponse> get onNotificationServiceStatus;
 
   // Meeting Events
 
@@ -57,26 +45,8 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>
   get onMeetingStatusChanged;
 
-  // windows
-  Stream<FlutterZoomMeetingSdkEventResponse>
-  get onMeetingStatisticsWarningNotification;
-
   // windows, android
   Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingParameterNotification;
-
-  // windows
-  Stream<FlutterZoomMeetingSdkEventResponse>
-  get onSuspendParticipantsActivities;
-
-  // windows
-  Stream<FlutterZoomMeetingSdkEventResponse>
-  get onAICompanionActiveChangeNotice;
-
-  // windows
-  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingTopicChanged;
-
-  // windows
-  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingFullToWatchLiveStream;
 
   // ---
 

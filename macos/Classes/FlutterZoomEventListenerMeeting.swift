@@ -1,5 +1,5 @@
 import ZoomSDK
-
+// onMeetingParameterNotification
 extension FlutterZoomMeetingSdkPlugin: ZoomSDKMeetingServiceDelegate {
     public func onMeetingStatusChange(
         _ state: ZoomSDKMeetingStatus,
@@ -18,6 +18,30 @@ extension FlutterZoomMeetingSdkPlugin: ZoomSDKMeetingServiceDelegate {
                     "endReasonCode": reason.rawValue,
                     "endReasonLabel": reason.name,
                 ]
+            )
+        )
+    }
+    
+    public func onMeetingParameterNotification(_ meetingParam: ZoomSDKMeetingParameter?) {
+        guard let param = meetingParam else {
+            return
+        }
+
+        let eventData: [String: Any] = [
+            "isAutoRecordingCloud": param.isAutoRecordingCloud,
+            "isAutoRecordingLocal": param.isAutoRecordingLocal,
+            "isViewOnly": param.isViewOnly,
+            "meetingHost": param.meetingHost ?? "",
+            "meetingTopic": param.meetingTopic ?? "",
+            "meetingNumber": param.meetingNumber,
+            "meetingType": param.meetingType.rawValue,
+        ]
+
+        self.eventSink?(
+            makeEventResponse(
+                event: "onMeetingParameterNotification",
+                oriEvent: "onMeetingParameterNotification",
+                params: eventData
             )
         )
     }
