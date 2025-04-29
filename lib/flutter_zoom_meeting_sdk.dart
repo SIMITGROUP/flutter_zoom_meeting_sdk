@@ -11,24 +11,26 @@ class FlutterZoomMeetingSdk {
 
   // ====== Auth Events ======
 
-  // windows, macos, ios
+  /// mac | ios | android | windows
   Stream<FlutterZoomMeetingSdkEventResponse<EventAuthenticateReturnParams>>
   get onAuthenticationReturn =>
       FlutterZoomMeetingSdkPlatform.instance.onAuthenticationReturn;
 
-  // windows, android, macos, ios
+  /// mac | ios | android | windows
   Stream<FlutterZoomMeetingSdkEventResponse> get onZoomAuthIdentityExpired =>
       FlutterZoomMeetingSdkPlatform.instance.onZoomAuthIdentityExpired;
 
   // ====== Meeting Events ======
 
-  // windows, android, macos, ios
+  /// mac | ios | android | windows
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>
   get onMeetingStatusChanged =>
       FlutterZoomMeetingSdkPlatform.instance.onMeetingStatusChanged;
 
-  // windows, android
-  Stream<FlutterZoomMeetingSdkEventResponse>
+  /// mac | ios | android | windows
+  Stream<
+    FlutterZoomMeetingSdkEventResponse<EventMeetingParameterNotificationParams>
+  >
   get onMeetingParameterNotification =>
       FlutterZoomMeetingSdkPlatform.instance.onMeetingParameterNotification;
 

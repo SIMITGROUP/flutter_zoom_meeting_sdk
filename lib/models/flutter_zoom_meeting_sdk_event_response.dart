@@ -3,6 +3,7 @@ import 'package:flutter_zoom_meeting_sdk/enums/platform_type.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/status_meeting_end_reason.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/status_meeting_error.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/status_meeting_status.dart';
+import 'package:flutter_zoom_meeting_sdk/enums/status_meeting_type.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/status_zoom_error.dart';
 import 'package:flutter_zoom_meeting_sdk/helpers/common.dart';
 
@@ -139,6 +140,63 @@ class EventMeetingStatusChangedParams implements MappableParams {
       'endReasonLabel': endReasonLabel,
       'endReasonEnum': endReasonEnum.name,
       if (internalErrorCode != null) 'internalErrorCode': internalErrorCode,
+    };
+  }
+}
+
+class EventMeetingParameterNotificationParams implements MappableParams {
+  final bool isAutoRecordingCloud;
+  final bool isAutoRecordingLocal;
+  final bool isViewOnly;
+  final String meetingHost;
+  final String meetingTopic;
+  final int meetingNumber;
+  final int meetingType;
+  final String meetingTypeLabel;
+  final StatusMeetingType meetingTypeEnum;
+
+  EventMeetingParameterNotificationParams({
+    required this.isAutoRecordingCloud,
+    required this.isAutoRecordingLocal,
+    required this.isViewOnly,
+    required this.meetingHost,
+    required this.meetingTopic,
+    required this.meetingNumber,
+    required this.meetingType,
+    required this.meetingTypeLabel,
+    required this.meetingTypeEnum,
+  });
+
+  factory EventMeetingParameterNotificationParams.fromMap(
+    Map<String, dynamic> map,
+  ) {
+    return EventMeetingParameterNotificationParams(
+      isAutoRecordingCloud: map['isAutoRecordingCloud'],
+      isAutoRecordingLocal: map['isAutoRecordingLocal'],
+      isViewOnly: map['isViewOnly'],
+      meetingHost: map['meetingHost'],
+      meetingTopic: map['meetingTopic'],
+      meetingNumber: map['meetingNumber'],
+      meetingType: map['meetingType'],
+      meetingTypeLabel: map['meetingTypeLabel'],
+      meetingTypeEnum: StatusMeetingTypeMapper.fromString(
+        map['meetingTypeLabel'],
+      ),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'isAutoRecordingCloud': isAutoRecordingCloud,
+      'isAutoRecordingLocal': isAutoRecordingLocal,
+      'isViewOnly': isViewOnly,
+      'meetingHost': meetingHost,
+      'meetingTopic': meetingTopic,
+      'meetingNumber': meetingNumber,
+      'meetingType': meetingType,
+      'meetingTypeLabel': meetingTypeLabel,
+      'meetingTypeEnum': meetingTypeEnum.name,
     };
   }
 }

@@ -206,3 +206,15 @@ extension ZoomSDKNotificationServiceError {
     }
   }
 }
+
+extension MeetingType {
+    var name: String {
+        switch self {
+        case MeetingType_None: return "NONE"
+        case MeetingType_Normal: return "NORMAL"
+        case MeetingType_BreakoutRoom: return "BREAKOUT_ROOM"
+        case MeetingType_Webinar: return "WEBINAR"
+        default: return "UNDEFINED"
+        }
+    }
+}

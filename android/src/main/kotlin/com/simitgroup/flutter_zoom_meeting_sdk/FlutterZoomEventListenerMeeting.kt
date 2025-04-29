@@ -43,6 +43,7 @@ class FlutterZoomEventListenerMeeting(private val eventSink: EventChannel.EventS
             "meetingNumber" to params.meeting_number,
             "meetingTopic" to (params.meeting_topic ?: ""),
             "meetingType" to params.meeting_type.ordinal,
+            "meetingTypeLabel" to MapperMeetingType.getErrorName(params.meeting_type)
         )
 
         val eventMap = mapOf(

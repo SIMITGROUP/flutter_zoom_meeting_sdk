@@ -216,3 +216,16 @@ extension MobileRTCNotificationServiceError {
         }
     }
 }
+
+extension MobileRTCMeetingType{
+    var name: String {
+        switch self {
+        case .none : return "NONE"
+        case .normal: return "NORMAL"
+        case .breakoutRoom: return "BREAKOUT_ROOM"
+        case .webinar: return "WEBINAR"
+        @unknown default: return "UNDEFINED"
+        }
+    }
+}
+ 

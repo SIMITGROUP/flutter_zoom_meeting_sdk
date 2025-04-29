@@ -35,6 +35,7 @@ extension FlutterZoomMeetingSdkPlugin: ZoomSDKMeetingServiceDelegate {
             "meetingTopic": param.meetingTopic ?? "",
             "meetingNumber": param.meetingNumber,
             "meetingType": param.meetingType.rawValue,
+            "meetingTypeLabel": param.meetingType.name
         ]
 
         self.eventSink?(
