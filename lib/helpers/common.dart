@@ -2,6 +2,12 @@ abstract class MappableParams {
   Map<String, dynamic> toMap();
 }
 
+/// This function will loop the enum and generate a uppercase + snake case format
+/// {
+///   'SUCCESS': StatusMeetingError.success,
+///   'INCORRECT_MEETING_NUMBER': StatusMeetingError.incorrectMeetingNumber,
+///   ...
+/// }
 Map<String, T> generateStatusMap<T>(
   List<T> values,
   String Function(T) nameGetter,

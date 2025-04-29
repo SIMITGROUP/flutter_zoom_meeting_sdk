@@ -1,68 +1,71 @@
+import 'package:flutter_zoom_meeting_sdk/helpers/common.dart';
+
 enum StatusZoomError {
+  /// mac | ios | android | windows
   success,
+
+  /// android
   invalidArguments,
+
+  /// android
   illegalAppKeyOrSecret,
+
+  /// mac | ios | android | windows
   networkIssue,
+
+  /// mac | ios | android | windows
   clientIncompatible,
+
+  /// mac | ios | android | windows
   jwtTokenWrong,
+
+  /// android
   keyOrSecretError,
+
+  /// mac | ios | android | windows
   accountNotSupport,
+
+  /// mac | ios | android | windows
   accountNotEnableSdk,
+
+  /// mac | ios | android | windows
   limitExceededException,
+
+  /// android
   deviceNotSupported,
+
+  /// mac | ios | android | windows
   unknown,
+
+  /// android
   domainDontSupport,
+
+  /// mac | ios | windows
   timeout,
+
+  /// mac | ios | windows
   keyOrSecretWrong,
+
+  /// mac | ios | windows
   keyOrSecretEmpty,
+
+  /// ios | windows
   serviceBusy,
+
+  /// ios | windows
   none,
+
+  /// mac | ios | android | windows
   undefined,
 }
 
-const Map<String, StatusZoomError> statusMap = {
-  // android, mac, ios, windows
-  'SUCCESS': StatusZoomError.success,
-  // android, mac, ios, windows
-  'NETWORK_ISSUE': StatusZoomError.networkIssue,
-  // android, mac, ios, windows
-  'CLIENT_INCOMPATIBLE': StatusZoomError.clientIncompatible,
-  // android, mac, ios, windows
-  'JWT_TOKEN_WRONG': StatusZoomError.jwtTokenWrong,
-  // android, mac, ios, windows
-  'ACCOUNT_NOT_SUPPORT': StatusZoomError.accountNotSupport,
-  // android, mac, ios, windows
-  'ACCOUNT_NOT_ENABLE_SDK': StatusZoomError.accountNotEnableSdk,
-  // android, mac, ios, windows
-  'LIMIT_EXCEEDED_EXCEPTION': StatusZoomError.limitExceededException,
-  // android, mac, ios, windows
-  'UNKNOWN': StatusZoomError.unknown,
-  // android, mac, ios, windows
-  'UNDEFINED': StatusZoomError.undefined,
-  // android
-  'ILLEGAL_APP_KEY_OR_SECRET': StatusZoomError.illegalAppKeyOrSecret,
-  // android
-  'KEY_OR_SECRET_ERROR': StatusZoomError.keyOrSecretError,
-  // android
-  'INVALID_ARGUMENTS': StatusZoomError.invalidArguments,
-  // android
-  'DEVICE_NOT_SUPPORTED': StatusZoomError.deviceNotSupported,
-  // android
-  'DOMAIN_DONT_SUPPORT': StatusZoomError.domainDontSupport,
-  // mac, ios, windows
-  'TIMEOUT': StatusZoomError.timeout,
-  // mac, ios, windows
-  'KEY_OR_SECRET_WRONG': StatusZoomError.keyOrSecretWrong,
-  // mac, ios, windows
-  'KEY_OR_SECRET_EMPTY': StatusZoomError.keyOrSecretEmpty,
-  // ios, windows
-  'SERVICE_BUSY': StatusZoomError.serviceBusy,
-  // ios, windows
-  'NONE': StatusZoomError.none,
-};
-
 extension StatusZoomErrorMapper on StatusZoomError {
+  static final Map<String, StatusZoomError> _map = generateStatusMap(
+    StatusZoomError.values,
+    (e) => e.name,
+  );
+
   static StatusZoomError fromString(String status) {
-    return statusMap[status.toUpperCase()] ?? StatusZoomError.undefined;
+    return _map[status.toUpperCase()] ?? StatusZoomError.undefined;
   }
 }
