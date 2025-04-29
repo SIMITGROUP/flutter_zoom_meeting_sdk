@@ -39,7 +39,8 @@ class FlutterZoomMeetingSdk {
   // ====== Meeting Events ======
 
   // windows, android, macos, ios
-  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingStatusChanged =>
+  Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>
+  get onMeetingStatusChanged =>
       FlutterZoomMeetingSdkPlatform.instance.onMeetingStatusChanged;
 
   // windows

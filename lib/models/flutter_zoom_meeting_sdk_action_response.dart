@@ -1,5 +1,6 @@
 import 'package:flutter_zoom_meeting_sdk/enums/action_type.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/platform_type.dart';
+import 'package:flutter_zoom_meeting_sdk/helpers/common.dart';
 import 'package:flutter_zoom_meeting_sdk/helpers/message.dart';
 
 class FlutterZoomMeetingSdkActionResponse<T> {
@@ -40,18 +41,14 @@ class FlutterZoomMeetingSdkActionResponse<T> {
       'isSuccess': isSuccess,
       'message': message,
       'params':
-          params is InitParamsResponse
-              ? (params as InitParamsResponse).toMap()
-              : params is AuthParamsResponse
-              ? (params as AuthParamsResponse).toMap()
-              : params is JoinParamsResponse
-              ? (params as JoinParamsResponse).toMap()
+          params is MappableParams
+              ? (params as MappableParams).toMap()
               : params,
     };
   }
 }
 
-class InitParamsResponse {
+class InitParamsResponse implements MappableParams {
   final int? status;
   final String? statusName;
 
@@ -69,7 +66,7 @@ class InitParamsResponse {
   }
 }
 
-class AuthParamsResponse {
+class AuthParamsResponse implements MappableParams {
   final int status;
   final String statusName;
 
@@ -87,7 +84,7 @@ class AuthParamsResponse {
   }
 }
 
-class JoinParamsResponse {
+class JoinParamsResponse implements MappableParams {
   final int status;
   final String statusName;
 

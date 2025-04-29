@@ -54,7 +54,8 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   // Meeting Events
 
   // windows, android, macos, ios
-  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingStatusChanged;
+  Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>
+  get onMeetingStatusChanged;
 
   // windows
   Stream<FlutterZoomMeetingSdkEventResponse>

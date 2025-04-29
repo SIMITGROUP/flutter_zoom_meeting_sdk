@@ -104,15 +104,15 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
 
   // windows, android, macos, ios
   @override
-  Stream<FlutterZoomMeetingSdkEventResponse> get onMeetingStatusChanged =>
-      _eventStream
-          .where((e) => e['event'] == EventType.onMeetingStatusChanged.name)
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              Map<String, dynamic>.from,
-            ),
-          );
+  Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>
+  get onMeetingStatusChanged => _eventStream
+      .where((e) => e['event'] == EventType.onMeetingStatusChanged.name)
+      .map(
+        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
+          event,
+          EventMeetingStatusChangedParams.fromMap,
+        ),
+      );
 
   // windows
   @override

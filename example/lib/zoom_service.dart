@@ -81,7 +81,15 @@ class ZoomService {
     });
 
     _meetingStatusSub = _zoomSdk.onMeetingStatusChanged.listen((event) {
-      print("Example App onMeetingStatusChanged: $event");
+      print(
+        "Example App onMeetingStatusChanged event = $event",
+      ); // <- See if event exists
+      print(
+        "Example App onMeetingStatusChanged event.toMap() = ${event.toMap()}",
+      ); // <- See map
+      print(
+        "Example App onMeetingStatusChanged event JSON = ${jsonEncode(event.toMap())}",
+      ); // <- See final json
     });
   }
 
