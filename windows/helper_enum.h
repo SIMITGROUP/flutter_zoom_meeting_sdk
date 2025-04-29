@@ -10,7 +10,7 @@ template <typename EnumType>
 inline std::string ConvertEnumToString(EnumType result, const std::unordered_map<EnumType, std::string> &names)
 {
     auto it = names.find(result);
-    return it != names.end() ? it->second : "UNKNOWN";
+    return it != names.end() ? it->second : "UNDEFINED";
 }
 
 // General
@@ -228,14 +228,14 @@ inline std::string EnumToString(ZOOM_SDK_NAMESPACE::MeetingFailCode result)
 inline std::string EnumToString(ZOOM_SDK_NAMESPACE::MeetingEndReason result)
 {
     static const std::unordered_map<ZOOM_SDK_NAMESPACE::MeetingEndReason, std::string> names = {
-        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_None, "None"},
-        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_KickByHost, "KickByHost"},
-        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_EndByHost, "EndByHost"},
-        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_JBHTimeOut, "JBHTimeOut"},
-        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_NoAttendee, "NoAttendee"},
-        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_HostStartAnotherMeeting, "HostStartAnotherMeeting"},
-        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_FreeMeetingTimeOut, "FreeMeetingTimeOut"},
-        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_NetworkBroken, "NetworkBroken"},
+        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_None, "NONE"},
+        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_KickByHost, "KICK_BY_HOST"},
+        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_EndByHost, "END_BY_HOST"},
+        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_JBHTimeOut, "JBH_TIME_OUT"},
+        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_NoAttendee, "NO_ATTENDEE"},
+        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_HostStartAnotherMeeting, "HOST_START_ANOTHER_MEETING"},
+        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_FreeMeetingTimeOut, "FREE_MEETING_TIME_OUT"},
+        {ZOOM_SDK_NAMESPACE::MeetingEndReason::EndMeetingReason_NetworkBroken, "NETWORK_BROKEN"},
     };
 
     return ConvertEnumToString(result, names);

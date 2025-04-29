@@ -147,15 +147,15 @@ extension MobileRTCMeetError {
 extension MobileRTCMeetingEndReason {
     var name: String {
         switch self {
-        case .selfLeave: return "SelfLeave"
-        case .removedByHost: return "RemovedByHost"
-        case .endByHost: return "EndByHost"
-        case .jbhTimeout: return "JBHTimeout"
-        case .freeMeetingTimeout: return "FreeMeetingTimeout"
-        case .noAteendee: return "NoAteendee"
-        case .hostEndForAnotherMeeting: return "HostEndForAnotherMeeting"
-        case .connectBroken: return "ConnectBroken"
-        case .unknown: return "Unknown"
+        case .selfLeave: return "SELF_LEAVE"
+        case .removedByHost: return "KICK_BY_HOST"
+        case .endByHost: return "END_BY_HOST"
+        case .jbhTimeout: return "JBH_TIME_OUT"
+        case .freeMeetingTimeout: return "FREE_MEETING_TIME_OUT"
+        case .noAteendee: return "NO_ATTENDEE"
+        case .hostEndForAnotherMeeting: return "HOST_START_ANOTHER_MEETING"
+        case .connectBroken: return "NETWORK_BROKEN"
+        case .unknown: return "UNKNOWN"
         @unknown default: return "UNDEFINED"
         }
     }

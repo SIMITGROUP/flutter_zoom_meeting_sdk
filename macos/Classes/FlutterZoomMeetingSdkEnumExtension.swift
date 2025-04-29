@@ -131,14 +131,14 @@ extension ZoomSDKMeetingError {
 extension EndMeetingReason {
   var name: String {
     switch self {
-    case EndMeetingReason_None: return "None"
-    case EndMeetingReason_KickByHost: return "KickByHost"
-    case EndMeetingReason_EndByHost: return "EndByHost"
-    case EndMeetingReason_JBHTimeOut: return "JBHTimeOut"
-    case EndMeetingReason_NoAttendee: return "NoAttendee"
-    case EndMeetingReason_HostStartAnotherMeeting: return "HostStartAnotherMeeting"
-    case EndMeetingReason_FreeMeetingTimeOut: return "FreeMeetingTimeOut"
-    case EndMeetingReason_NetworkBroken: return "NetworkBroken"
+    case EndMeetingReason_None: return "NONE"
+    case EndMeetingReason_KickByHost: return "KICK_BY_HOST"
+    case EndMeetingReason_EndByHost: return "END_BY_HOST"
+    case EndMeetingReason_JBHTimeOut: return "JBH_TIME_OUT"
+    case EndMeetingReason_NoAttendee: return "NO_ATTENDEE"
+    case EndMeetingReason_HostStartAnotherMeeting: return "HOST_START_ANOTHER_MEETING"
+    case EndMeetingReason_FreeMeetingTimeOut: return "FREE_MEETING_TIME_OUT"
+    case EndMeetingReason_NetworkBroken: return "NETWORK_BROKEN"
     default: return "UNDEFINED"
     }
   }

@@ -61,6 +61,7 @@ class InitParamsResponse implements MappableParams {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {'status': status, 'statusName': statusName};
   }
@@ -79,6 +80,7 @@ class AuthParamsResponse implements MappableParams {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {'status': status, 'statusName': statusName};
   }
@@ -97,6 +99,7 @@ class JoinParamsResponse implements MappableParams {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {'status': status, 'statusName': statusName};
   }

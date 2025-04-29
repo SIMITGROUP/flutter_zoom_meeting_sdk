@@ -7,8 +7,8 @@ extension FlutterZoomMeetingSdkPlugin: ZoomSDKAuthDelegate {
                 event: "onAuthenticationReturn",
                 oriEvent: "onZoomSDKAuthReturn",
                 params: [
-                    "status": returnValue.rawValue,
-                    "statusName": returnValue.name,
+                    "statusCode": returnValue.rawValue,
+                    "statusLabel": returnValue.name,
                 ]
             )
         )

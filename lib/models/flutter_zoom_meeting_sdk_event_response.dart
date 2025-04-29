@@ -63,13 +63,14 @@ class EventAuthenticateReturnParams implements MappableParams {
 
   factory EventAuthenticateReturnParams.fromMap(Map<String, dynamic> map) {
     return EventAuthenticateReturnParams(
-      statusCode: map['status'],
-      statusLabel: map['statusName'],
-      statusEnum: StatusZoomErrorMapper.fromString(map['statusName']),
+      statusCode: map['statusCode'],
+      statusLabel: map['statusLabel'],
+      statusEnum: StatusZoomErrorMapper.fromString(map['statusLabel']),
       internalErrorCode: map['internalErrorCode'],
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'statusCode': statusCode,
@@ -103,24 +104,25 @@ class EventMeetingStatusChangedParams implements MappableParams {
 
   factory EventMeetingStatusChangedParams.fromMap(Map<String, dynamic> map) {
     return EventMeetingStatusChangedParams(
-      statusCode: map['status'],
-      statusLabel: map['statusName'],
-      statusEnum: StatusMeetingStatusMapper.fromString(map['statusName']),
-      errorCode: map['error'],
-      errorLabel: map['errorName'],
-      errorEnum: StatusMeetingErrorMapper.fromString(map['errorName']),
+      statusCode: map['statusCode'],
+      statusLabel: map['statusLabel'],
+      statusEnum: StatusMeetingStatusMapper.fromString(map['statusLabel']),
+      errorCode: map['errorCode'],
+      errorLabel: map['errorLabel'],
+      errorEnum: StatusMeetingErrorMapper.fromString(map['errorLabel']),
       internalErrorCode: map['internalErrorCode'],
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'statusCode': statusCode,
       'statusLabel': statusLabel,
-      'statusEnum': statusEnum.name, // must use .name
+      'statusEnum': statusEnum.name,
       'errorCode': errorCode,
       'errorLabel': errorLabel,
-      'errorEnum': errorEnum.name, // must use .name
+      'errorEnum': errorEnum.name,
       if (internalErrorCode != null) 'internalErrorCode': internalErrorCode,
     };
   }

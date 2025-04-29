@@ -9,12 +9,12 @@ extension FlutterZoomMeetingSdkPlugin: MobileRTCMeetingServiceDelegate {
                 event: "onMeetingStatusChanged",
                 oriEvent: "onMeetingStateChange",
                 params: [
-                    "status": state.rawValue,
-                    "statusName": state.name,
-                    "failReason": -99,
-                    "failReasonName": "NoProvide",
-                    "endReason": -99,
-                    "endReasonName": "NoProvide",
+                    "statusCode": state.rawValue,
+                    "statusLabel": state.name,
+                    "errorCode": -99,
+                    "errorLabel": "NO_PROVIDED",
+                    "endReasonCode": -99,
+                    "endReasonLabel": "NO_PROVIDED",
                 ]
             )
         )

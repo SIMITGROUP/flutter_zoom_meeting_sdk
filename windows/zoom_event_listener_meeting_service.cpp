@@ -22,10 +22,10 @@ void ZoomSDKEventListenerMeetingService::onMeetingStatusChanged(ZOOM_SDK_NAMESPA
 
     flutter::EncodableMap params;
 
-    int failReason = 0;
-    std::string failReasonName = "None";
-    int endReason = 0;
-    std::string endReasonName = "None";
+    int failReason = -99;
+    std::string failReasonName = "NO_PROVIDED";
+    int endReason = -99;
+    std::string endReasonName = "NO_PROVIDED";
     if (status == ZOOM_SDK_NAMESPACE::MeetingStatus::MEETING_STATUS_FAILED)
     {
         failReason = iResult;
@@ -37,14 +37,14 @@ void ZoomSDKEventListenerMeetingService::onMeetingStatusChanged(ZOOM_SDK_NAMESPA
         endReasonName = EnumToString(static_cast<ZOOM_SDK_NAMESPACE::MeetingEndReason>(iResult));
     }
 
-    params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(status));
-    params[flutter::EncodableValue("statusName")] = flutter::EncodableValue(EnumToString(status));
+    params[flutter::EncodableValue("statusCode")] = flutter::EncodableValue(static_cast<int>(status));
+    params[flutter::EncodableValue("statusLabel")] = flutter::EncodableValue(EnumToString(status));
 
-    params[flutter::EncodableValue("failReason")] = flutter::EncodableValue(failReason);
-    params[flutter::EncodableValue("failReasonName")] = flutter::EncodableValue(failReasonName);
+    params[flutter::EncodableValue("errorCode")] = flutter::EncodableValue(failReason);
+    params[flutter::EncodableValue("errorLabel")] = flutter::EncodableValue(failReasonName);
 
-    params[flutter::EncodableValue("endReason")] = flutter::EncodableValue(endReason);
-    params[flutter::EncodableValue("endReasonName")] = flutter::EncodableValue(endReasonName);
+    params[flutter::EncodableValue("endReasonCode")] = flutter::EncodableValue(endReason);
+    params[flutter::EncodableValue("endReasonLabel")] = flutter::EncodableValue(endReasonName);
 
     SendEvent(tag, params);
 }

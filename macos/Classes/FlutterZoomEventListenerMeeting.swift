@@ -11,12 +11,12 @@ extension FlutterZoomMeetingSdkPlugin: ZoomSDKMeetingServiceDelegate {
                 event: "onMeetingStatusChanged",
                 oriEvent: "onMeetingStatusChange",
                 params: [
-                    "status": state.rawValue,
-                    "statusName": state.name,
-                    "failReason": error.rawValue,
-                    "failReasonName": error.name,
-                    "endReason": reason.rawValue,
-                    "endReasonName": reason.name,
+                    "statusCode": state.rawValue,
+                    "statusLabel": state.name,
+                    "errorCode": error.rawValue,
+                    "errorLabel": error.name,
+                    "endReasonCode": reason.rawValue,
+                    "endReasonLabel": reason.name,
                 ]
             )
         )

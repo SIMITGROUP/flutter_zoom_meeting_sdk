@@ -10,8 +10,8 @@ extension FlutterZoomMeetingSdkPlugin: MobileRTCAuthDelegate {
                 event: "onAuthenticationReturn",
                 oriEvent: "onMobileRTCAuthReturn",
                 params: [
-                    "status": returnValue.rawValue,
-                    "statusName": returnValue.name,
+                    "statusCode": returnValue.rawValue,
+                    "statusLabel": returnValue.name,
                 ]
             )
         )

@@ -29,8 +29,8 @@ void ZoomSDKEventListenerAuthService::onAuthenticationReturn(ZOOM_SDK_NAMESPACE:
 
     flutter::EncodableMap params;
 
-    params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(ret));
-    params[flutter::EncodableValue("statusName")] = flutter::EncodableValue(EnumToString(ret));
+    params[flutter::EncodableValue("statusCode")] = flutter::EncodableValue(static_cast<int>(ret));
+    params[flutter::EncodableValue("statusLabel")] = flutter::EncodableValue(EnumToString(ret));
 
     SendEvent(tag, params);
 }

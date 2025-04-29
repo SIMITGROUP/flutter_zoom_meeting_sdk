@@ -20,10 +20,12 @@ class FlutterZoomEventListenerMeeting(private val eventSink: EventChannel.EventS
                 "event" to "onMeetingStatusChanged",
                 "oriEvent" to "onMeetingStatusChanged",
                 "params" to mapOf(
-                    "status" to meetingStatus.ordinal,
-                    "statusName" to MapperMeetingStatus.getErrorName(meetingStatus),
-                    "error" to errorCode,
-                    "errorName" to MapperMeetingError.getErrorName(errorCode),
+                    "statusCode" to meetingStatus.ordinal,
+                    "statusLabel" to MapperMeetingStatus.getErrorName(meetingStatus),
+                    "errorCode" to errorCode,
+                    "errorLabel" to MapperMeetingError.getErrorName(errorCode),
+                    "endReasonCode" to -99,
+                    "endReasonLabel" to "NO_PROVIDED",
                     "internalErrorCode" to internalErrorCode
                 )
             )

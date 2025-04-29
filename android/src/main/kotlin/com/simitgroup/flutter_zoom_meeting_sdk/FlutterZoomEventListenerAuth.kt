@@ -15,8 +15,8 @@ class FlutterZoomEventListenerAuth(private val eventSink: EventChannel.EventSink
                 "event" to "onAuthenticationReturn",
                 "oriEvent" to "onZoomSDKInitializeResult",
                 "params" to mapOf(
-                    "status" to errorCode,
-                    "statusName" to MapperZoomError.getErrorName(errorCode),
+                    "statusCode" to errorCode,
+                    "statusLabel" to MapperZoomError.getErrorName(errorCode),
                     "internalErrorCode" to internalErrorCode
                 )
             )
