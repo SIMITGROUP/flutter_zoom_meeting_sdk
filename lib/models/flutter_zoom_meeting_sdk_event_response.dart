@@ -1,5 +1,6 @@
 import 'package:flutter_zoom_meeting_sdk/enums/event_type.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/platform_type.dart';
+import 'package:flutter_zoom_meeting_sdk/enums/status_meeting_end_reason.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/status_meeting_error.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/status_meeting_status.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/status_zoom_error.dart';
@@ -88,6 +89,9 @@ class EventMeetingStatusChangedParams implements MappableParams {
   final int errorCode;
   final String errorLabel;
   final StatusMeetingError errorEnum;
+  final int endReasonCode;
+  final String endReasonLabel;
+  final StatusMeetingEndReason endReasonEnum;
 
   /// Only **ANDROID** will have this field. ZOOM internal error code
   final int? internalErrorCode;
@@ -99,6 +103,9 @@ class EventMeetingStatusChangedParams implements MappableParams {
     required this.errorCode,
     required this.errorLabel,
     required this.errorEnum,
+    required this.endReasonCode,
+    required this.endReasonLabel,
+    required this.endReasonEnum,
     this.internalErrorCode,
   });
 
@@ -110,6 +117,11 @@ class EventMeetingStatusChangedParams implements MappableParams {
       errorCode: map['errorCode'],
       errorLabel: map['errorLabel'],
       errorEnum: StatusMeetingErrorMapper.fromString(map['errorLabel']),
+      endReasonCode: map['endReasonCode'],
+      endReasonLabel: map['endReasonLabel'],
+      endReasonEnum: StatusMeetingEndReasonMapper.fromString(
+        map['endReasonLabel'],
+      ),
       internalErrorCode: map['internalErrorCode'],
     );
   }
@@ -123,6 +135,9 @@ class EventMeetingStatusChangedParams implements MappableParams {
       'errorCode': errorCode,
       'errorLabel': errorLabel,
       'errorEnum': errorEnum.name,
+      'endReasonCode': endReasonCode,
+      'endReasonLabel': endReasonLabel,
+      'endReasonEnum': endReasonEnum.name,
       if (internalErrorCode != null) 'internalErrorCode': internalErrorCode,
     };
   }

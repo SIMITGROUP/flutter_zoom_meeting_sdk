@@ -9,8 +9,8 @@ part 'zoom_service_config.dart';
 class ZoomService {
   final FlutterZoomMeetingSdk _zoomSdk = FlutterZoomMeetingSdk();
 
-  // String _authEndpoint = "http://localhost:4000";
-  String _authEndpoint = "http://10.0.2.2:4000"; // android emulator
+  String _authEndpoint = "http://localhost:4000";
+  // String _authEndpoint = "http://10.0.2.2:4000"; // android emulator
 
   String _meetingNumber = "";
   String _userName = "";
