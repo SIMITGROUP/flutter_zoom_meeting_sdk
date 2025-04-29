@@ -251,3 +251,15 @@ inline std::string EnumToString(ZOOM_SDK_NAMESPACE::StatisticsWarningType result
 
     return ConvertEnumToString(result, names);
 }
+
+inline std::string EnumToString(ZOOM_SDK_NAMESPACE::MeetingType result)
+{
+    static const std::unordered_map<ZOOM_SDK_NAMESPACE::MeetingType, std::string> names = {
+        {ZOOM_SDK_NAMESPACE::MeetingType::MEETING_TYPE_NONE, "NONE"},
+        {ZOOM_SDK_NAMESPACE::MeetingType::MEETING_TYPE_NORMAL, "NORMAL"},
+        {ZOOM_SDK_NAMESPACE::MeetingType::MEETING_TYPE_WEBINAR, "WEBINAR"},
+        {ZOOM_SDK_NAMESPACE::MeetingType::MEETING_TYPE_BREAKOUTROOM, "BREAKOUT_ROOM"},
+    };
+
+    return ConvertEnumToString(result, names);
+}
