@@ -198,6 +198,17 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             )
 
         case "unInitZoom":
+            if isInitialized == false {
+                result(
+                    makeActionResponse(
+                        action: action,
+                        isSuccess: false,
+                        message: "MSG_NO_YET_INITIALIZED",
+                    )
+                )
+                return
+            }
+            
             ZoomSDK.shared().unInitSDK()
             isInitialized = false
             result(

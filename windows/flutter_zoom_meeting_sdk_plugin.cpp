@@ -115,6 +115,11 @@ namespace flutter_zoom_meeting_sdk
       ZoomResponse response = JoinMeeting(meetingNumber, password, displayName, webinarToken);
       result->Success(flutter::EncodableValue(response.ToEncodableMap()));
     }
+    else if (methodName.compare("unInitZoom") == 0)
+    {
+      ZoomResponse response = UnInitZoom();
+      result->Success(flutter::EncodableValue(response.ToEncodableMap()));
+    }
     else
     {
       result->NotImplemented();
@@ -139,6 +144,8 @@ namespace flutter_zoom_meeting_sdk
     auto initResult = ZOOM_SDK_NAMESPACE::InitSDK(initParam);
     if (initResult == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
     {
+      sdkInitialized = true;
+
       return ZoomResponseBuilder(tag)
           .Success(true)
           .Message("MSG_INIT_SUCCESS")
@@ -158,6 +165,14 @@ namespace flutter_zoom_meeting_sdk
   ZoomResponse AuthZoom(std::wstring token)
   {
     std::string tag = "authZoom";
+
+    if (!sdkInitialized)
+    {
+      return ZoomResponseBuilder(tag)
+          .Success(false)
+          .Message("MSG_NO_YET_INITIALIZED")
+          .Build();
+    }
 
     ZOOM_SDK_NAMESPACE::IAuthService *authService;
     ZOOM_SDK_NAMESPACE::SDKError authServiceInitReturnVal = ZOOM_SDK_NAMESPACE::CreateAuthService(&authService);
@@ -211,6 +226,14 @@ namespace flutter_zoom_meeting_sdk
   ZoomResponse JoinMeeting(uint64_t meetingNumber, std::wstring password, std::wstring displayName, std::optional<std::wstring> webinarToken)
   {
     std::string tag = "joinMeeting";
+
+    if (!sdkInitialized)
+    {
+      return ZoomResponseBuilder(tag)
+          .Success(false)
+          .Message("MSG_NO_YET_INITIALIZED")
+          .Build();
+    }
 
     ZOOM_SDK_NAMESPACE::IMeetingService *meetingService;
     ZOOM_SDK_NAMESPACE::SDKError meetingServiceInitReturnVal = ZOOM_SDK_NAMESPACE::CreateMeetingService(&meetingService);
@@ -271,4 +294,25 @@ namespace flutter_zoom_meeting_sdk
         .Build();
   }
 
+  ZoomResponse UnInitZoom()
+  {
+    std::string tag = "unInitZoom";
+
+    if (!sdkInitialized)
+    {
+      return ZoomResponseBuilder(tag)
+          .Success(false)
+          .Message("MSG_NO_YET_INITIALIZED")
+          .Build();
+    }
+
+    ZOOM_SDK_NAMESPACE::SDKError cleanUpReturnVal = ZOOM_SDK_NAMESPACE::CleanUPSDK();
+    sdkInitialized = false;
+    return ZoomResponseBuilder(tag)
+        .Success(cleanUpReturnVal == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
+        .Message(cleanUpReturnVal == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS ? "MSG_UNINIT_SUCCESS" : "MSG_UNINIT_SUCCESS")
+        .Param("status", static_cast<int>(cleanUpReturnVal))
+        .Param("statusName", EnumToString(cleanUpReturnVal))
+        .Build();
+  }
 } // namespace flutter_zoom_meeting_sdk
