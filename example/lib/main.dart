@@ -66,7 +66,23 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Plugin example app')),
-        body: MeetingCardList(data: meetingData, onJoinPressed: joinMeeting),
+        body: Container(
+          child: Column(
+            children: [
+              ElevatedButton(
+                onPressed: () => {_zoomService.unInitZoom()},
+                child: Text("UnInit"),
+              ),
+              SizedBox(
+                height: 500,
+                child: MeetingCardList(
+                  data: meetingData,
+                  onJoinPressed: joinMeeting,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

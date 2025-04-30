@@ -72,6 +72,11 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
 
                 result.success(response.toMap())
             }
+            (action == "unInitZoom") -> {
+                val response = unInitZoom()
+
+                result.success(response.toMap())
+            }
             else -> {
                 result.notImplemented()
             }
@@ -130,6 +135,17 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
     private fun joinZoomMeeting(call: MethodCall) : StandardZoomResponse{
         val action = "joinMeeting"
 
+        if(!ZoomSDK.getInstance().isInitialized)
+        {
+            val response = StandardZoomResponse(
+                isSuccess = false,
+                message = "MSG_NO_YET_INITIALIZED",
+                action = action,
+            )
+
+            return response;
+        }
+
         val arguments = call.arguments<Map<String, String>>() ?: emptyMap<String, String>()
         if(arguments.isEmpty())
         {
@@ -170,6 +186,31 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 "status" to joinResult,
                 "statusName" to "TODO"
             )
+        )
+
+        return response;
+    }
+
+    private fun unInitZoom(): StandardZoomResponse
+    {
+        val action = "unInitZoom"
+        if(!ZoomSDK.getInstance().isInitialized)
+        {
+            val response = StandardZoomResponse(
+                isSuccess = false,
+                message = "MSG_NO_YET_INITIALIZED",
+                action = action,
+            )
+
+            return response;
+        }
+
+        ZoomSDK.getInstance().uninitialize();
+
+        val response = StandardZoomResponse(
+            isSuccess = true,
+            message = "MSG_UNINIT_SUCCESS",
+            action = action,
         )
 
         return response;

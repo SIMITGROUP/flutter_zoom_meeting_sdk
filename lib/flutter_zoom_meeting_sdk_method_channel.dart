@@ -148,4 +148,14 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
       return JwtResponse(error: "Failed to retrieve JWT signature.");
     }
   }
+
+  @override
+  Future<FlutterZoomMeetingSdkActionResponse> unInitZoom() async {
+    final result = await methodChannel.invokeMethod('unInitZoom');
+    final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
+    return FlutterZoomMeetingSdkActionResponse.fromMap(
+      resultMap,
+      Map<String, dynamic>.from,
+    );
+  }
 }

@@ -19,7 +19,9 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             name: "flutter_zoom_meeting_sdk/events",
             binaryMessenger: registrar.messenger
         )
-        eventChannel.setStreamHandler(FlutterZoomEventStreamHandler(plugin: instance))
+        eventChannel.setStreamHandler(
+            FlutterZoomEventStreamHandler(plugin: instance)
+        )
 
     }
 
@@ -35,8 +37,7 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
 
         switch action {
         case "initZoom":
-            if(isInitialized == true)
-            {
+            if isInitialized == true {
                 result(
                     makeActionResponse(
                         action: action,
@@ -44,15 +45,15 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
                         message: "MSG_INITIALIZED",
                     )
                 )
+                return
             }
-            
+
             let zoomSdk = ZoomSDK.shared()
             let initParams = ZoomSDKInitParams()
             initParams.zoomDomain = "zoom.us"
-            
+
             let initResult = zoomSdk.initSDK(with: initParams)
-            if(initResult == ZoomSDKError_Success)
-            {
+            if initResult == ZoomSDKError_Success {
                 isInitialized = true
             }
 
@@ -71,6 +72,17 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             )
 
         case "authZoom":
+            if isInitialized == false {
+                result(
+                    makeActionResponse(
+                        action: action,
+                        isSuccess: false,
+                        message: "MSG_NO_YET_INITIALIZED",
+                    )
+                )
+                return
+            }
+
             guard let args = call.arguments as? [String: String] else {
                 result(
                     makeActionResponse(
@@ -117,6 +129,17 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             )
 
         case "joinMeeting":
+            if isInitialized == false {
+                result(
+                    makeActionResponse(
+                        action: action,
+                        isSuccess: false,
+                        message: "MSG_NO_YET_INITIALIZED",
+                    )
+                )
+                return
+            }
+            
             guard let args = call.arguments as? [String: String] else {
                 result(
                     makeActionResponse(
@@ -147,7 +170,9 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             joinParam.password = args["password"]
             joinParam.userType = ZoomSDKUserType_WithoutLogin
             joinParam.displayName = args["displayName"]
-            joinParam.webinarToken = (args["webinarToken"]?.isEmpty ?? true) ? nil : args["webinarToken"]
+            joinParam.webinarToken =
+                (args["webinarToken"]?.isEmpty ?? true)
+                ? nil : args["webinarToken"]
             joinParam.customerKey = nil
             joinParam.isDirectShare = false
             joinParam.displayID = 0
@@ -157,7 +182,6 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             joinParam.zak = nil
 
             let joinResult = meetingService.joinMeeting(joinParam)
-            
 
             result(
                 makeActionResponse(
@@ -170,6 +194,17 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
                         "status": joinResult.rawValue,
                         "statusName": joinResult.name,
                     ]
+                )
+            )
+
+        case "unInitZoom":
+            ZoomSDK.shared().unInitSDK()
+            isInitialized = false
+            result(
+                makeActionResponse(
+                    action: action,
+                    isSuccess: true,
+                    message: "MSG_UNINIT_SUCCESS"
                 )
             )
 

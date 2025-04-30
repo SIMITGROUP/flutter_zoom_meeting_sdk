@@ -78,4 +78,8 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   }) {
     throw UnimplementedError('getJWTToken() has not been implemented.');
   }
+
+  Future<FlutterZoomMeetingSdkActionResponse> unInitZoom() {
+    throw UnimplementedError('unInitZoom() has not been implemented.');
+  }
 }

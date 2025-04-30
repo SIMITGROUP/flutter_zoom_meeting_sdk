@@ -1,1 +1,1 @@
-enum ActionType { initZoom, authZoom, joinMeeting }
+enum ActionType { initZoom, authZoom, joinMeeting, unInitZoom }

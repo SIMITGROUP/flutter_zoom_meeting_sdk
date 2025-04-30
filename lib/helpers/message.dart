@@ -2,6 +2,8 @@ const Map<String, String> actionMessages = {
   // General
   'MSG_NO_ARGS_PROVIDED': 'No arguments provided.',
   'MSG_NO_JWT_TOKEN_PROVIDED': 'No JWT token provided.',
+  'MSG_NO_YET_INITIALIZED': 'Zoom SDK is not initialized.',
+  'MSG_UNINIT_SUCCESS': 'Zoom SDK uninitialized successfully.',
 
   // Init Zoom Meeting
   'MSG_INITIALIZED': 'Zoom SDK is initialized.',

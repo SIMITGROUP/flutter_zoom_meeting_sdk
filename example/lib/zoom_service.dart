@@ -9,8 +9,8 @@ part 'zoom_service_config.dart';
 class ZoomService {
   final FlutterZoomMeetingSdk _zoomSdk = FlutterZoomMeetingSdk();
 
-  String _authEndpoint = "http://localhost:4000";
-  // String _authEndpoint = "http://10.0.2.2:4000"; // android emulator
+  // String _authEndpoint = "http://localhost:4000";
+  String _authEndpoint = "http://10.0.2.2:4000"; // android emulator
 
   String _meetingNumber = "";
   String _userName = "";
@@ -48,6 +48,12 @@ class ZoomService {
 
     final result = await _zoomSdk.joinMeeting(request);
     print('Join response: ${jsonEncode(result.toMap())}');
+    return result;
+  }
+
+  Future<FlutterZoomMeetingSdkActionResponse> unInitZoom() async {
+    final result = await _zoomSdk.unInitZoom();
+    print('UnInit response: ${jsonEncode(result.toMap())}');
     return result;
   }
 
@@ -97,5 +103,7 @@ class ZoomService {
     _zoomEventSubscription?.cancel();
 
     _meetingStatusSub?.cancel();
+
+    // uninit zoom sdk
   }
 }

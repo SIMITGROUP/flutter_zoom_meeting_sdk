@@ -54,6 +54,10 @@ class FlutterZoomMeetingSdk {
     return FlutterZoomMeetingSdkPlatform.instance.joinMeeting(request);
   }
 
+  Future<FlutterZoomMeetingSdkActionResponse> unInitZoom() {
+    return FlutterZoomMeetingSdkPlatform.instance.unInitZoom();
+  }
+
   Future<JwtResponse?> getJWTToken({
     required String authEndpoint,
     required String meetingNumber,

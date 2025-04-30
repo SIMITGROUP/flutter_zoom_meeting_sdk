@@ -38,8 +38,7 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
         switch action {
 
         case "initZoom":
-            if(isInitialized == true)
-            {
+            if isInitialized == true {
                 result(
                     makeActionResponse(
                         action: action,
@@ -47,17 +46,19 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
                         message: "MSG_INITIALIZED",
                     )
                 )
+                return
             }
-            
+
             let context = MobileRTCSDKInitContext()
             context.domain = "zoom.us"
 
-            let sdkInitializedSuccessfully = MobileRTC.shared().initialize(context)
-            if(sdkInitializedSuccessfully)
-            {
+            let sdkInitializedSuccessfully = MobileRTC.shared().initialize(
+                context
+            )
+            if sdkInitializedSuccessfully {
                 isInitialized = true
             }
-            
+
             result(
                 makeActionResponse(
                     action: action,
@@ -74,6 +75,17 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             )
 
         case "authZoom":
+            if isInitialized == false {
+                result(
+                    makeActionResponse(
+                        action: action,
+                        isSuccess: false,
+                        message: "MSG_NO_YET_INITIALIZED",
+                    )
+                )
+                return
+            }
+
             guard let args = call.arguments as? [String: String] else {
                 result(
                     makeActionResponse(
@@ -123,6 +135,17 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             }
 
         case "joinMeeting":
+            if isInitialized == false {
+                result(
+                    makeActionResponse(
+                        action: action,
+                        isSuccess: false,
+                        message: "MSG_NO_YET_INITIALIZED",
+                    )
+                )
+                return
+            }
+
             guard let args = call.arguments as? [String: String] else {
                 result(
                     makeActionResponse(
@@ -153,7 +176,9 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             joinMeetingParameters.meetingNumber = args["meetingNumber"]
             joinMeetingParameters.password = args["password"]
             joinMeetingParameters.userName = args["displayName"]
-            joinMeetingParameters.webinarToken = (args["webinarToken"]?.isEmpty ?? true) ? nil : args["webinarToken"]
+            joinMeetingParameters.webinarToken =
+                (args["webinarToken"]?.isEmpty ?? true)
+                ? nil : args["webinarToken"]
             joinMeetingParameters.noVideo = true
             joinMeetingParameters.noAudio = true
 
@@ -172,6 +197,28 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
                         "status": joinResult.rawValue,
                         "statusName": joinResult.name,
                     ]
+                )
+            )
+
+        case "unInitZoom":
+            if isInitialized == false {
+                result(
+                    makeActionResponse(
+                        action: action,
+                        isSuccess: false,
+                        message: "MSG_NO_YET_INITIALIZED",
+                    )
+                )
+                return
+            }
+
+            MobileRTC.shared().cleanup()
+            isInitialized = false
+            result(
+                makeActionResponse(
+                    action: action,
+                    isSuccess: true,
+                    message: "MSG_UNINIT_SUCCESS"
                 )
             )
 
