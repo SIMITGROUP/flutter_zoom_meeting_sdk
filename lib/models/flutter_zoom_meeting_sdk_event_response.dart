@@ -200,3 +200,67 @@ class EventMeetingParameterNotificationParams implements MappableParams {
     };
   }
 }
+
+class EventMeetingErrorParams implements MappableParams {
+  final int errorCode;
+  final String errorLabel;
+  final StatusMeetingError errorEnum;
+  final String message;
+
+  EventMeetingErrorParams({
+    required this.errorCode,
+    required this.errorLabel,
+    required this.errorEnum,
+    required this.message,
+  });
+
+  factory EventMeetingErrorParams.fromMap(Map<String, dynamic> map) {
+    return EventMeetingErrorParams(
+      errorCode: map['errorCode'],
+      errorLabel: map['errorLabel'],
+      errorEnum: StatusMeetingErrorMapper.fromString(map['errorLabel']),
+      message: map['message'],
+    );
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'errorCode': errorCode,
+      'errorLabel': errorLabel,
+      'errorEnum': errorEnum.name,
+      'message': message,
+    };
+  }
+}
+
+class EventMeetingEndedReasonParams implements MappableParams {
+  final int endReasonCode;
+  final String endReasonLabel;
+  final StatusMeetingEndReason endReasonEnum;
+
+  EventMeetingEndedReasonParams({
+    required this.endReasonCode,
+    required this.endReasonLabel,
+    required this.endReasonEnum,
+  });
+
+  factory EventMeetingEndedReasonParams.fromMap(Map<String, dynamic> map) {
+    return EventMeetingEndedReasonParams(
+      endReasonCode: map['endReasonCode'],
+      endReasonLabel: map['endReasonLabel'],
+      endReasonEnum: StatusMeetingEndReasonMapper.fromString(
+        map['endReasonLabel'],
+      ),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'endReasonCode': endReasonCode,
+      'endReasonLabel': endReasonLabel,
+      'endReasonEnum': endReasonEnum.name,
+    };
+  }
+}

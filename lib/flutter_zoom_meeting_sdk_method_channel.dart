@@ -79,6 +79,30 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
         ),
       );
 
+  /// ios
+  @override
+  Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingErrorParams>>
+  get onMeetingError => _eventStream
+      .where((e) => e['event'] == EventType.onMeetingError.name)
+      .map(
+        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
+          event,
+          EventMeetingErrorParams.fromMap,
+        ),
+      );
+
+  /// ios
+  @override
+  Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingEndedReasonParams>>
+  get onMeetingEndedReason => _eventStream
+      .where((e) => e['event'] == EventType.onMeetingEndedReason.name)
+      .map(
+        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
+          event,
+          EventMeetingEndedReasonParams.fromMap,
+        ),
+      );
+
   // ======= Functions =======
 
   @override

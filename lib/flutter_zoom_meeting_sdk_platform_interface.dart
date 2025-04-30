@@ -51,6 +51,14 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
   >
   get onMeetingParameterNotification;
 
+  /// ios
+  Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingErrorParams>>
+  get onMeetingError;
+
+  /// ios
+  Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingEndedReasonParams>>
+  get onMeetingEndedReason;
+
   // ---
 
   // ======= Functions =======

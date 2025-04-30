@@ -22,6 +22,8 @@ class ZoomService {
   StreamSubscription? _onZoomAuthIdentityExpired;
   StreamSubscription? _onMeetingStatusChanged;
   StreamSubscription? _onMeetingParameterNotification;
+  StreamSubscription? _onMeetingError;
+  StreamSubscription? _onMeetingEndedReason;
 
   Future<FlutterZoomMeetingSdkActionResponse> initZoom() async {
     final result = await _zoomSdk.initZoom();
@@ -101,6 +103,18 @@ class ZoomService {
             "EXAMPLE_APP::EVENT::onMeetingParameterNotification - ${jsonEncode(event.toMap())}",
           );
         });
+
+    _onMeetingError = _zoomSdk.onMeetingError.listen((event) {
+      print(
+        "EXAMPLE_APP::EVENT::onMeetingError - ${jsonEncode(event.toMap())}",
+      );
+    });
+
+    _onMeetingEndedReason = _zoomSdk.onMeetingEndedReason.listen((event) {
+      print(
+        "EXAMPLE_APP::EVENT::onMeetingEndedReason - ${jsonEncode(event.toMap())}",
+      );
+    });
   }
 
   void dispose() {
@@ -109,6 +123,8 @@ class ZoomService {
     _onZoomAuthIdentityExpired?.cancel();
     _onMeetingStatusChanged?.cancel();
     _onMeetingParameterNotification?.cancel();
+    _onMeetingError?.cancel();
+    _onMeetingEndedReason?.cancel();
 
     unInitZoom();
   }

@@ -34,6 +34,15 @@ class FlutterZoomMeetingSdk {
   get onMeetingParameterNotification =>
       FlutterZoomMeetingSdkPlatform.instance.onMeetingParameterNotification;
 
+  /// ios
+  Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingErrorParams>>
+  get onMeetingError => FlutterZoomMeetingSdkPlatform.instance.onMeetingError;
+
+  /// ios
+  Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingEndedReasonParams>>
+  get onMeetingEndedReason =>
+      FlutterZoomMeetingSdkPlatform.instance.onMeetingEndedReason;
+
   // ---
 
   // ======= Functions =======

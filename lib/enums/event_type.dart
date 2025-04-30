@@ -1,16 +1,11 @@
 enum EventType {
+  // Auth
   onAuthenticationReturn,
-  onLoginReturnWithReason,
-  onLogout,
-  onZoomIdentityExpired,
   onZoomAuthIdentityExpired,
-  onNotificationServiceStatus,
 
+  // Meeting
   onMeetingStatusChanged,
-  onMeetingStatisticsWarningNotification,
   onMeetingParameterNotification,
-  onSuspendParticipantsActivities,
-  onAICompanionActiveChangeNotice,
-  onMeetingTopicChanged,
-  onMeetingFullToWatchLiveStream,
+  onMeetingError,
+  onMeetingEndedReason,
 }
