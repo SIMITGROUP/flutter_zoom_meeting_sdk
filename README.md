@@ -138,9 +138,7 @@ FlutterZoomMeetingSdk().onAuthenticationReturn.listen((event) {
 
 ## Example
 
-```dart
-// TODO
-```
+For a complete example of how to use the plugin, check out the full code at [here](./README_EXAMPLE.md).
 
 ---
 
@@ -152,4 +150,6 @@ Contributions are welcome! Please open an issue or pull request with improvement
 
 ## License
 
-MIT License. See LICENSE for details.
+MIT License. See [LICENSE](./LICENSE) for details.
+
+
