@@ -63,8 +63,26 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
 
 # === Zoom SDK Configuration based on Visual Studio settings ===
 
-# Set the path to your Zoom SDK installation
-set(ZOOM_SDK_DIR "C:/Users/ASUS/Dev/flutter_zoom_meeting_sdk/example/ZoomSDK/windows")
+# Set the path to the Zoom SDK installation
+# First check if ZOOM_SDK_PATH environment variable is set
+if(DEFINED ENV{ZOOM_SDK_PATH})
+  set(ZOOM_SDK_DIR $ENV{ZOOM_SDK_PATH})
+  message(STATUS "Using Zoom SDK from environment variable: ${ZOOM_SDK_DIR}")
+else()
+  # Check if a custom path was provided via -DZOOM_SDK_DIR=path/to/sdk
+  if(NOT DEFINED ZOOM_SDK_DIR)
+    # Default fallback path
+    set(ZOOM_SDK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs")
+    message(STATUS "Using default Zoom SDK path: ${ZOOM_SDK_DIR}")
+  else()
+    message(STATUS "Using provided Zoom SDK path: ${ZOOM_SDK_DIR}")
+  endif()
+endif()
+
+# Verify the SDK directory exists
+if(NOT EXISTS "${ZOOM_SDK_DIR}")
+  message(WARNING "Zoom SDK directory not found at ${ZOOM_SDK_DIR}. Build may fail.")
+endif()
 
 # Include directories
 include_directories(
@@ -90,15 +108,6 @@ add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
     "${ZOOM_SDK_DIR}/bin"
     "$<TARGET_FILE_DIR:${PLUGIN_NAME}>"
 )
-
-# Build Events > Post-Build Event > Command Line
-# add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
-#   # COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${PLUGIN_NAME}>"
-#   COMMAND ${CMAKE_COMMAND} -E copy_directory
-#   "C:/Users/ASUS/Dev/flutter_zoom_meeting_sdk/example/ZoomSDK/windows/bin"
-#   "$(OutDir)"
-# )
-
 
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
