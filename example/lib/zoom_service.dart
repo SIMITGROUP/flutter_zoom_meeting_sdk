@@ -18,23 +18,21 @@ class ZoomService {
   String? _webinarToken;
   int _role = 0;
 
-  StreamSubscription? _authSubscription;
-  StreamSubscription? _meetingSubscription;
-  StreamSubscription? _zoomEventSubscription;
-
-  StreamSubscription? _meetingStatusSub;
+  StreamSubscription? _onAuthenticationReturn;
+  StreamSubscription? _onZoomAuthIdentityExpired;
+  StreamSubscription? _onMeetingStatusChanged;
+  StreamSubscription? _onMeetingParameterNotification;
 
   Future<FlutterZoomMeetingSdkActionResponse> initZoom() async {
     final result = await _zoomSdk.initZoom();
-    // print('Init response: $result');
-    print('Init response: ${jsonEncode(result.toMap())}');
+    print('EXAMPLE_APP::ACTION::INIT - ${jsonEncode(result.toMap())}');
     return result;
   }
 
   Future<FlutterZoomMeetingSdkActionResponse> authZoom() async {
     final jwtToken = await getJWTToken();
     final result = await _zoomSdk.authZoom(jwtToken: jwtToken);
-    print('Auth response: ${jsonEncode(result.toMap())}');
+    print('EXAMPLE_APP::ACTION::AUTH - ${jsonEncode(result.toMap())}');
     return result;
   }
 
@@ -47,13 +45,13 @@ class ZoomService {
     );
 
     final result = await _zoomSdk.joinMeeting(request);
-    print('Join response: ${jsonEncode(result.toMap())}');
+    print('EXAMPLE_APP::ACTION::JOIN - ${jsonEncode(result.toMap())}');
     return result;
   }
 
   Future<FlutterZoomMeetingSdkActionResponse> unInitZoom() async {
     final result = await _zoomSdk.unInitZoom();
-    print('UnInit response: ${jsonEncode(result.toMap())}');
+    print('EXAMPLE_APP::ACTION::UNINIT - ${jsonEncode(result.toMap())}');
     return result;
   }
 
@@ -75,35 +73,43 @@ class ZoomService {
   }
 
   void initEventListeners() {
-    _zoomSdk.onAuthenticationReturn.listen((event) {
-      print("Example App onAuthenticationReturn: ${jsonEncode(event.toMap())}");
+    _onAuthenticationReturn = _zoomSdk.onAuthenticationReturn.listen((event) {
+      print(
+        "EXAMPLE_APP::EVENT::onAuthenticationReturn - ${jsonEncode(event.toMap())}",
+      );
+
       if (event.params?.statusEnum == StatusZoomError.success) {
         joinMeeting();
       }
     });
 
-    _meetingStatusSub = _zoomSdk.onMeetingStatusChanged.listen((event) {
+    _onZoomAuthIdentityExpired = _zoomSdk.onZoomAuthIdentityExpired.listen((
+      event,
+    ) {
+      print("EXAMPLE_APP::EVENT::onZoomAuthIdentityExpired");
+    });
+
+    _onMeetingStatusChanged = _zoomSdk.onMeetingStatusChanged.listen((event) {
       print(
-        "Example App onMeetingStatusChanged event JSON = ${jsonEncode(event.toMap())}",
+        "EXAMPLE_APP::EVENT::onMeetingStatusChanged - ${jsonEncode(event.toMap())}",
       );
     });
 
-    _meetingStatusSub = _zoomSdk.onMeetingParameterNotification.listen((event) {
-      print("onMeetingParameterNotification");
-      print("Example App onMeetingParameterNotification event $event");
-      print(
-        "Example App onMeetingParameterNotification event JSON = ${jsonEncode(event.toMap())}",
-      );
-    });
+    _onMeetingParameterNotification = _zoomSdk.onMeetingParameterNotification
+        .listen((event) {
+          print(
+            "EXAMPLE_APP::EVENT::onMeetingParameterNotification - ${jsonEncode(event.toMap())}",
+          );
+        });
   }
 
   void dispose() {
-    _authSubscription?.cancel();
-    _meetingSubscription?.cancel();
-    _zoomEventSubscription?.cancel();
+    // UnSubscribe Event
+    _onAuthenticationReturn?.cancel();
+    _onZoomAuthIdentityExpired?.cancel();
+    _onMeetingStatusChanged?.cancel();
+    _onMeetingParameterNotification?.cancel();
 
-    _meetingStatusSub?.cancel();
-
-    // uninit zoom sdk
+    unInitZoom();
   }
 }
