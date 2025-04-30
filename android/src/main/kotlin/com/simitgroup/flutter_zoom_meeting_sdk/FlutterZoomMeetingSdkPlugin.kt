@@ -127,7 +127,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             action = action,
             params = mapOf(
                 "status" to 0,
-                "statusName" to "Success"
+                "statusName" to "SUCCESS"
             )
         )
     }
@@ -184,7 +184,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             action = action,
             params = mapOf(
                 "status" to joinResult,
-                "statusName" to "TODO"
+                "statusName" to MapperMeetingError.getErrorName(joinResult),
             )
         )
 

@@ -69,7 +69,7 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
                     params: [
                         "status": sdkInitializedSuccessfully ? 0 : 1,
                         "statusName": sdkInitializedSuccessfully
-                            ? "Success" : "Failed",
+                            ? "SUCCESS" : "FAILED",
                     ]
                 )
             )
@@ -120,7 +120,7 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
                         message: "MSG_AUTH_SENT_SUCCESS",
                         params: [
                             "status": 0,
-                            "statusName": "Success",
+                            "statusName": "SUCCESS",
                         ]
                     )
                 )

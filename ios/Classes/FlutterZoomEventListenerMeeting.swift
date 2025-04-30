@@ -26,8 +26,8 @@ extension FlutterZoomMeetingSdkPlugin: MobileRTCMeetingServiceDelegate {
                 event: "onMeetingError",
                 oriEvent: "onMeetingError",
                 params: [
-                    "failReason": error.rawValue,
-                    "failReasonName": error.name,
+                    "errorCode": error.rawValue,
+                    "errorLabel": error.name,
                     "message": message ?? "",
                 ]
             )
@@ -40,8 +40,8 @@ extension FlutterZoomMeetingSdkPlugin: MobileRTCMeetingServiceDelegate {
                 event: "onMeetingEndedReason",
                 oriEvent: "onMeetingEndedReason",
                 params: [
-                    "endReason": reason.rawValue,
-                    "endReasonName": reason.name,
+                    "endReasonCode": reason.rawValue,
+                    "endReasonLabel": reason.name,
                 ]
             )
         )
