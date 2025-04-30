@@ -88,5 +88,5 @@ Now run `flutter run`, you should be able to launch without errors.
 
 - [iOS Setup Instructions](./README_IOS.md)
 - [macOS Setup Instructions](./README_MACOS.md)
-- [WindowsSetup Instructions](./README_WINDOWS.md)
+- [Windows Setup Instructions](./README_WINDOWS.md)
 - [Home](./README.md)
