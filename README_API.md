@@ -18,7 +18,7 @@
 
 - **Description**: Initialize the SDK.
 - **Request**: None
-- **Response**: `Future<FlutterZoomMeetingSdkActionResponse<InitParamsResponse>>`
+- **Response**: Future<[FlutterZoomMeetingSdkActionResponse](#flutterzoommeetingsdkactionresponset)<[InitParamsResponse](#initparamsresponse)>>
 - **Example**:
   ```dart
   await FlutterZoomMeetingSdk().initZoom();
@@ -31,7 +31,7 @@
 - **Description**: Authenticate SDK using your JWT token.
 - **Request**:
   - `jwtToken`: `String` — The JWT token used for authentication.
-- **Response**: `Future<FlutterZoomMeetingSdkActionResponse<AuthParamsResponse>>`
+- **Response**: Future<[FlutterZoomMeetingSdkActionResponse](#flutterzoommeetingsdkactionresponset)<[AuthParamsResponse](#authparamsresponse)>>
 - **Example**:
   ```dart
   await FlutterZoomMeetingSdk().authZoom(jwtToken: jwtToken);
@@ -47,7 +47,7 @@
   - `password`: `String` — The meeting password.
   - `displayName`: `String` — The participant's display name.
   - `webinarToken`: `String` — *(Optional)* The webinar token for webinars or registered meetings.
-- **Response**: `Future<FlutterZoomMeetingSdkActionResponse<JoinParamsResponse>>`
+- **Response**: Future<[FlutterZoomMeetingSdkActionResponse](#flutterzoommeetingsdkactionresponset)<[JoinParamsResponse](#joinparamsresponse)>>
 - **Example**:
   ```dart
   await FlutterZoomMeetingSdk().joinMeeting(ZoomMeetingSdkRequest(
@@ -64,7 +64,7 @@
 
 - **Description**: Uninitialize and clean up the SDK.
 - **Request**: None
-- **Response**: `Future<FlutterZoomMeetingSdkActionResponse>`
+- **Response**: Future<[FlutterZoomMeetingSdkActionResponse](#flutterzoommeetingsdkactionresponset)>
 - **Example**:
   ```dart
   await FlutterZoomMeetingSdk().unInitZoom();
@@ -81,7 +81,7 @@
   - `role`: `int` — The user's role in the meeting:
     - `0`: Participant
     - `1`: Host / Co-Host
-- **Response**: `Future<JwtResponse?>`
+- **Response**: Future<JwtResponse?>
 - **Example**:
   ```dart
   final result = await _zoomSdk.getJWTToken(
@@ -100,7 +100,7 @@
 ### `onAuthenticationReturn`
 
 - **Description**: Triggered when the SDK authentication succeeds or fails.
-- **Response**: `Stream<FlutterZoomMeetingSdkEventResponse<EventAuthenticateReturnParams>>`
+- **Response**: Stream<[FlutterZoomMeetingSdkEventResponse](#flutterzoommeetingsdkeventresponset)<[EventAuthenticateReturnParams](#eventauthenticatereturnparams)>>
 - **Platform**: `macOS` | `iOS` | `android` | `windows`
 - **Example**:
   ```dart
@@ -116,7 +116,7 @@
 ### `onZoomAuthIdentityExpired`
 
 - **Description**: Triggered when the JWT token is expired. Generate a new token.
-- **Response**: `Stream<FlutterZoomMeetingSdkEventResponse>`
+- **Response**: Stream<[FlutterZoomMeetingSdkEventResponse](#flutterzoommeetingsdkeventresponset)>
 - **Platform**: `macOS` | `iOS` | `android` | `windows`
 - **Example**:
   ```dart
@@ -130,7 +130,7 @@
 ### `onMeetingStatusChanged`
 
 - **Description**: Triggered when the meeting status changes.
-- **Response**: `Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>`
+- **Response**: Stream<[FlutterZoomMeetingSdkEventResponse](#flutterzoommeetingsdkeventresponset)<[EventMeetingStatusChangedParams](#eventmeetingstatuschangedparams)>>
 - **Platform**: `macOS` | `iOS` | `android` | `windows`
 - **Example**:
   ```dart
@@ -144,7 +144,7 @@
 ### `onMeetingParameterNotification`
 
 - **Description**: Triggered right before the meeting starts.
-- **Response**: `Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingParameterNotificationParams>>`
+- **Response**: Stream<[FlutterZoomMeetingSdkEventResponse](#flutterzoommeetingsdkeventresponset)<[EventMeetingParameterNotificationParams](#eventmeetingparameternotificationparams)>>
 - **Platform**: `macOS` | `iOS` | `android` | `windows`
 - **Example**:
   ```dart
@@ -158,7 +158,7 @@
 ### `onMeetingError`
 
 - **Description**: Triggered when a meeting encounters an error (e.g., connection issues, invalid parameters).
-- **Response**: `Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingErrorParams>>`
+- **Response**: Stream<[FlutterZoomMeetingSdkEventResponse](#flutterzoommeetingsdkeventresponset)<[EventMeetingErrorParams](#eventmeetingerrorparams)>>
 - **Platform**: `iOS` only
 - **Note**: Only available on `iOS` due to SDK inconsistencies.
 - **Example**:
@@ -173,7 +173,7 @@
 ### `onMeetingEndedReason`
 
 - **Description**: Triggered when a meeting ends, providing the end reason.
-- **Response**: `Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingEndedReasonParams>>`
+- **Response**: Stream<[FlutterZoomMeetingSdkEventResponse](#flutterzoommeetingsdkeventresponset)<[EventMeetingEndedReasonParams](#eventmeetingendedreasonparams)>>
 - **Platform**: `iOS` only
 - **Note**: Only available on `iOS` due to SDK inconsistencies.
 - **Example**:
@@ -208,6 +208,7 @@ Generic wrapper for all SDK function responses.
   - `statusCode`: `int?`
   - `statusLabel`: `String?`
  
+---
 
 #### `AuthParamsResponse`
 
@@ -215,6 +216,7 @@ Generic wrapper for all SDK function responses.
   - `statusCode`: `int?`
   - `statusLabel`: `String?`
  
+---
 
 #### `JoinParamsResponse`
 
