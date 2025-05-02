@@ -138,6 +138,38 @@ class _MyAppState extends State<MyApp> {
 
 ---
 
+## SDK Authorization (JWT Token)
+
+Zoom Meeting SDK requires a valid JWT (JSON Web Token) for authentication before joining meetings. This section explains how to generate and use the token within your Flutter app.
+
+### 1. How to Generate a JWT Token
+
+Zoom provides a [sample JWT auth endpoint](https://github.com/zoom/meetingsdk-auth-endpoint-sample/) you can use to generate tokens securely:
+
+1. Clone the GitHub repo linked above.
+2. Set up and run the sample auth server locally or on your own backend.
+3. From your Flutter app, use the getJWTToken() method to request a token:
+
+```dart
+final result = await FlutterZoomMeetingSdk().getJWTToken(
+  authEndpoint: _authEndpoint,
+  meetingNumber: _meetingNumber,
+  role: _role, // 0: Participant, 1: Host / Co-Host
+);
+
+final signature = result?.token;
+
+if (signature != null) {
+  print('Signature: $signature');
+  return signature;
+} else {
+  throw Exception("Failed to get signature.");
+}
+```
+> ℹ️ For detailed information, refer to the official [Meeting SDK authorization](https://developers.zoom.us/docs/meeting-sdk/auth/) guide.
+
+---
+
 ## Example
 
 For a complete usage reference, see the [full example code](./README_EXAMPLE.md).
