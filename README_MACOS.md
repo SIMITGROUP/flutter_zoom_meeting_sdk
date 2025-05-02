@@ -23,7 +23,9 @@
 
 ## 2. Resign Zoom SDK
 
-macOS requires all SDK binaries (frameworks, dylibs, etc.) to be code-signed.
+Zoom SDK binaries (frameworks, dylibs, etc.) come pre-signed by Zoom, but macOS requires **all binaries to be signed using your own developer identity**.
+
+To comply with this, you must **re-sign all Zoom SDK files using your own code signing identity**.
 
 ### 2.1 List Code Signing Identities
 
@@ -54,6 +56,8 @@ find "$FRAMEWORKS_PATH" -name "*.dylib" -exec codesign --force --sign "${CODE_SI
 find "$FRAMEWORKS_PATH" -name "*.bundle" -exec codesign --force --sign "${CODE_SIGN_IDENTITY}" {} \;
 find "$FRAMEWORKS_PATH" -name "*.app" -exec codesign --force --sign "${CODE_SIGN_IDENTITY}" {} \;
 ```
+
+> ✅ This ensures macOS allows your app to use the SDK during development and submission.
 
 ---
 
@@ -96,10 +100,14 @@ Open the macOS folder in Xcode:
 #### Build Settings
 
 - **Framework Search Paths:**  
-  `$(PROJECT_DIR)/../ZoomSDK/macOS/ZoomSDK`
+  ```bash
+  $(PROJECT_DIR)/../ZoomSDK/macOS/ZoomSDK
+  ```
 
 - **Library Search Paths:**  
-  `$(PROJECT_DIR)/../ZoomSDK/macOS/ZoomSDK`
+  ```bash
+  $(PROJECT_DIR)/../ZoomSDK/macOS/ZoomSDK
+  ```
 
 #### Build Phases
 
@@ -111,7 +119,7 @@ Open the macOS folder in Xcode:
 2. **Copy Files (Zoom Frameworks)**
    - Add another **Copy Files Phase**
    - Set **Destination** to `Frameworks`
-   - Add all `.framework`, `.bundle`, `.dylib` files inside `ZoomSDK/macOS/ZoomSDK`
+   - Select all files inside `ZoomSDK/macOS/ZoomSDK`
 
 ---
 
@@ -124,6 +132,9 @@ Open the macOS folder in Xcode:
   ```bash
   ${PODS_ROOT}/../../ZoomSDK/macOS/ZoomSDK
   ```
+> Note: When you run the flutter app, flutter might run `pod install`.
+> Your Pod configuration might reset.
+> All you need to do is repeat this step.
 
 ---
 
@@ -152,9 +163,13 @@ After setup, run your Flutter app, you should be able to launch without errors.:
 flutter run
 ```
 
-> If you hit code signing errors, double-check:
+> ⚠️ If you hit code signing errors, double-check:
 > - Your **Team** and **Signing Certificate** match the one used to sign the SDK
 > - All SDK files are properly signed using the script
+
+> ⚠️ If you encounter an `import ZoomSDK` error, it’s likely because Flutter reset the Pod configuration during a clean or re-build.  
+> To fix this, re-check your **Pod Target Configuration**.
+> You might need to redo this part.
 
 ---
 
