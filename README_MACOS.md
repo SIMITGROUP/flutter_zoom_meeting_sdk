@@ -76,6 +76,12 @@ Navigate to `<YourApp>/macos` and open it with Xcode.
 
 Edit your app’s `macos/Runner/Info.plist` and add the following keys to request necessary permissions:
 ```xml
+<key>NSCameraUsageDescription</key>
+<string>In order for participants to see you, requires access to your camera.</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>In order to speak to participants, requires access to your microphone.</string>
+<key>NSAppleEventsUsageDescription</key>
+<string>Required for screen sharing functionality.</string>
 ```
 
 
