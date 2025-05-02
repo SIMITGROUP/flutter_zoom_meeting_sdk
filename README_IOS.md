@@ -1,4 +1,4 @@
-# Setup iOS
+# Setup iOS (WIP)
 
 ## Download SDK
 
@@ -55,6 +55,15 @@ Navigate to `<YourApp>/ios` and open it with Xcode.
 
 ### Plugin Pod Configuration
 
+Build iOS to get Podfile
+
+```bash
+flutter build ios
+```
+> 💡 You will see the expected error `Swift Compiler Error (Xcode): No such module 'MobileRTC'`
+> We need to configure the Pods to let plugin know when yours Zoom SDK.
+> Once built the ios. You can reopen the ios folder with XCode again. You will see your Pods now appear.
+
 1. #### Pods > flutter_zoom_meeting_sdk > General > Frameworks and Libraries
 
     - Add: `MobileRTC.xcframework`
@@ -65,9 +74,6 @@ Navigate to `<YourApp>/ios` and open it with Xcode.
 *Figure 5: Set MobileRTC.xcframework in plugin target*
 
 > ✅ This allows the plugin to correctly read and use the Zoom SDK.
-
-> 💡 You may need to run `flutter run` or `pod install` to make Pods appear.
-
 
 ---
 
