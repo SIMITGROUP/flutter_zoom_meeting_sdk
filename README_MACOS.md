@@ -115,6 +115,18 @@ Open the macOS folder in Xcode:
 
 ---
 
+### 3.2 Pod Target Configuration
+
+#### Build Settings
+
+- **Framework Search Paths**
+  Debug, Profile, Release all add:
+  ```bash
+  ${PODS_ROOT}/../../ZoomSDK/macOS/ZoomSDK
+  ```
+
+---
+
 ## 4. Add Permissions to Info.plist
 
 Edit `macos/Runner/Info.plist` and add the following:
