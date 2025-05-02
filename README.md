@@ -1,16 +1,19 @@
 # Flutter Zoom Meeting SDK
 
-A Flutter plugin for integrating with the [Zoom Meeting SDK](https://developers.zoom.us/docs/meeting-sdk/) across multiple platforms.  
-Developed and tested with SDK version `v6.4.3.28970`.
+A Flutter plugin for integrating the [Zoom Meeting SDK](https://developers.zoom.us/docs/meeting-sdk/) across multiple platforms.
+
+Tested with SDK version `v6.4.3.28970`.
+
+> This plugin assumes you have basic knowledge of the Zoom application and the [Zoom Meeting SDK](https://developers.zoom.us/docs/meeting-sdk/), including concepts like JWT authentication and meeting numbers.
 
 **Supported Platforms**
 
-- Android
-- iOS
-- macOS
+- Android  
+- iOS  
+- macOS  
 - Windows
 
-> **Note**: This plugin does **NOT** bundle the SDK binaries. You must [download the Zoom Meeting SDK manually](#getting-started) and configure it for each platform.
+> ⚠️ This plugin does **NOT** bundle the SDK binaries. You must [download the Zoom Meeting SDK manually](#getting-started) and configure it for each platform.
 
 ---
 
@@ -20,136 +23,139 @@ Developed and tested with SDK version `v6.4.3.28970`.
 
 1. Go to the [Zoom App Marketplace](https://marketplace.zoom.us/)
 2. Sign in to your Zoom account.
-3. Select **Develop** and choose **Build App**.
+3. Click **Develop** → **Build App**
 4. Create a **General App**.
-5. Under **Build your app** > **Features** > **Embed**, enable the **Meeting SDK** feature.
-6. Download the SDK files for each platform (Android, iOS, macOS, Windows).
+5. Under **Build your app** > **Features** > **Embed**, enable the **Meeting SDK**.
+6. Download the SDK files for each target platform.
 
-> **Note**: For more information: Read [Get Credentials](https://developers.zoom.us/docs/meeting-sdk/get-credentials/)
+> 📖 For more information: see [Get Credentials](https://developers.zoom.us/docs/meeting-sdk/get-credentials/)
 
 ### 2. Platform Setup
 
 Follow the platform-specific setup guides:
 
-- [Android Setup Instructions](./README_ANDROID.md)
-- [iOS Setup Instructions](./README_IOS.md)
-- [macOS Setup Instructions](./README_MACOS.md)
-- [Windows Setup Instructions](./README_WINDOWS.md)
+- [Android Setup](./README_ANDROID.md)  
+- [iOS Setup](./README_IOS.md)  
+- [macOS Setup](./README_MACOS.md)  
+- [Windows Setup](./README_WINDOWS.md)
 
 ---
 
 ## Usage
 
-### SDK Authorization (JWT Token)
+After completing the platform-specific setup, you can start using the plugin to integrate Zoom meeting functionality into your Flutter app. Below is a step-by-step example demonstrating how to initialize the SDK, authenticate with a JWT token, handle events, and join a meeting.
 
-Zoom Meeting SDK requires a JSON Web Token (JWT) for authorization. You can generate one using Zoom's [sample JWT auth endpoint](https://github.com/zoom/meetingsdk-auth-endpoint-sample/).
-
-After cloning and running the sample auth server, you can call the `getJWTToken` method like this:
-
+### 1. Initialize the SDK  
 ```dart
-final result = await FlutterZoomMeetingSdk().getJWTToken(
-  authEndpoint: _authEndpoint,
-  meetingNumber: _meetingNumber,
-  role: _role, // 0: Participant, 1: Host / Co-Host
-);
-
-final signature = result?.token;
-
-if (signature != null) {
-  print('Signature: $signature');
-  return signature;
-} else {
-  throw Exception("Failed to get signature.");
-}
+_zoomSdk.initZoom();
 ```
-> **Note**: For more information: read [Meeting SDK authorization](https://developers.zoom.us/docs/meeting-sdk/auth/)
 
-### Functions
-
-#### Init Zoom SDK
-
-- Initialize the SDK.
-- Example:
-  
-  ```dart
-  await FlutterZoomMeetingSdk().initZoom();
-  ```
-
-#### Authenticate Zoom SDK
-
-- Authenticate using your JWT token.
-- Example:
-
-  ```dart
-  await FlutterZoomMeetingSdk().authZoom(jwtToken: jwtToken);
-  ```
-
-#### Join Zoom Meeting
-
-- Join a meeting using a Meeting ID and password.
-- For webinars or meetings with registration, you must also pass a `webinarToken`.
-- Example:
-  
-  ```dart
-  await FlutterZoomMeetingSdk().joinMeeting(ZoomMeetingSdkRequest(
-    meetingNumber: _meetingNumber,
-    password: _passCode,
-    displayName: _userName,
-    webinarToken: _webinarToken, // Optional
-  ));
-  ```
-
-#### Uninitialize SDK
-
-- Uninitialize and clean up the SDK.
-- Example:
-
-  ```dart
-  await FlutterZoomMeetingSdk().unInitZoom();
-  ```
-
-### Event Streams
-
-#### onAuthenticationReturn
-
+### 2. Authenticate using your JWT token  
 ```dart
-FlutterZoomMeetingSdk().onAuthenticationReturn.listen((event) {
-  print(
-    "EXAMPLE_APP::EVENT::onAuthenticationReturn - ${jsonEncode(event.toMap())}",
-  );
+_zoomSdk.authZoom(
+  jwtToken: "<YOUR_JWT_TOKEN>",
+);
+```
 
+> 🔐 Refer to the [Zoom docs on JWT tokens](https://developers.zoom.us/docs/meeting-sdk/auth/)
+
+### 3. Listen for authentication results and join the meeting  
+```dart
+_zoomSdk.onAuthenticationReturn.listen((event) {
   if (event.params?.statusEnum == StatusZoomError.success) {
-    joinMeeting();
+    _zoomSdk.joinMeeting(
+      ZoomMeetingSdkRequest(
+        meetingNumber: '<YOUR_MEETING_NUMBER>',
+        password: '<YOUR_MEETING_PASSWORD>',
+        displayName: '<PARTICIPANT_NAME>',
+      ),
+    );
   }
 });
 ```
 
-#### onZoomAuthIdentityExpired
+### 4. Uninitialize the SDK (recommended when done)  
+```dart
+_zoomSdk.unInitZoom();
+```
 
-#### onMeetingStatusChanged
+> 💡 You can call this in the `dispose()` method of your widget.
 
-#### onMeetingParameterNotification
+### 5. Complete Example  
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_zoom_meeting_sdk/enums/status_zoom_error.dart';
+import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
+import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
 
-#### onMeetingError
+void main() {
+  runApp(const MyApp());
+}
 
-#### onMeetingEndedReaso
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final FlutterZoomMeetingSdk _zoomSdk = FlutterZoomMeetingSdk();
+
+  @override
+  void dispose() {
+    _zoomSdk.unInitZoom();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _zoomSdk.initZoom();
+
+    _zoomSdk.authZoom(jwtToken: "<YOUR_JWT_TOKEN>");
+
+    _zoomSdk.onAuthenticationReturn.listen((event) {
+      if (event.params?.statusEnum == StatusZoomError.success) {
+        _zoomSdk.joinMeeting(
+          ZoomMeetingSdkRequest(
+            meetingNumber: '<YOUR_MEETING_NUMBER>',
+            password: '<YOUR_MEETING_PASSWORD>',
+            displayName: '<PARTICIPANT_NAME>',
+          ),
+        );
+      }
+    });
+
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Flutter Zoom Meeting SDK Plugin')),
+        body: Center(),
+      ),
+    );
+  }
+}
+```
 
 ---
 
 ## Example
 
-For a complete example of how to use the plugin, check out the full code at [here](./README_EXAMPLE.md).
+For a complete usage reference, see the [full example code](./README_EXAMPLE.md).
+
+---
+
+## API Reference
+
+For a full list of available methods, event streams, and data models, refer to the [API Reference](./README_API.md).
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or pull request with improvements, bug fixes, or suggestions.
+Contributions are welcome! Feel free to open an issue or submit a pull request for improvements, bug fixes, or new features.
 
 ---
 
 ## License
 
-MIT License. See [LICENSE](./LICENSE) for details.
-
-
+MIT License — see [LICENSE](./LICENSE) for details.
