@@ -65,8 +65,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
                         ? "MSG_INIT_SUCCESS"
                         : "MSG_INIT_FAILED",
                     params: [
-                        "status": initResult.rawValue,
-                        "statusName": initResult.name,
+                        "statusCode": initResult.rawValue,
+                        "statusLabel": initResult.name,
                     ]
                 )
             )
@@ -122,8 +122,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
                         ? "MSG_AUTH_SENT_SUCCESS"
                         : "MSG_AUTH_SENT_FAILED",
                     params: [
-                        "status": authResult.rawValue,
-                        "statusName": authResult.name,
+                        "statusCode": authResult.rawValue,
+                        "statusLabel": authResult.name,
                     ]
                 )
             )
@@ -191,8 +191,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
                         ? "MSG_JOIN_SENT_SUCCESS"
                         : "MSG_JOIN_SENT_FAILED",
                     params: [
-                        "status": joinResult.rawValue,
-                        "statusName": joinResult.name,
+                        "statusCode": joinResult.rawValue,
+                        "statusLabel": joinResult.name,
                     ]
                 )
             )

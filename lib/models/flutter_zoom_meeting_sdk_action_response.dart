@@ -49,58 +49,59 @@ class FlutterZoomMeetingSdkActionResponse<T> {
 }
 
 class InitParamsResponse implements MappableParams {
-  final int? status;
-  final String? statusName;
+  final int? statusCode;
+  final String? statusLabel;
 
-  InitParamsResponse({this.status, this.statusName});
+  InitParamsResponse({this.statusCode, this.statusLabel});
 
   factory InitParamsResponse.fromMap(Map<String, dynamic> map) {
     return InitParamsResponse(
-      status: map['status'] != null ? (map['status'] as num).toInt() : null,
-      statusName: map['statusName'] as String?,
+      statusCode:
+          map['statusCode'] != null ? (map['status'] as num).toInt() : null,
+      statusLabel: map['statusLabel'] as String?,
     );
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return {'status': status, 'statusName': statusName};
+    return {'statusCode': statusCode, 'statusLabel': statusLabel};
   }
 }
 
 class AuthParamsResponse implements MappableParams {
-  final int status;
-  final String statusName;
+  final int statusCode;
+  final String statusLabel;
 
-  AuthParamsResponse({required this.status, required this.statusName});
+  AuthParamsResponse({required this.statusCode, required this.statusLabel});
 
   factory AuthParamsResponse.fromMap(Map<String, dynamic> map) {
     return AuthParamsResponse(
-      status: map['status'],
-      statusName: map['statusName'] as String,
+      statusCode: map['statusCode'],
+      statusLabel: map['statusLabel'] as String,
     );
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return {'status': status, 'statusName': statusName};
+    return {'statusCode': statusCode, 'statusLabel': statusLabel};
   }
 }
 
 class JoinParamsResponse implements MappableParams {
-  final int status;
-  final String statusName;
+  final int statusCode;
+  final String statusLabel;
 
-  JoinParamsResponse({required this.status, required this.statusName});
+  JoinParamsResponse({required this.statusCode, required this.statusLabel});
 
   factory JoinParamsResponse.fromMap(Map<String, dynamic> map) {
     return JoinParamsResponse(
-      status: map['status'],
-      statusName: map['statusName'] as String,
+      statusCode: map['statusCode'],
+      statusLabel: map['statusLabel'] as String,
     );
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return {'status': status, 'statusName': statusName};
+    return {'statusCode': statusCode, 'statusLabel': statusLabel};
   }
 }

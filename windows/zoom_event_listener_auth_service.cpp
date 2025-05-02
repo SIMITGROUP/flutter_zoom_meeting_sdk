@@ -44,10 +44,10 @@ void ZoomSDKEventListenerAuthService::onLoginReturnWithReason(ZOOM_SDK_NAMESPACE
     sEventLog(tag, L"Login Fail Reason: " + std::to_wstring(reason));
 
     flutter::EncodableMap params;
-    params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(ret));
-    params[flutter::EncodableValue("statusName")] = flutter::EncodableValue(EnumToString(ret));
-    params[flutter::EncodableValue("failReason")] = flutter::EncodableValue(static_cast<int>(reason));
-    params[flutter::EncodableValue("failReasonName")] = flutter::EncodableValue(EnumToString(reason));
+    params[flutter::EncodableValue("statusCode")] = flutter::EncodableValue(static_cast<int>(ret));
+    params[flutter::EncodableValue("statusLabel")] = flutter::EncodableValue(EnumToString(ret));
+    params[flutter::EncodableValue("failReasonCode")] = flutter::EncodableValue(static_cast<int>(reason));
+    params[flutter::EncodableValue("failReasonLabel")] = flutter::EncodableValue(EnumToString(reason));
 
     flutter::EncodableMap accountInfo;
 
@@ -102,10 +102,10 @@ void ZoomSDKEventListenerAuthService::onNotificationServiceStatus(ZOOM_SDK_NAMES
     sEventLog(tag, L"Error: " + std::to_wstring(error));
 
     flutter::EncodableMap params;
-    params[flutter::EncodableValue("status")] = flutter::EncodableValue(static_cast<int>(status));
-    params[flutter::EncodableValue("statusName")] = flutter::EncodableValue(EnumToString(status));
-    params[flutter::EncodableValue("error")] = flutter::EncodableValue(static_cast<int>(error));
-    params[flutter::EncodableValue("errorName")] = flutter::EncodableValue(EnumToString(error));
+    params[flutter::EncodableValue("statusCode")] = flutter::EncodableValue(static_cast<int>(status));
+    params[flutter::EncodableValue("statusLabel")] = flutter::EncodableValue(EnumToString(status));
+    params[flutter::EncodableValue("errorCode")] = flutter::EncodableValue(static_cast<int>(error));
+    params[flutter::EncodableValue("errorLabel")] = flutter::EncodableValue(EnumToString(error));
 
     SendEvent(tag, params);
 }

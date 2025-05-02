@@ -33,10 +33,10 @@ extension FlutterZoomMeetingSdkPlugin: ZoomSDKAuthDelegate {
                 event: "onLoginReturnWithReason",
                 oriEvent: "onZoomSDKLoginResult",
                 params: [
-                    "status": loginStatus.rawValue,
-                    "statusName": loginStatus.name,
-                    "failReason": failReason.rawValue,
-                    "failReasonName": failReason.name,
+                    "statusCode": loginStatus.rawValue,
+                    "statusLabel": loginStatus.name,
+                    "failReasonCode": failReason.rawValue,
+                    "failReasonLabel": failReason.name,
                 ]
             )
         )
@@ -71,10 +71,10 @@ extension FlutterZoomMeetingSdkPlugin: ZoomSDKAuthDelegate {
                 event: "onNotificationServiceStatus",
                 oriEvent: "onNotificationServiceStatus",
                 params: [
-                    "status": status.rawValue,
-                    "statusName": status.name,
-                    "error": error.rawValue,
-                    "errorName": error.name,
+                    "statusCode": status.rawValue,
+                    "statusLabel": status.name,
+                    "errorCode": error.rawValue,
+                    "errorLabel": error.name,
                 ]
             )
         )

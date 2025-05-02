@@ -58,7 +58,11 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 val response = StandardZoomResponse(
                     isSuccess = true,
                     message = "MSG_ANDROID_INIT",
-                    action = action
+                    action = action,
+                    params = mapOf(
+                        "statusCode" to 0,
+                        "statusLabel" to "SUCCESS"
+                    )
                 )
 
                 result.success(response.toMap())
@@ -126,8 +130,8 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             message = "MSG_AUTH_SENT_SUCCESS",
             action = action,
             params = mapOf(
-                "status" to 0,
-                "statusName" to "SUCCESS"
+                "statusCode" to 0,
+                "statusLabel" to "SUCCESS"
             )
         )
     }
@@ -183,8 +187,8 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             message = if (joinResult == MeetingError.MEETING_ERROR_SUCCESS) "MSG_JOIN_SENT_SUCCESS" else "MSG_JOIN_SENT_FAILED",
             action = action,
             params = mapOf(
-                "status" to joinResult,
-                "statusName" to MapperMeetingError.getErrorName(joinResult),
+                "statusCode" to joinResult,
+                "statusLabel" to MapperMeetingError.getErrorName(joinResult),
             )
         )
 

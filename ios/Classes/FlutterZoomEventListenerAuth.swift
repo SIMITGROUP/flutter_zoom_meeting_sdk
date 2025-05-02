@@ -40,8 +40,8 @@ extension FlutterZoomMeetingSdkPlugin: MobileRTCAuthDelegate {
                 event: "onLoginReturnWithReason",
                 oriEvent: "onMobileRTCLoginResult",
                 params: [
-                    "status": resultValue.rawValue,
-                    "statusName": resultValue.name,
+                    "statusCode": resultValue.rawValue,
+                    "statusLabel": resultValue.name,
                 ]
             )
         )
@@ -56,7 +56,7 @@ extension FlutterZoomMeetingSdkPlugin: MobileRTCAuthDelegate {
                 event: "onLogout",
                 oriEvent: "onMobileRTCLogoutReturn",
                 params: [
-                    "status": returnValue,
+                    "statusCode": returnValue,
                 ]
             )
         )
@@ -71,10 +71,10 @@ extension FlutterZoomMeetingSdkPlugin: MobileRTCAuthDelegate {
                 event: "onNotificationServiceStatus",
                 oriEvent: "onNotificationServiceStatus",
                 params: [
-                    "status": status.rawValue,
-                    "statusName": status.name,
-                    "error": error.rawValue,
-                    "errorName": error.name,
+                    "statusCode": status.rawValue,
+                    "statusLabel": status.name,
+                    "errorCode": error.rawValue,
+                    "errorLabel": error.name,
                 ]
             )
         )

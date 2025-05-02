@@ -149,16 +149,16 @@ namespace flutter_zoom_meeting_sdk
       return ZoomResponseBuilder(tag)
           .Success(true)
           .Message("MSG_INIT_SUCCESS")
-          .Param("status", static_cast<int>(initResult))
-          .Param("statusName", EnumToString(initResult))
+          .Param("statusCode", static_cast<int>(initResult))
+          .Param("statusLabel", EnumToString(initResult))
           .Build();
     }
 
     return ZoomResponseBuilder(tag)
         .Success(false)
         .Message("MSG_INIT_FAILED")
-        .Param("status", static_cast<int>(initResult))
-        .Param("statusName", EnumToString(initResult))
+        .Param("statusCode", static_cast<int>(initResult))
+        .Param("statusLabel", EnumToString(initResult))
         .Build();
   }
 
@@ -181,8 +181,8 @@ namespace flutter_zoom_meeting_sdk
       return ZoomResponseBuilder(tag)
           .Success(false)
           .Message("MSG_AUTH_SERVICE_NOT_AVAILABLE")
-          .Param("status", static_cast<int>(authServiceInitReturnVal))
-          .Param("statusName", EnumToString(authServiceInitReturnVal))
+          .Param("statusCode", static_cast<int>(authServiceInitReturnVal))
+          .Param("statusLabel", EnumToString(authServiceInitReturnVal))
           .Build();
     }
 
@@ -210,16 +210,16 @@ namespace flutter_zoom_meeting_sdk
       return ZoomResponseBuilder(tag)
           .Success(true)
           .Message("MSG_AUTH_SENT_SUCCESS")
-          .Param("status", static_cast<int>(authCallReturnValue))
-          .Param("statusName", EnumToString(authCallReturnValue))
+          .Param("statusCode", static_cast<int>(authCallReturnValue))
+          .Param("statusLabel", EnumToString(authCallReturnValue))
           .Build();
     }
 
     return ZoomResponseBuilder(tag)
         .Success(false)
         .Message("MSG_AUTH_SENT_FAILED")
-        .Param("status", static_cast<int>(authCallReturnValue))
-        .Param("statusName", EnumToString(authCallReturnValue))
+        .Param("statusCode", static_cast<int>(authCallReturnValue))
+        .Param("statusLabel", EnumToString(authCallReturnValue))
         .Build();
   }
 
@@ -243,8 +243,8 @@ namespace flutter_zoom_meeting_sdk
       return ZoomResponseBuilder(tag)
           .Success(false)
           .Message("MSG_MEETING_SERVICE_NOT_AVAILABLE")
-          .Param("status", static_cast<int>(meetingServiceInitReturnVal))
-          .Param("statusName", EnumToString(meetingServiceInitReturnVal))
+          .Param("statusCode", static_cast<int>(meetingServiceInitReturnVal))
+          .Param("statusLabel", EnumToString(meetingServiceInitReturnVal))
           .Build();
     }
 
@@ -281,16 +281,16 @@ namespace flutter_zoom_meeting_sdk
       return ZoomResponseBuilder(tag)
           .Success(true)
           .Message("MSG_JOIN_SENT_SUCCESS")
-          .Param("status", static_cast<int>(joinResult))
-          .Param("statusName", EnumToString(joinResult))
+          .Param("statusCode", static_cast<int>(joinResult))
+          .Param("statusLabel", EnumToString(joinResult))
           .Build();
     }
 
     return ZoomResponseBuilder(tag)
         .Success(false)
         .Message("MSG_JOIN_SENT_FAILED")
-        .Param("status", static_cast<int>(joinResult))
-        .Param("statusName", EnumToString(joinResult))
+        .Param("statusCode", static_cast<int>(joinResult))
+        .Param("statusLabel", EnumToString(joinResult))
         .Build();
   }
 
@@ -311,8 +311,8 @@ namespace flutter_zoom_meeting_sdk
     return ZoomResponseBuilder(tag)
         .Success(cleanUpReturnVal == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS)
         .Message(cleanUpReturnVal == ZOOM_SDK_NAMESPACE::SDKError::SDKERR_SUCCESS ? "MSG_UNINIT_SUCCESS" : "MSG_UNINIT_SUCCESS")
-        .Param("status", static_cast<int>(cleanUpReturnVal))
-        .Param("statusName", EnumToString(cleanUpReturnVal))
+        .Param("statusCode", static_cast<int>(cleanUpReturnVal))
+        .Param("statusLabel", EnumToString(cleanUpReturnVal))
         .Build();
   }
 } // namespace flutter_zoom_meeting_sdk
