@@ -1,3 +1,4 @@
+/// This interface is used to convert the params to a map
 abstract class MappableParams {
   Map<String, dynamic> toMap();
 }
@@ -15,6 +16,7 @@ Map<String, T> generateStatusMap<T>(
   return {for (var e in values) _toSnakeCase(nameGetter(e)).toUpperCase(): e};
 }
 
+/// This function will convert the input string to a snake case format
 String _toSnakeCase(String input) {
   return input
       .replaceAllMapped(

@@ -1,7 +1,15 @@
+/// Request params for [ActionType.joinMeeting]
 class ZoomMeetingSdkRequest {
+  /// The meeting number
   final String meetingNumber;
+
+  /// The password for the meeting
   final String password;
+
+  /// The display name for the meeting
   final String displayName;
+
+  /// Optional. The webinar token for the meeting, required for webinar & registered meetings
   final String? webinarToken;
 
   ZoomMeetingSdkRequest({

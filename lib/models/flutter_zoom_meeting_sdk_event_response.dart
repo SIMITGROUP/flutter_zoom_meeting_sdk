@@ -7,10 +7,18 @@ import 'package:flutter_zoom_meeting_sdk/enums/status_meeting_type.dart';
 import 'package:flutter_zoom_meeting_sdk/enums/status_zoom_error.dart';
 import 'package:flutter_zoom_meeting_sdk/helpers/common.dart';
 
+/// Standard event response wrapper
 class FlutterZoomMeetingSdkEventResponse<T> {
+  /// The platform type
   final PlatformType platform;
+
+  /// The event type
   final EventType event;
+
+  /// The original event name of each platform
   final String oriEvent;
+
+  /// The params of the event
   final T? params;
 
   FlutterZoomMeetingSdkEventResponse({
@@ -48,9 +56,20 @@ class FlutterZoomMeetingSdkEventResponse<T> {
   }
 }
 
+/// Event response params for [EventType.onAuthenticationReturn]
 class EventAuthenticateReturnParams implements MappableParams {
+  /// The status code of the event.
+  /// This value returned directly from the Zoom Meeting SDK and represent enum values defined per platform.
+  /// These enum values are not guaranteed to be consistent across platforms, so prefer using statusLabel.
   final int statusCode;
+
+  /// The status label of the event
+  /// The value might not consistent across platforms, use it with caution
   final String statusLabel;
+
+  /// The status enum of the event
+  /// Same as statusLabel, convert from statusLabel to enum
+  /// The value might not consistent across platforms, use it with caution
   final StatusZoomError statusEnum;
 
   /// Only **ANDROID** will have this field. ZOOM internal error code
@@ -83,15 +102,40 @@ class EventAuthenticateReturnParams implements MappableParams {
   }
 }
 
+/// Event response params for [EventType.onMeetingStatusChanged]
 class EventMeetingStatusChangedParams implements MappableParams {
+  /// The status code of the event.
+  /// This value returned directly from the Zoom Meeting SDK and represent enum values defined per platform.
+  /// These enum values are not guaranteed to be consistent across platforms, so prefer using statusLabel.
   final int statusCode;
+
+  /// The status label of the event
+  /// The value might not consistent across platforms, use it with caution
   final String statusLabel;
+
+  /// The status enum of the event
+  /// Same as statusLabel, convert from statusLabel to enum
+  /// The value might not consistent across platforms, use it with caution
   final StatusMeetingStatus statusEnum;
+
+  /// The error code of the event
   final int errorCode;
+
+  /// The error label of the event
   final String errorLabel;
+
+  /// The error enum of the event
+  /// The value might not consistent across platforms, use it with caution
   final StatusMeetingError errorEnum;
+
+  /// The end reason code of the event
   final int endReasonCode;
+
+  /// The end reason label of the event
   final String endReasonLabel;
+
+  /// The end reason enum of the event
+  /// The value might not consistent across platforms, use it with caution
   final StatusMeetingEndReason endReasonEnum;
 
   /// Only **ANDROID** will have this field. ZOOM internal error code
@@ -144,6 +188,7 @@ class EventMeetingStatusChangedParams implements MappableParams {
   }
 }
 
+/// Event response params for [EventType.onMeetingParameterNotification]
 class EventMeetingParameterNotificationParams implements MappableParams {
   final bool isAutoRecordingCloud;
   final bool isAutoRecordingLocal;
@@ -201,6 +246,7 @@ class EventMeetingParameterNotificationParams implements MappableParams {
   }
 }
 
+/// Event response params for [EventType.onMeetingError]
 class EventMeetingErrorParams implements MappableParams {
   final int errorCode;
   final String errorLabel;
@@ -234,6 +280,7 @@ class EventMeetingErrorParams implements MappableParams {
   }
 }
 
+/// Event response params for [EventType.onMeetingEndedReason]
 class EventMeetingEndedReasonParams implements MappableParams {
   final int endReasonCode;
   final String endReasonLabel;
