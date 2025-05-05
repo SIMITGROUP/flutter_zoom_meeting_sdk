@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import './meeting_card_list.dart';
-import './zoom_service.dart';
-import './mock/meeting_data.dart';
+import 'package:flutter_zoom_meeting_sdk/enums/status_zoom_error.dart';
+import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
+import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,37 +15,36 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final ZoomService _zoomService = ZoomService();
-
-  @override
-  void initState() {
-    super.initState();
-    _zoomService.initZoom();
-    _zoomService.initEventListeners();
-  }
+  final FlutterZoomMeetingSdk _zoomSdk = FlutterZoomMeetingSdk();
 
   @override
   void dispose() {
-    _zoomService.dispose();
+    _zoomSdk.unInitZoom();
     super.dispose();
-  }
-
-  void joinMeeting(Map<String, String> meeting) {
-    _zoomService.setMeetingNumber(meeting['meetingNumber'] ?? '');
-    _zoomService.setPassCode(meeting['password'] ?? '');
-    _zoomService.setUserName(meeting['displayName'] ?? '');
-    _zoomService.setWebinarToken(meeting['webinarToken']);
-
-    _zoomService.authZoom();
-    // Trigger join meeting in event listener
   }
 
   @override
   Widget build(BuildContext context) {
+    _zoomSdk.initZoom();
+
+    _zoomSdk.authZoom(jwtToken: "<YOUR_JWT_TOKEN>");
+
+    _zoomSdk.onAuthenticationReturn.listen((event) {
+      if (event.params?.statusEnum == StatusZoomError.success) {
+        _zoomSdk.joinMeeting(
+          ZoomMeetingSdkRequest(
+            meetingNumber: '<YOUR_MEETING_NUMBER>',
+            password: '<YOUR_MEETING_PASSWORD>',
+            displayName: '<PARTICIPANT_NAME>',
+          ),
+        );
+      }
+    });
+
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Plugin example app')),
-        body: MeetingCardList(data: meetingData, onJoinPressed: joinMeeting),
+        appBar: AppBar(title: const Text('Flutter Zoom Meeting SDK Plugin')),
+        body: Center(),
       ),
     );
   }
