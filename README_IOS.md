@@ -26,14 +26,20 @@
 
 ## 2. Configure In Xcode
 
-First, run pod install to get Pod Target
 
+First, make sure to run pod install to generate the Pod targets:
 ```bash
 cd ios
 pod install
 ```
 
-Navigate to `<YourApp>/ios` and open it with Xcode.  
+Then, open the ios project in Xcode:
+
+```bash
+<YourApp>/ios
+```
+
+> This will allow you to access both your app target and the plugin target in Xcode.
 
 <img width="630" alt="Screenshot 2025-04-30 at 2 35 52 PM" src="https://github.com/user-attachments/assets/036dac34-a6b9-4c95-a1bc-acc7a060437c" />
 
