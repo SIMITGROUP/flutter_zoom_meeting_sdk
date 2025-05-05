@@ -1,4 +1,4 @@
-# Setup iOS (WIP)
+# Setup iOS
 
 ## 1. Download SDK
 
@@ -26,6 +26,13 @@
 
 ## 2. Configure In Xcode
 
+First, run pod install to get Pod Target
+
+```bash
+cd ios
+pod install
+```
+
 Navigate to `<YourApp>/ios` and open it with Xcode.  
 
 <img width="630" alt="Screenshot 2025-04-30 at 2 35 52 PM" src="https://github.com/user-attachments/assets/036dac34-a6b9-4c95-a1bc-acc7a060437c" />
@@ -34,42 +41,46 @@ Navigate to `<YourApp>/ios` and open it with Xcode.
 
 ### 2.1 Runner Target Configuration
 
-#### 2.1.1. Runner > General > Frameworks, Libraries, and Embedded Content
-    - Add: `MobileRTC.xcframework`  
+#### General
+  1. **Frameworks, Libraries, and Embedded Content**
+     ```bash
+     Add MobileRTC.xcframework
+     ```
   
 <img width="1512" alt="Screenshot 2025-04-30 at 2 31 53 PM" src="https://github.com/user-attachments/assets/4134a17f-bba6-4954-967a-d089767d4a47" />
 
 *Figure: Add MobileRTC.xcframework in (Frameworks, Libraries, and Embedded Content)*
 
-#### 2.1.2. Runner > Build Phases > Link Binary With Libraries
-    - Add: `MobileRTC.xcframework`
+#### Signing & Capabilities
+  1. Choose your **Team**
 
-#### 2.1.3. Runner > Build Phases > Copy Bundle Resources
-    - Add: `MobileRTCResources.bundle`
+#### Build Phases
+  1. **Link Binary With Libraries**
+     ```bash
+     Add MobileRTC.xcframework
+     ```
 
-#### 2.1.4. Runner > Build Phases > Embed Frameworks
-    - Add: `MobileRTC.xcframework`
+  2. **Copy Bundle Resources**
+     ```bash
+     Add MobileRTCResources.bundle
+     ```
+        
+  3. **Embed Frameworks**
+     ```bash
+     Add MobileRTC.xcframework
+     ```
   
 <img width="1512" alt="Screenshot 2025-04-30 at 2 32 24 PM" src="https://github.com/user-attachments/assets/3074841f-d73d-4eda-900d-254d1f1e996e" />
 
 *Figure: Add MobileRTC.xcframework and MobileRTCResources.bundle in (Build Phases)*
 
+---
+
 ### 2.2 Plugin Pod Configuration
 
-Run the following command to generate the Podfile:
-
-```bash
-flutter build ios
-```
-> 💡 You will see the expected error `Swift Compiler Error (Xcode): No such module 'MobileRTC'`
-> Don’t worry — we'll configure the Pod target next.
-
-Now reopen the iOS project in Xcode and follow these steps:
-
-#### 2.2.1. Pods > flutter_zoom_meeting_sdk > General > Frameworks and Libraries
-
-    - Add: `MobileRTC.xcframework`
-    - Set Embed to **Do Not Embed**
+#### Pods > flutter_zoom_meeting_sdk > General > Frameworks and Libraries
+  - Add `MobileRTC.xcframework`
+  - Set **Embed** to **Do Not Embed**
 
 <img width="1512" alt="Screenshot 2025-04-30 at 2 32 35 PM" src="https://github.com/user-attachments/assets/7bf497a8-7af5-451d-a7d8-7562a286c5b7" />
 
@@ -96,7 +107,27 @@ Edit `<YourApp>/ios/Runner/Info.plist` and add the following keys:
 
 ---
 
-Now run `flutter run`, you should be able to launch without errors.
+## 4. Run the App
+
+After setup, run your Flutter app, you should be able to launch without errors:
+
+```bash
+flutter run
+```
+
+
+> ⚠️ If you see the following error:
+> ```bash
+> Swift Compiler Error (Xcode): No such module 'MobileRTC'
+> ```
+> This usually happens because Flutter ran `pod install` automatically, which resets your plugin's Pod configuration.
+>
+> ✅ To fix this, reapply the Pod target configuration:
+> - Go to `Pods > flutter_zoom_meeting_sdk` in Xcode
+> - Add `MobileRTC.xcframework` under **Frameworks, Libraries, and Embedded Content**
+> - Set **Embed** to **Do Not Embed**
+>
+> Next run flutter again, you should be able to launch without errors.
 
 ---
 
