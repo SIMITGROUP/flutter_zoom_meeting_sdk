@@ -3,7 +3,7 @@
 ## 1. Download Zoom SDK
 
 - Download the **Zoom macOS SDK** from the [Zoom App Marketplace](https://marketplace.zoom.us/).
-- Create a folder and place the SDK contents inside.
+- Create a ZoomSDK/macOS/ folder and extract the SDK contents into it.
 
 **Example structure:**
 
@@ -57,17 +57,23 @@ find "$FRAMEWORKS_PATH" -name "*.bundle" -exec codesign --force --sign "${CODE_S
 find "$FRAMEWORKS_PATH" -name "*.app" -exec codesign --force --sign "${CODE_SIGN_IDENTITY}" {} \;
 ```
 
-> ✅ This ensures macOS allows your app to use the SDK during development and submission.
-
 ---
 
 ## 3. Configure in Xcode
 
-Open the macOS folder in Xcode:
+First, make sure to run pod install to generate the Pod targets:
+```bash
+cd macos
+pod install
+```
+
+Then, open the macos project in Xcode:
 
 ```bash
 <YourApp>/macos
 ```
+
+> This will allow you to access both your app target and the plugin target in Xcode.
 
 ### 3.1 Runner Target Configuration
 
