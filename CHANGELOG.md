@@ -1,3 +1,7 @@
+## 0.0.10
+
+- FIX: Android webinarToken not work
+
 ## 0.0.1
 
-* TODO: Describe initial release.
+- TODO: Describe initial release.

@@ -163,6 +163,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         val meetingNumber = arguments["meetingNumber"]
         val password = arguments["password"]
         val displayName = arguments["displayName"]
+        val webinarToken = arguments["webinarToken"]
 
         val meetingService = ZoomSDK.getInstance().meetingService
             ?: return StandardZoomResponse(
@@ -179,6 +180,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         params.meetingNo = meetingNumber
         params.password = password
         params.displayName = displayName
+        params.webinarToken = webinarToken
 
         val joinResult = meetingService.joinMeetingWithParams(context, params, opts)
 
