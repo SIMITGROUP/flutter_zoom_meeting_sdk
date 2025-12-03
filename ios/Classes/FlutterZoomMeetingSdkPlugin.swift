@@ -179,8 +179,8 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
             joinMeetingParameters.webinarToken =
                 (args["webinarToken"]?.isEmpty ?? true)
                 ? nil : args["webinarToken"]
-            joinMeetingParameters.noVideo = true
-            joinMeetingParameters.noAudio = true
+            joinMeetingParameters.noVideo = false
+            joinMeetingParameters.noAudio = false
 
             let joinResult = meetingService.joinMeeting(
                 with: joinMeetingParameters

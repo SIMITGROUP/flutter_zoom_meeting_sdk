@@ -175,6 +175,8 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         meetingService.addListener(FlutterZoomEventListenerMeeting(eventSink))
 
         val opts = JoinMeetingOptions()
+        opts.no_video = false
+        opts.no_audio = false
 
         val params = JoinMeetingParams()
         params.meetingNo = meetingNumber
@@ -193,7 +195,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 "statusLabel" to MapperMeetingError.getErrorName(joinResult),
             )
         )
-
+        
         return response;
     }
 

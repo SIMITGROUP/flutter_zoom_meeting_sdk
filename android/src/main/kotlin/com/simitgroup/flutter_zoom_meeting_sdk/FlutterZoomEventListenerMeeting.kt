@@ -5,6 +5,7 @@ import io.flutter.plugin.common.EventChannel
 import us.zoom.sdk.MeetingParameter
 import us.zoom.sdk.MeetingServiceListener
 import us.zoom.sdk.MeetingStatus
+import us.zoom.sdk.ZoomSDK
 
 class FlutterZoomEventListenerMeeting(private val eventSink: EventChannel.EventSink?):
     MeetingServiceListener {
@@ -30,6 +31,19 @@ class FlutterZoomEventListenerMeeting(private val eventSink: EventChannel.EventS
                 )
             )
         )
+
+        if (meetingStatus == MeetingStatus.MEETING_STATUS_INMEETING) {
+            val audioController = ZoomSDK.getInstance()
+                .inMeetingService
+                ?.inMeetingAudioController
+        
+            audioController?.let {
+                if (!it.isAudioConnected) {
+                    it.connectAudioWithVoIP()
+                }
+            }
+        }
+        
     }
 
     override fun onMeetingParameterNotification(params: MeetingParameter) {
