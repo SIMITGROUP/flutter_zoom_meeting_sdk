@@ -92,7 +92,10 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
         channel.setMethodCallHandler(null)
         eventChannel.setStreamHandler(null)
 
-        ZoomSDK.getInstance().uninitialize()
+        val sdk = ZoomSDK.getInstance()
+        if (sdk.isInitialized) {
+            sdk.uninitialize()
+        }
     }
 
     private fun authZoom(call: MethodCall) : StandardZoomResponse{
